@@ -1,0 +1,47 @@
+<div class="row">
+	<div class="span8">
+		<h2>Timeline</h2>
+		<?php if($UserFeedTimeline) { ?>
+		<?php foreach ($UserFeedTimeline as $TimelineAction) { ?>
+		<div class="timeline-action">
+			<a href="<?= SiteURL("user/" . $TimelineAction['UserInfo']['Username']); ?>"><?= Gravatar($TimelineAction['UserID'], 60, 'HTML'); ?></a>
+			<div class="action">
+			<a href="<?= SiteURL("user/" .  $TimelineAction['UserInfo']['Username']) ?>"><?= $Auth->PreferedName($TimelineAction['UserID']); ?></a>
+			<?= $TimelineAction['Action']; ?>
+			<a href="<?= SiteURL("project/" . $TimelineAction['ProjectInfo']['Slug']); ?>"><?= $TimelineAction['ProjectInfo']['Name']; ?></a>
+			<?= RealTimeTime(strtotime($TimelineAction['When'])); ?>
+			</div>
+			<div class="description">
+
+			</div>
+		</div>
+		<?php } ?>
+		<?php } else { ?>
+		<p class="center-text lighter">You Have No Messages in Your Timeline. Start Watching Stuff!</p>
+		<?php } ?>
+	</div>
+	<div class="span4">
+		<div class="projectlist">
+			<h3>Your Projects <a class="right" href="/new">+</a></h3>
+			<ul>
+				<?php if(isset($UsersProjects)) { ?>
+				<?php foreach ($UsersProjects as $UserProject) { ?>
+				<li><a href="/project/projectSlug"> projectName</a></li>
+				<?php }  } else { ?>
+				<li class="none">You have None</li>
+				<?php } ?>
+			</ul>
+		</div>
+		<div class="projectlist">
+			<h3>Watched Projects</h3>
+			<ul>
+				<?php if(isset($UserWatchedProjects)) { ?>
+				<?php foreach ($UserWatchedProjects as $UsersWatchedProject) { ?>
+				<li><a href="<?= BaseURL(); ?>project.php/<?= $UsersWatchedProject['Slug']; ?>"> <?= $UsersWatchedProject['Name']; ?></a></li>
+				<?php }  } else { ?>
+				<li class="none">You have None</li>
+				<?php } ?>
+			</ul>
+		</div>
+	</div>
+</div>

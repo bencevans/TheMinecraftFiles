@@ -1,0 +1,32 @@
+<div class="row">
+	<div class="span2 avatar">
+		<img src="<?= Gravatar($UserInfo['_id'], '140px', 'Address', 'ID'); ?>" alt="<?php if($UserInfo['RealName']) { echo $UserInfo['RealName'];} else {echo $UserInfo['Username'];} ?>'s Avatar" style="width:100%;"/>
+	</div>
+	<div class="span10">
+		<div class="pagename">
+			<h2><?php if($UserInfo['RealName']) { echo $UserInfo['RealName'] . " ";} ?><span class="lighter">(<%= profile.username %>)</span></h2>
+		</div>
+		<ul class="userinfo">
+			<% if(typeof profile.minecraftUsername !== 'undefined') { %><li>Minecraft Name: <%= profile.minecraftUsername %></li><% } %>
+			<% if(typeof profile.twitterUsername !== 'undefined') { %><li>Twitter: <a class="twittertext" href="http://twitter.com/<%= profile.twitterUsername %>">@<%= profile.twitterUsername %></a></li><% } %>
+			<% if(typeof profile.website !== 'undefined') { %><li>Website: <a href="<%- profile.website %>"><%= profile.website %></a></li><% } %>
+			<li>Member Since: <%= profile.joined %></li>
+		</ul>
+	</div>
+</div>
+<div class="row">
+	<div class="span10 push2 usersprojects">
+		<h3>Projects</h3>
+
+		<% if(profile.projects) { %>
+		<% foreach ($UsersProjects as $UserProject) { %>
+		<% _.each(profile.projects, function(project)) { %>
+		<?= ProjectWidget($UserProject['_id']); ?>
+		<% } %>
+
+		<% } else { %>
+		<p class="lighter"><?php if($UserInfo['RealName']) { echo $UserInfo['RealName'];} else {echo $UserInfo['Username'];} ?> Currently Has No Projects</p>
+		<% } %>
+		
+	</div>
+</div>

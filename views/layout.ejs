@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+
+<html prefix="og: http://ogp.me/ns#">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>TheMinecraftFiles</title>
+	<!-- Meta -->
+	<meta name="description" content="Minecraft Mod, Texturepack and Skins Discovery and Developer Aid" />
+	<meta name="keywords" content="Minecraft, Mod, Texture, Texturepack, Files, Skins, Developer, Discover, Downloads" />
+	<meta name="author" content="Ben Evans" />
+	<!-- Favicon! :D -->
+	<link REL="SHORTCUT ICON" HREF="/favicon.ico">
+	<!-- Facebook -->
+	<meta property="fb:app_id" content="203689199665388" />
+	<!-- Open Graph -->
+	<meta property="og:url" content="http://theminecraftfiles.com/" />
+	<meta property="og:description" content="Minecraft Mod, Texturepack and Skins Discovery and Developer Aid" />
+	<meta property="og:site_name" content="TheMinecraftFiles"/>	<meta property="og:image" content="http://theminecraftfiles.com/images/icon-large.png"/>
+	<!-- CSS -->
+	<link href='http://fonts.googleapis.com/css?family=Asap' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" type="text/css" href="/assets/css/style.css">
+	<!-- JS -->
+	<script src="/assets/js/jquery.js"></script>  
+	<script src="/assets/js/jquery.pjax.js"></script>  
+	<script type="text/javascript">
+	$(function(){
+        // pjax
+        
+        $('a').pjax('#main');
+
+    })
+	</script>
+	<script>window.jQuery || document.write("<script src='/assets/js/jquery.1.7.1.min.js'>\x3C/script>")</script>
+
+</head>
+<body>
+	<header>
+		<div class="container">
+			<ul class="nav">
+				<li class="brand">
+					<a href="/">TheMinecraftFiles</a>
+				</li>
+				<li>
+					<a href="/discover/">Discover</a>
+				</li>
+			</ul>
+			<ul class="nav right">
+				<% if (typeof everyauth.loggedIn !== 'undefined') { %>
+				<li>
+					<a href="/user/<%= everyauth.user.username %>">Profile</a>
+				</li>
+				<li>
+					<a href="/settings/">Settings</a>
+				</li>
+				<!-- if(auth.hasRole('admin')) -->
+				<li>
+					<a href="/admin/">Admin</a>
+				</li>
+				<!-- } -->
+				<li>
+					<a href="/logout/">Logout</a>
+				</li>
+				<% } else { %>
+				<li>
+					<a href="/login">Login</a>
+				</li>
+				<li>
+					<a href="/register">Register</a>
+				</li>
+				<% } %>
+			</ul>
+		</div>
+	</header>
+	<div class="container content" id="main">
+		<%- body %>
+	</header>
+</body>
+</html>
