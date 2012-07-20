@@ -2,7 +2,8 @@ var express = require('express'),
 app = express.createServer(),
 _ = require('underscore'),
 stylus = require('stylus'),
-fs = require('fs');
+fs = require('fs'),
+redisStore = require('connect-redis')(express);
 
 
 //Database(s)
@@ -111,7 +112,7 @@ app.configure(function(){
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'ejs');
 	app.use(express.cookieParser());
-	app.use(express.session({ secret: 'dsfdsf' }));
+	app.use(express.session({ secret: 'dsfdsf', store: new redisStore }));
 	app.use(express.bodyParser());
 	app.use(everyauth.middleware());
 	app.use(express.methodOverride());
