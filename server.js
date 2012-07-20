@@ -63,11 +63,6 @@ everyauth.github
 
 
 	db.user.count({}, function (err, count) {
-		console.log('Here');
-		console.log(count);
-		if(count == 0 )
-			console.log('Blud');
-
 
 		if(err){
 			console.error('Problem Counting Current User');
@@ -75,8 +70,6 @@ everyauth.github
 		}
 
 		if(count === 0) {
-
-			console.log('Creating New User');
 
 			var newUser = new db.user({
 				username: githubUserMetadata.login,
@@ -93,8 +86,6 @@ everyauth.github
 
 		} else {
 
-			console.log('One Exists!?S ' + count);
-
 			db.user.findOne({ gitHubID: githubUserMetadata.id}, function (err, user) {
 				if (err) return promise.fulfill([err]);
 				promise.fulfill(user);
@@ -110,8 +101,6 @@ everyauth.everymodule.logoutRedirectPath('/');
 
 everyauth.everymodule.findUserById(function (userId, callback) {
 	db.user.findById(userId, function (err, data) {
-		console.log('new request');
-		console.log(typeof data);
 		callback(err, data);
 	});
 });
@@ -146,12 +135,6 @@ app.configure('production', function(){
 
 //PJAX Baby!
 
-app.get('/hello', function (req, res) {
-	console.log(everyauth);
-	res.send(req.user.username);
-
-})
-
 app.all('*', function (req, res, next) {
 	if (req.headers['x-pjax']) {
 		app.set('view options', {
@@ -167,7 +150,7 @@ app.all('*', function (req, res, next) {
 
 
 app.get('/', function(req, res, next) {
-	console.log(everyauth.user);
+
 	if(req.loggedIn){
 		next();
 		return true;
