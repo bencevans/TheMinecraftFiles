@@ -204,7 +204,14 @@ app.get('/project/:projectSlug', function (req, res) {
 
 
 app.get('/', function (req, res) {
-	res.render('timeline');
+
+	db.project.find({creator: req.user._id}, function (err, usersProjects) {
+		res.render('timeline', {
+			usersFeedTimeline : [],
+			usersProjects: usersProjects
+		});
+	})
+
 });
 
 // Check Authentication
