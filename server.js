@@ -186,9 +186,7 @@ app.get('/user/:username', routes.user.profile);
 
 
 //Projects
-app.get('/project/:projectSlug', function (req, res) {
-	res.render('project');
-})
+app.get('/project/:projectSlug', routes.project.overview)
 
 // Authenticate
 app.get('/', function (req, res) {
