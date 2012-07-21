@@ -160,8 +160,13 @@ app.get('/', function(req, res, next) {
 	res.render('index');
 })
 
+// Setup Public Routes (/routes)
+var routes = {}
 
-
+_.each(fs.readdirSync('./routes'), function (fileName, index) {
+	// Retreive Module Name (settings.js => settings)
+	routes[fileName.match(/([a-zA-Z]+)\.js/)[1]] = require('./routes/' + fileName);
+});
 
 // Authenticating (Logins, Logout)
 app.get('/login', function(req, res) {
@@ -170,30 +175,14 @@ app.get('/login', function(req, res) {
 //Logout, handled by everyauth
 
 //Discover
-app.get('/discover', function (req, res) {
-	res.render('discover')
-})
-app.get('/discover/:categorySlug', function (req, res) {
-	res.render('discover_category')
-})
+app.get('/discover', routes.discover.index)
+app.get('/discover/:categorySlug', routes.discover.category)
+app.get('/discover/:categorySlug/popular', routes.discover.categoryPopular)
+app.get('/discover/:categorySlug/recent', routes.discover.categoryRecent)
+app.get('/discover/:categorySlug/trending', routes.discover.categoryTrending)
 
-// Users
-app.get('/user/:username', function (req, res) {
-
-	db.user.findOne({username: req.params.username}, function (err, user) {
-		if(user !== null) {
-			// User Exists
-			res.render('user', {profile:user});
-		} else {
-			// No User Exists
-			res.render('errors/404', {
-				type: 404
-			});
-
-		}
-	})
-	
-});
+// User (Profiles)
+app.get('/user/:username', routes.user.profile);
 
 
 //Projects
@@ -201,9 +190,7 @@ app.get('/project/:projectSlug', function (req, res) {
 	res.render('project');
 })
 
-// To Authenticate
-
-
+// Authenticate
 app.get('/', function (req, res) {
 
 	db.project.find({creator: req.user._id}, function (err, usersProjects) {
@@ -229,12 +216,8 @@ app.all('*', function (req, res, next) {
 
 // Authenticated
 
-app.get('/settings', function (req, res) {
-	res.render('settings')
-})
-app.get('/settings/:subPage', function (req, res) {
-	res.render('settings', {})
-})
+app.get('/settings', routes.settings.index);
+app.get('/settings/:subPage', routes.settings.page);
 
 
 app.all('*', function (req, res) {
