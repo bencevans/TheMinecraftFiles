@@ -170,7 +170,10 @@ _.each(fs.readdirSync('./routes'), function (fileName, index) {
 
 // Authenticating (Logins, Logout)
 app.get('/login', function(req, res) {
-	res.render('login');
+	if(req.loggedIn)
+		res.redirect('/')
+	else
+		res.render('login');
 })
 //Logout, handled by everyauth
 
@@ -189,16 +192,7 @@ app.get('/user/:username', routes.user.profile);
 app.get('/project/:projectSlug', routes.project.overview)
 
 // Authenticate
-app.get('/', function (req, res) {
-
-	db.project.find({creator: req.user._id}, function (err, usersProjects) {
-		res.render('timeline', {
-			usersFeedTimeline : [],
-			usersProjects: usersProjects
-		});
-	})
-
-});
+app.get('/', routes.dashboard.index);
 
 // Check Authentication
 
