@@ -163,9 +163,10 @@ app.get('/', function(req, res, next) {
 // Setup Public Routes (/routes)
 var routes = {}
 
-_.each(fs.readdirSync('./routes'), function (fileName, index) {
+
+_.each(fs.readdirSync('./controllers'), function (fileName, index) {
 	// Retreive Module Name (settings.js => settings)
-	routes[fileName.match(/([a-zA-Z]+)\.js/)[1]] = require('./routes/' + fileName);
+	routes[fileName.match(/([a-zA-Z]+)\.js/)[1]] = require('./controllers/' + fileName)(app, db);
 });
 
 // Authenticating (Logins, Logout)
@@ -177,22 +178,7 @@ app.get('/login', function(req, res) {
 })
 //Logout, handled by everyauth
 
-//Discover
-app.get('/discover', routes.discover.index)
-app.get('/discover/:categorySlug', routes.discover.category)
-app.get('/discover/:categorySlug/popular', routes.discover.categoryPopular)
-app.get('/discover/:categorySlug/recent', routes.discover.categoryRecent)
-app.get('/discover/:categorySlug/trending', routes.discover.categoryTrending)
 
-// User (Profiles)
-app.get('/user/:username', routes.user.profile);
-
-
-//Projects
-app.get('/project/:projectSlug', routes.project.overview)
-
-// Authenticate
-app.get('/', routes.dashboard.index);
 
 // Check Authentication
 
@@ -208,8 +194,7 @@ app.all('*', function (req, res, next) {
 
 // Authenticated
 
-app.get('/settings', routes.settings.index);
-app.get('/settings/:subPage', routes.settings.page);
+
 
 
 app.all('*', function (req, res) {
