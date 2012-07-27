@@ -27,7 +27,7 @@
 	$(function(){
         // pjax
         
-        $('a').pjax('#main');
+        $('a:not(.nopjax)').pjax('#main');
 
     })
 	</script>
@@ -59,14 +59,14 @@
 				</li>
 				<!-- } -->
 				<li>
-					<a href="/logout/">Logout</a>
+					<a class=nopjax href="/logout/">Logout</a>
 				</li>
 				<% } else { %>
 				<li>
-					<a href="/login">Login</a>
+					<a class=nopjax href="/login">Login</a>
 				</li>
 				<li>
-					<a href="/register">Register</a>
+					<a class=nopjax href="/register">Register</a>
 				</li>
 				<% } %>
 			</ul>
