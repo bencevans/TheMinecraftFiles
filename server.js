@@ -163,10 +163,15 @@ app.get('/', function(req, res, next) {
 // Setup Public Routes (/routes)
 var routes = {}
 
+// Setup Helpers required in controllers
+
+var helpers = {}
+
+helpers._ = _;
 
 _.each(fs.readdirSync('./controllers'), function (fileName, index) {
 	// Retreive Module Name (settings.js => settings)
-	routes[fileName.match(/([a-zA-Z]+)\.js/)[1]] = require('./controllers/' + fileName)(app, db);
+	routes[fileName.match(/([a-zA-Z]+)\.js/)[1]] = require('./controllers/' + fileName)(app, db, helpers);
 });
 
 // Authenticating (Logins, Logout)

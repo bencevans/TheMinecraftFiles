@@ -1,17 +1,17 @@
 <div class="row pagename">
 	<div class="span12">
-		<h3>Settings > pageName</h3>
+		<h3>Settings > <%= subPage.name %></h3>
 	</div>
 </div>
 <div class="row">
 	<div class="span3 sidenav">
 		<ul>
-			<li><a href="/settings/profile">Profile</a></li>
-			<li><a href="/settings/account">Account</a></li>
-			<li><a href="/settings/services">Services</a></li>
+			<% for (var i = subPages.length - 1; i >= 0; i--) { %>
+			<li><a href="/settings/<%= subPages[i].slug %>"><%= subPages[i].name %></a></li>
+			<% }; %>
 		</ul>
 	</div>
 	<div class="span9">
-		<?= $SubViewContent; ?>
+		<%- subPage.view %>
 	</div>
 </div>
