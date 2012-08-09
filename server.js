@@ -108,6 +108,12 @@ everyauth.everymodule.findUserById(function (userId, callback) {
 
 
 // App Config
+
+app.configure('development', function(){
+	app.use(express.logger('dev'));
+	everyauth.debug = true;
+});
+
 app.configure(function(){
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'ejs');
@@ -117,13 +123,9 @@ app.configure(function(){
 	app.use(everyauth.middleware());
 	app.use(express.methodOverride());
 	app.use(express.static(__dirname + '/public'));
-
-	
 });
 
-
 app.configure('development', function(){
-	everyauth.debug = true;
 	app.use(express.static(__dirname + '/public'));
 	app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
