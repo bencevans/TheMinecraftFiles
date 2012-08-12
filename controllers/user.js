@@ -1,9 +1,10 @@
-module.exports = function (app, db) {
+module.exports = function (app, db, helpers) {
 	app.get('/user/:username', function (req, res) {
 
 		db.user.findOne({username: req.params.username}, function (err, user) {
 
 			if(user !== null) {
+				user.gravatarhash = helpers.md5('ben@bensbit.co.uk');
 				// User Exists
 				res.render('user', {profile:user});
 

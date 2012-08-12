@@ -3,7 +3,8 @@ app = express.createServer(),
 _ = require('underscore'),
 stylus = require('stylus'),
 fs = require('fs'),
-redisStore = require('connect-redis')(express);
+redisStore = require('connect-redis')(express),
+crypto = require('crypto');
 
 
 //Database(s)
@@ -170,6 +171,9 @@ var routes = {}
 var helpers = {}
 
 helpers._ = _;
+helpers.md5 = function (string) {
+	return crypto.createHash('md5').update(string).digest("hex");
+}
 
 _.each(fs.readdirSync('./controllers'), function (fileName, index) {
 	// Retreive Module Name (settings.js => settings)
