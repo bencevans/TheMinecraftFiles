@@ -1,11 +1,11 @@
 var express = require('express'),
-app = express.createServer(),
 _ = require('underscore'),
 stylus = require('stylus'),
 fs = require('fs'),
 redisStore = require('connect-redis')(express),
 crypto = require('crypto');
 
+app = express.createServer();
 
 //Database(s)
 var mongoose = require('mongoose');
@@ -175,10 +175,7 @@ helpers.md5 = function (string) {
 	return crypto.createHash('md5').update(string).digest("hex");
 }
 
-_.each(fs.readdirSync('./controllers'), function (fileName, index) {
-	// Retreive Module Name (settings.js => settings)
-	routes[fileName.match(/([a-zA-Z]+)\.js/)[1]] = require('./controllers/' + fileName)(app, db, helpers);
-});
+require('./controllers')
 
 // Authenticating (Logins, Logout)
 app.get('/login', function(req, res) {

@@ -1,20 +1,19 @@
-module.exports = function (app, db, helpers) {
-	app.get('/user/:username', function (req, res) {
 
-		db.user.findOne({username: req.params.username}, function (err, user) {
+app.get('/user/:username', function (req, res) {
 
-			if(user !== null) {
-				user.gravatarhash = helpers.md5('ben@bensbit.co.uk');
-				// User Exists
-				res.render('user', {profile:user});
+	db.user.findOne({username: req.params.username}, function (err, user) {
 
-			} else {
-				// No User Exists
-				res.render('errors/404', {
-					type: 404
-				});
+		if(user !== null) {
+			user.gravatarhash = helpers.md5('ben@bensbit.co.uk');
+			// User Exists
+			res.render('user', {profile:user});
 
-			}
-		})
+		} else {
+			// No User Exists
+			res.render('errors/404', {
+				type: 404
+			});
+
+		}
 	})
-}
+})
