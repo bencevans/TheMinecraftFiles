@@ -13,9 +13,6 @@
 
 1. Download Source
 2. NPM install
-3. Sort everyauth GitHub Module…
-
-Due to no recent NPM release, GitHub have moved to a new version of their API. (GitHubs used as a method of authentication). However it has been updated in the  [Repo](https://github.com/bnoguchi/everyauth/). To fix it replace the content of the file `node_modules/everyauth/lib/modules/github.js` with the content [here](https://github.com/bnoguchi/everyauth/blob/master/lib/modules/github.js). If you need additional help checkout the [comment](https://github.com/bnoguchi/everyauth/issues/259#issuecomment-6913856) I posted to help others online.
 
 ###Running
 
