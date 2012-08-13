@@ -1,4 +1,4 @@
-userSchema = new Schema({
+module.exports =  new Schema({
 	username: { type: String, required: true, lowercase: true, trim: true, index: { unique: true, sparse: true } },
 	password: String,
 	email: String,
@@ -11,4 +11,4 @@ userSchema = new Schema({
 	gitHubID: String
 });
 
-mongoose.model('user', userSchema)
+//mongoose.model('user', userSchema)

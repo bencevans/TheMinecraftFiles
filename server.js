@@ -8,48 +8,24 @@ crypto = require('crypto');
 app = express.createServer();
 
 //Database(s)
-var mongoose = require('mongoose');
+mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/TheMinecraftFiles', function (err) {
 	if(!err)
 		console.log('MongoDB Connected.');
 	else
 		console.warn('Unable to Connect to MongoDB');
 });
-var mongoSchemas = {};
-var Schema = mongoose.Schema
+
+Schema = mongoose.Schema
 , ObjectId = Schema.ObjectId;
 
-mongoSchemas.user = new Schema({
-	username: { type: String, required: true, lowercase: true, trim: true, index: { unique: true, sparse: true } },
-	password: String,
-	email: String,
-	joined  :  { type: Date, default: Date.now },
-	realName: String,
-	minecraftUsername: String,
-	website: String,
-	twitterUsername: String,
-	gitHubUsername: String,
-	gitHubID: String
-});
+db = {}
 
-mongoSchemas.category = new Schema({
-	name: String,
-	slug: { type: String, lowercase: true, trim: true }
+_.each(fs.readdirSync('./app/models'), function (fileName, index) {
+	// Retreive Schema Name (user.js => user)
+	var schemaName = fileName.match(/([a-zA-Z]+)\.js/)[1];
+	db[schemaName] = mongoose.model(schemaName, require('./app/models/' + fileName));
 });
-
-mongoSchemas.project = new Schema({
-	category: ObjectId,
-	created: { type: Date, default: Date.now },
-	creator: ObjectId,
-	image: ObjectId,
-	name: String,
-	slug: { type: String, required: true, lowercase: true, trim: true, index: { unique: true, sparse: true } }
-});
-
-var db = {};
-_.each(mongoSchemas, function (schema, index) {
-	db[index] = mongoose.model(index, schema);
-})
 
 
 // Authentication Requirements
@@ -168,14 +144,14 @@ var routes = {}
 
 // Setup Helpers required in controllers
 
-var helpers = {}
+helpers = {}
 
 helpers._ = _;
 helpers.md5 = function (string) {
 	return crypto.createHash('md5').update(string).digest("hex");
 }
 
-require('./controllers')
+require('./app/controllers')
 
 // Authenticating (Logins, Logout)
 app.get('/login', function(req, res) {
