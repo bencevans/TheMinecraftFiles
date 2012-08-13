@@ -1,11 +1,30 @@
 
 
 app.get('/discover', function (req, res) {
-	res.render('discover')
+
+	db.category.find({}, function (err, categories) {
+
+		if(err)
+			res.send(500)
+		else
+			res.render('discover', {categories:categories})
+	})
+
+	
 })
 
 app.get('/discover/:categorySlug', function (req, res) {
-	res.render('discover_category', {})
+
+	db.category.findOne({slug:req.params.categorySlug}, function (err, category) {
+
+		if(err)
+			res.send(500)
+		else if (!category)
+			res.send(404)
+		else
+			res.render('discover_category', {category:category})
+	})
+
 })
 
 app.get('/discover/:categorySlug/popular', function (req, res) {

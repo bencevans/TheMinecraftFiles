@@ -1,23 +1,23 @@
 <div class="row pagename">
 	<div class="span12">
-		<h3><a href="<?= BaseURL(); ?>discover.php">Discover</a> > categoryName</h3>
+		<h3><a href="/discover">Discover</a> > <%= category.name %></h3>
 	</div>
 </div>
 <div class="row">
 	<div class="span4">
-		<h3><a href="/discover/categorySlug/popular">Popular</a></h3>
+		<h3><a href="/discover/<%= category.slug %>/popular">Popular</a></h3>
 		<a href="/project/projectslug"><img src="http://placehold.it/298x160" alt="Project Name" /></a>
 		<a href="/project/projectslug"><img src="http://placehold.it/298x160" alt="Project Name" /></a>
 		<a href="/project/projectslug"><img src="http://placehold.it/298x160" alt="Project Name" /></a>
 	</div>
 	<div class="span4">
-		<h3><a href="/discover/categorySlug/recent">Recent</a></h3>
+		<h3><a href="/discover/<%= category.slug %>/recent">Recent</a></h3>
 		<a href="/project/projectslug"><img src="http://placehold.it/298x160" alt="Project Name" /></a>
 		<a href="/project/projectslug"><img src="http://placehold.it/298x160" alt="Project Name" /></a>
 		<a href="/project/projectslug"><img src="http://placehold.it/298x160" alt="Project Name" /></a>
 	</div>
 	<div class="span4">
-		<h3><a href="/discover/categorySlug/trending">Trending</a></h3>
+		<h3><a href="/discover/<%= category.slug %>/trending">Trending</a></h3>
 		<a href="/project/projectslug"><img src="http://placehold.it/298x160" alt="Project Name" /></a>
 		<a href="/project/projectslug"><img src="http://placehold.it/298x160" alt="Project Name" /></a>
 		<a href="/project/projectslug"><img src="http://placehold.it/298x160" alt="Project Name" /></a>

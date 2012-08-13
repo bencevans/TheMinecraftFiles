@@ -1,11 +1,11 @@
 var express = require('express'),
-_ = require('underscore'),
 stylus = require('stylus'),
 fs = require('fs'),
 redisStore = require('connect-redis')(express),
 crypto = require('crypto');
 
 app = express.createServer();
+_ = require('underscore');
 
 //Database(s)
 mongoose = require('mongoose');
