@@ -153,39 +153,8 @@ helpers.md5 = function (string) {
 
 require('./app/controllers')
 
-// Authenticating (Logins, Logout)
-app.get('/login', function(req, res) {
-	if(req.loggedIn)
-		res.redirect('/')
-	else
-		res.render('login');
-})
-//Logout, handled by everyauth
 
 
-
-// Check Authentication
-
-app.all('*', function (req, res, next) {
-	if (req.loggedIn) {
-		next();
-		return true;
-	};
-	res.render('errors/404', {
-		type: 404
-	});
-})
-
-// Authenticated
-
-
-
-
-app.all('*', function (req, res) {
-	res.render('errors/404', {
-		type: 404
-	});
-})
 
 everyauth.helpExpress(app);
 app.listen(3000);
