@@ -1,4 +1,4 @@
-
+require('./auth');
 require('./discover');
 require('./user');
 require('./project');
