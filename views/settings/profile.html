@@ -1,1 +1,22 @@
-Profile Settings
+<p class="warning">These settings are all <b>publicly viewable</b> so please be careful not to publish any information you wish not to be shown to the world.</p>
+<fieldset>
+	<legend>Avatar/Display Picture</legend>
+	<div class="goleft">
+		<img src="{{gravatar_url "ben@bensbit.co.uk" 140}}"/>
+	</div>
+	<p style="margin-left:170px;">We use your <a href="http://gravatar.com">Gravatar</a>! If your unsure to what a gravatar is... it's an avatar that you upload to the Gravatar site so that any website can use that avatar and you don't have to re-upload one to every service.</p>
+</fieldset>
+<form method="post" action="/settings/profile">
+	<fieldset style="margin-top:10px;">
+		<legend>Public Profile Info</legend>
+		<label for="realName">Real/Prefered Name:</label>
+		<input type="text" name="realName" id="realName" value="{{userSettings.realName}}"/>
+		<label for="minecraftUsername">Minecraft Name:</label>
+		<input type="text" name="minecraftUsername" id="minecraftUsername" value="{{userSettings.minecraftUsername}}"/>
+		<label for="twitterUsername">Twitter Name:</label>
+		<input type="text" name="twitterUsername" id="twitterUsername" value="{{userSettings.twitterUsername}}"/>
+		<label for="website">Website:</label>
+		<input type="text" name="website" id="website" value="{{userSettings.website}}"/>
+		<input type="submit" value="Update"/>
+	</fieldset>
+</form>

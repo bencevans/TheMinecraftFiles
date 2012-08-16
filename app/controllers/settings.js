@@ -15,16 +15,24 @@ app.get('/settings/:subPage', function (req, res) {
 			type: 404
 		});
 	else
-		res.render('settings/' + req.params.subPage, {layout:false}, function(err, view) {
+		db.user.findById(req.user._id, function(err, userSettings) {
+			res.render('settings/' + req.params.subPage, {layout:false, userSettings:userSettings}, function(err, view) {
 
-			if(err) return next(err);
+				if(err) return next(err);
 
-			res.render('settings', {
-				subPages: helpers._.toArray(subPages),
-				subPage: {view:view, name:subPages[req.params.subPage].name, slug:subPages[req.params.subPage].slug}
+				res.render('settings', {
+					subPages: helpers._.toArray(subPages),
+					subPage: {view:view, name:subPages[req.params.subPage].name, slug:subPages[req.params.subPage].slug}
+				});
+
 			});
-
 		});
 	
 });
 
+app.post('/settings/profile', function (req, res) {
+	db.user.update(req.user, req.body, function (err, user) {
+		if(err) return next(err);
+		res.redirect('/settings/profile');
+	});
+})
