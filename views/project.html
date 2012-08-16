@@ -1,13 +1,13 @@
 <div class="row projectheadingarea">
 	<div class="span9">
-		<h1 class="projectheading"><?= $ProjectInfo['Name']; ?></h1><?php if(isset($ProjectInfo['Description'])) { echo "<p class='lighter project-description'>" . $ProjectInfo['Description'] . "</p>"; } ?>
+		<h1 class="projectheading">{{project.name}}</h1><p class='lighter project-description'>{{project.description}}</p>
 	</div>
 	<div class="span3 watchersbox">
 		<span class="lighter"><?= $App['Watchers']->Count($ProjectInfo['_id']) ?> Watchers</span> 
 		<?php if($App['Watchers']->IsWatching($ProjectInfo['_id'])) { ?>
-		<a class="button inverse" style="color:#444;" href="<?= SiteURL("project/" . $ProjectInfo['Slug'] . "/togglewatch"); ?>">Unwatch</a>
+		<a class="button inverse" style="color:#444;" href="/project/{{project.name}}/unwatch"); ?>">Unwatch</a>
 		<?php } else  { ?>
-		<a class="button" style="color:#393;" href="<?= SiteURL("project/" . $ProjectInfo['Slug'] . "/togglewatch"); ?>">Watch</a>
+		<a class="button" style="color:#393;" href="/project/{{project.name}}/watch"); ?>">Watch</a>
 		<?php } ?>
 	</div>
 </div>

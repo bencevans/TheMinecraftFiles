@@ -45,6 +45,16 @@ app.post('/new', function (req, res) {
 });
 
 app.get('/project/:projectSlug', function (req, res) {
-	res.render('project');
+
+	db.project.findOne({name:req.params.projectSlug}, function (err, project) {
+
+		if(err) return res.send(500);
+
+		if(!project) return res.send(404);
+
+		res.render('project', {project:project});
+
+	});
+
 });
 
