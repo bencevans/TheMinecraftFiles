@@ -10,7 +10,7 @@
 			{{#if profile.minecraftUsername}}<li>Minecraft Name: {{profile.minecraftUsername}}</li>{{/if}}
 			{{#if profile.twitterUsername}}<li>Twitter: <a class="twittertext" href="http://twitter.com/<%= profile.twitterUsername %>">@{{profile.twitterUsername}}</a></li>{{/if}}
 			{{#if profile.website}}<li>Website: <a href="<%- profile.website %>"><%= profile.website %></a></li>{{/if}}
-			{{#if profile.joined}}<li>Member Since: {{profile.joined}}</li>{{/if}}
+			{{#if profile.joined}}<li>Member Since: {{time_ago profile.joined}}</li>{{/if}}
 		</ul>
 	</div>
 </div>
