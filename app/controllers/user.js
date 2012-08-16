@@ -15,5 +15,5 @@ app.get('/user/:username', function (req, res) {
 			});
 
 		}
-	})
-})
+	});
+});

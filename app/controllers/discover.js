@@ -5,38 +5,37 @@ app.get('/discover', function (req, res) {
 	db.category.find({}, function (err, categories) {
 
 		if(err)
-			res.send(500)
+			res.send(500);
 		else
-			res.render('discover', {categories:categories})
-	})
+			res.render('discover', {categories:categories});
+	});
 
 	
-})
+});
 
 app.get('/discover/:categorySlug', function (req, res) {
 
 	db.category.findOne({slug:req.params.categorySlug}, function (err, category) {
 
 		if(err)
-			res.send(500)
+			res.send(500);
 		else if (!category)
-			res.send(404)
+			res.send(404);
 		else
-			res.render('discover_category', {category:category})
-	})
+			res.render('discover_category', {category:category});
+	});
 
-})
+});
 
 app.get('/discover/:categorySlug/popular', function (req, res) {
-	res.send('Not Here Yet', 404)
-})
+	res.send('Not Here Yet', 404);
+});
 
 app.get('/discover/:categorySlug/recent', function (req, res) {
 
-	res.send('Not Here Yet', 404)
-})
+	res.send('Not Here Yet', 404);
+});
 
 app.get('/discover/:categorySlug/trending', function (req, res) {
-	res.send('Not Here Yet', 404)
-})
-
+	res.send('Not Here Yet', 404);
+});

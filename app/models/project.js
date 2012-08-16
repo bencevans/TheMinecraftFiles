@@ -1,6 +1,6 @@
 module.exports = new Schema({
 	category: Schema.ObjectId,
-	created: { type: Date, default: Date.now },
+	created: { type: Date, 'default': Date.now },
 	creator: Schema.ObjectId,
 	image: Schema.ObjectId,
 	name: String,

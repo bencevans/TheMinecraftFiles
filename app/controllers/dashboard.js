@@ -6,6 +6,6 @@ app.get('/', function (req, res) {
 			usersFeedTimeline : [],
 			usersProjects: usersProjects
 		});
-	})
+	});
 
 });

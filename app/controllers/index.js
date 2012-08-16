@@ -1,10 +1,10 @@
 app.all('*', function(req, res, next) {
 	if(req.user){
-		res.locals.everyauth = {user:req.user}
+		res.locals.everyauth = {user:req.user};
 		res.locals.everyauth.user.loggedIn  = true;
 	}
 	next();
-})
+});
 
 
 require('./auth');
@@ -21,7 +21,7 @@ app.all('*', function (req, res, next) {
 		res.render('errors/404', {
 			type: 404
 		});
-})
+});
 
 require('./dashboard');
 require('./settings');
@@ -31,4 +31,4 @@ app.all('*', function (req, res) {
 	res.render('errors/404', {
 		type: 404
 	});
-})
+});
