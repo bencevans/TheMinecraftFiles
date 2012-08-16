@@ -105,7 +105,11 @@ app.configure(function(){
 
 app.configure('development', function(){
 	app.use(express['static'](__dirname + '/public'));
-	app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+	//app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+	app.use(function(err, req, res, next) {
+		console.error(err);
+		res.send(500, 'Sorry We\'ve had a problem')
+	})
 });
 
 app.configure('production', function(){

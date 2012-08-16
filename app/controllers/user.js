@@ -3,6 +3,8 @@ app.get('/user/:username', function (req, res) {
 
 	db.user.findOne({username: req.params.username}, function (err, user) {
 
+		if(err) return next(err);
+
 		if(user !== null) {
 			user.gravatarhash = helpers.md5('ben@bensbit.co.uk');
 			// User Exists
