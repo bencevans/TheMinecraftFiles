@@ -6,12 +6,12 @@ require('./project');
 
 // Check Authentication
 app.all('*', function (req, res, next) {
-	if (req.loggedIn) {
+	if (req.loggedIn)
 		next();
-	};
-	res.render('errors/404', {
-		type: 404
-	});
+	else
+		res.render('errors/404', {
+			type: 404
+		});
 })
 
 require('./dashboard');
