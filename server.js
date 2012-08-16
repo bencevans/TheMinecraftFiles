@@ -121,15 +121,8 @@ app.configure('production', function(){
 //PJAX Baby!
 
 app.all('*', function (req, res, next) {
-	if (req.headers['x-pjax']) {
-		app.set('view options', {
-			layout: false
-		});
-	} else {
-		app.set('view options', {
-			layout: true
-		});
-	}
+	if (req.headers['x-pjax'])
+		res.locals.layout = false;
 	next();
 });
 
