@@ -4,7 +4,8 @@ app.get('/new', function (req, res, next) {
 
 		if(err) return next(err);
 
-		console.log(categories);
+		res.locals.title = 'New Project';
+
 		res.render('project/new', {categories:categories});
 	});
 
@@ -12,7 +13,9 @@ app.get('/new', function (req, res, next) {
 
 app.post('/new', function (req, res) {
 	if(typeof req.body.name !== 'undefined' && typeof req.body.category !== 'undefined' ) {
-		console.log(req.body.name);
+
+		res.locals.title = 'New Project';
+
 		if(req.body.name.match(/^[a-zA-Z|-|_]+$/m)) {
 
 			var newproject = new db.project({
@@ -60,6 +63,8 @@ app.get('/project/:projectSlug', function (req, res) {
 		if(err) return next(err);
 
 		if(!project) return res.send(404);
+
+		res.locals.title = project.name;
 
 		res.render('project', {project:project});
 

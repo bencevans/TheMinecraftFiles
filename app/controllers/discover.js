@@ -6,6 +6,8 @@ app.get('/discover', function (req, res) {
 
 		if(err) return next(err);
 
+		res.locals.title = 'Discover';
+
 		res.render('discover', {categories:categories});
 	});
 
@@ -21,7 +23,7 @@ app.get('/discover/:categorySlug', function (req, res) {
 		if (!category)
 			res.send(404);
 		else
-			res.render('discover_category', {category:category});
+			res.render('discover_category', {category:category, title:category.name});
 	});
 
 });

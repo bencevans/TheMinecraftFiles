@@ -5,6 +5,8 @@ app.get('/user/:username', function (req, res) {
 
 		if(err) return next(err);
 
+		res.locals.title = user.username;
+
 		if(user !== null) {
 			user.gravatarhash = helpers.md5('ben@bensbit.co.uk');
 			// User Exists

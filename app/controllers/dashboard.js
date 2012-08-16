@@ -5,6 +5,8 @@ app.get('/', function (req, res) {
 
 		if(err) return next(err);
 
+		res.locals.title = 'Timeline';
+
 		res.render('timeline', {
 			usersFeedTimeline : [],
 			usersProjects: usersProjects
