@@ -3,6 +3,7 @@ stylus = require('stylus'),
 fs = require('fs'),
 redisStore = require('connect-redis')(express),
 crypto = require('crypto');
+var hbs = require('hbs');
 
 app = express();
 _ = require('underscore');
@@ -94,7 +95,7 @@ app.configure('development', function(){
 app.configure(function(){
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'html');
-	app.engine('html', require('hbs').__express);
+	app.engine('html', hbs.__express);
 	app.use(express.cookieParser());
 	app.use(express.session({ secret: 'dsfdsf', store: new redisStore() }));
 	app.use(express.bodyParser());
@@ -145,6 +146,21 @@ helpers._ = _;
 helpers.md5 = function (string) {
 	return crypto.createHash('md5').update(string).digest("hex");
 };
+
+
+// Register hbs/handlebars helpers & partials
+hbs.registerHelper('user_preferred_name', function(userProfile) {
+	if(typeof userProfile.realName !== "undefined")
+		return userProfile.realName;
+	return userProfile.username;
+});
+
+hbs.registerHelper('gravatar_url', function(gravatarHash, size) {
+	if(gravatarHash.match(/@/))
+		gravatarHash = helpers.md5(gravatarHash);
+	return "http://www.gravatar.com/avatar/" + gravatarHash + "?s=" + size || 140;
+});
+
 
 require('./app/controllers');
 

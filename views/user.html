@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="span2 avatar">
-		<img src="http://www.gravatar.com/avatar/{{profile.gravatarhash}}?s=140" alt="<?php if($UserInfo['RealName']) { echo $UserInfo['RealName'];} else {echo $UserInfo['Username'];} ?>'s Avatar" style="width:100%;"/>
+		<img src="{{gravatar_url profile.gravatarhash "140"}}" alt="{{user_preferred_name profile}}'s Avatar" style="width:100%;"/>
 	</div>
 	<div class="span10">
 		<div class="pagename">
@@ -27,7 +27,7 @@
 
 		{{else}}
 		<p class="lighter">
-			{{#if profile.realName}}{{profile.realName}}{{else}}{{profile.username}}{{/if}} Currently Has No Projects</p>
+			{{user_preferred_name profile}} Currently Has No Projects</p>
 		{{/if}}
 
 	</div>
