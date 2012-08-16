@@ -10,7 +10,7 @@
 			<label dor="fame">Name<span class="required">*</span>:</label>
 		</div>
 		<div class="span3">
-			<input type="text" name="name" id="Name" value="<% if(typeof name !== 'undefined') { %><%= name %><% } %>"/>
+			<input type="text" name="name" id="Name" value="{{name}}"/>
 		</div>
 	</div>
 
@@ -33,7 +33,7 @@
 	</div>
 	<div class="row">
 		<div class="span6">
-			<textarea name="description" rows=4 style="width:100%;" id="Description"><% if(typeof description !== 'undefined') { %><%= description %><% } %></textarea>
+			<textarea name="description" rows=4 style="width:100%;" id="Description">{{description}}</textarea>
 		</div>
 	</div>
 	<div class="row">

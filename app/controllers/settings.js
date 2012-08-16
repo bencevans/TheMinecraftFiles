@@ -15,9 +15,10 @@ app.get('/settings/:subPage', function (req, res) {
 			type: 404
 		});
 	else
-		res.partial('settings/profile', {}, function(err, view) {
+		res.render('settings/' + req.params.subPage, {layout:false}, function(err, view) {
 
-
+			console.log(err);
+			console.log(view);
 			res.render('settings', {
 				subPages: helpers._.toArray(subPages),
 				subPage: {view:view, name:subPages[req.params.subPage].name, slug:subPages[req.params.subPage].slug}

@@ -1,0 +1,36 @@
+<div class="row">
+	<div class="span2 avatar">
+		<img src="http://www.gravatar.com/avatar/{{profile.gravatarhash}}?s=140" alt="<?php if($UserInfo['RealName']) { echo $UserInfo['RealName'];} else {echo $UserInfo['Username'];} ?>'s Avatar" style="width:100%;"/>
+	</div>
+	<div class="span10">
+		<div class="pagename">
+			<h2>{{profile.realName}} <span class="lighter">({{profile.username}})</span></h2>
+		</div>
+		<ul class="userinfo">
+			{{#if profile.minecraftUsername}}<li>Minecraft Name: {{profile.minecraftUsername}}</li>{{/if}}
+			{{#if profile.twitterUsername}}<li>Twitter: <a class="twittertext" href="http://twitter.com/<%= profile.twitterUsername %>">@{{profile.twitterUsername}}</a></li>{{/if}}
+			{{#if profile.website}}<li>Website: <a href="<%- profile.website %>"><%= profile.website %></a></li>{{/if}}
+			{{#if profile.joined}}<li>Member Since: {{profile.joined}}</li>{{/if}}
+		</ul>
+	</div>
+</div>
+<div class="row">
+	<div class="span10 push2 usersprojects">
+		<h3>Projects</h3>
+
+		{{#if profile.projects}}
+
+		{{#profile.projects}}
+
+		<?= ProjectWidget($UserProject['_id']); ?>
+		{{/profile.projects}}
+
+		{{else}}
+		<p class="lighter">
+			{{#if profile.realName}}{{profile.realName}}{{else}}{{profile.username}}{{/if}} Currently Has No Projects</p>
+		{{/if}}
+
+	</div>
+</div>
+</div>
+</div>

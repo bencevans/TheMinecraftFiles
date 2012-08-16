@@ -1,0 +1,20 @@
+{{#subPage}}
+<div class="row pagename">
+	<div class="span12">
+		<h3>Settings > {{this.name}}</h3>
+	</div>
+</div>
+{{/subPage}}
+
+<div class="row">
+	<div class="span3 sidenav">
+		<ul>
+			{{#subPages}}
+			<li><a href="/settings/{{this.slug}}">{{this.name}}</a></li>
+			{{/subPages}}
+		</ul>
+	</div>
+	<div class="span9">
+		{{{subPage.view}}}
+	</div>
+</div>

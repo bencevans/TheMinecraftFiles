@@ -46,9 +46,9 @@
 				</li>
 			</ul>
 			<ul class="nav right">
-				<% if (typeof everyauth.loggedIn !== 'undefined') { %>
+				{{#if everyauth.user.loggedIn}}
 				<li>
-					<a href="/user/<%= everyauth.user.username %>">Profile</a>
+					<a href="/user/{{everyauth.user.username}}">Profile</a>
 				</li>
 				<li>
 					<a href="/settings/">Settings</a>
@@ -61,19 +61,19 @@
 				<li>
 					<a class=nopjax href="/logout/">Logout</a>
 				</li>
-				<% } else { %>
+				{{else}}
 				<li>
 					<a class=nopjax href="/login">Login</a>
 				</li>
 				<li>
 					<a class=nopjax href="/register">Register</a>
 				</li>
-				<% } %>
+				{{/if}}
 			</ul>
 		</div>
 	</header>
 	<div class="container content" id="main">
-		<%- body %>
+		{{{body}}}
 	</header>
 </body>
 </html>

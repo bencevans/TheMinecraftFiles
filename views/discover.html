@@ -4,15 +4,15 @@
 	</div>
 </div>
 <div class="row">
-	<% _.each(categories, function(category) { %>
+	{{#categories}}
 
 	<div class="span4">
-		<h3><a href="/discover/<%= category.slug %>"><%= category.name %></a></h3>
+		<h3><a href="/discover/{{this.slug}}">{{this.name}}</a></h3>
 		<a href="/project/projectslug"><img src="http://placehold.it/298x160" alt="Project Name" /></a>
 		<a href="/project/projectslug"><img src="http://placehold.it/298x160" alt="Project Name" /></a>
 		<a href="/project/projectslug"><img src="http://placehold.it/298x160" alt="Project Name" /></a>
 	</div>
 
-	<% }) %>
+	{{/categories}}
 
 </div>

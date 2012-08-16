@@ -4,7 +4,7 @@ fs = require('fs'),
 redisStore = require('connect-redis')(express),
 crypto = require('crypto');
 
-app = express.createServer();
+app = express();
 _ = require('underscore');
 
 //Database(s)
@@ -93,11 +93,12 @@ app.configure('development', function(){
 
 app.configure(function(){
 	app.set('views', __dirname + '/views');
-	app.set('view engine', 'ejs');
+	app.set('view engine', 'html');
+	app.engine('html', require('hbs').__express);
 	app.use(express.cookieParser());
 	app.use(express.session({ secret: 'dsfdsf', store: new redisStore }));
 	app.use(express.bodyParser());
-	app.use(everyauth.middleware());
+	app.use(everyauth.middleware(app));
 	app.use(express.methodOverride());
 	app.use(express.static(__dirname + '/public'));
 });
@@ -155,6 +156,4 @@ require('./app/controllers')
 
 
 
-
-everyauth.helpExpress(app);
 app.listen(3000);

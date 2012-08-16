@@ -1,3 +1,12 @@
+app.all('*', function(req, res, next) {
+	if(req.user){
+		res.locals.everyauth = {user:req.user}
+		res.locals.everyauth.user.loggedIn  = true;
+	}
+	next();
+})
+
+
 require('./auth');
 require('./discover');
 require('./user');
