@@ -20,9 +20,9 @@
 		</div>
 		<div class="span3">
 			<select name="category" id="Category">
-				<?php foreach ($Categories as $CategoryID => $CategoryName) { ?>
-				<option value="<?= $CategoryID; ?>" <?php if(isset($_POST['Category'])) { if($_POST['Category'] == $CategoryID) { echo "selected"; } } ?>><?= $CategoryName; ?></option>
-				<?php } ?>
+				{{#categories}}
+				<option value="{{this._id}}">{{this.name}}</option>
+				{{/categories}}
 			</select>
 		</div>
 	</div>

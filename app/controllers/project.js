@@ -1,21 +1,44 @@
 
 app.get('/new', function (req, res) {
-	res.render('project/new');
+
+	db.category.find({}, function (err, categories) {
+		console.log(categories);
+		res.render('project/new', {categories:categories});
+	});
+
 });
 
 app.post('/new', function (req, res) {
 	if(typeof req.body.name !== 'undefined' && typeof req.body.category !== 'undefined' ) {
+		console.log(req.body.name);
+		if(req.body.name.match(/^[a-zA-Z|-|_]+$/m)) {
 
-		if(req.body.name.match('/^[a-zA-Z|-|_]\/')) {
-			res.send('OK');
+			var newproject = new db.project({
+				name: req.body.name,
+				category: req.body.category
+			});
+			newproject.save(function (err, category) {
+				if(err)
+					return false;
+				res.redirect('/project/' + category.name);
+			});
+
 		} else {
-			//Invalid Name Error
-			res.render('project/new', req.body);
+			db.category.find({}, function (err, categories) {
+				console.log('Invalid Name');
+				//Invalid Name Error
+				res.render('project/new', _.extend({categories:categories}, req.body));
+			});
+
 		}
 
 	} else {
+		console.log('Not Enoutph');
 		// Not enouph data filled out.
-		res.render('project/new', req.body);
+		db.category.find({}, function (err, categories) {
+				//Invalid Name Error
+				res.render('project/new', _.extend({categories:categories}, req.body));
+			});
 
 	}
 	
