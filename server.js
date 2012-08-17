@@ -93,7 +93,7 @@ app.configure('development', function(){
 });
 
 app.configure(function(){
-	app.set('views', __dirname + '/views');
+	app.set('views', __dirname + '/app/views');
 	app.set('view engine', 'html');
 	app.engine('html', hbs.__express);
 	app.use(express.cookieParser());
