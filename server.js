@@ -102,6 +102,10 @@ app.configure(function(){
 	app.use(everyauth.middleware(app));
 	app.use(express.methodOverride());
 	app.use(express['static'](__dirname + '/public'));
+	app.use(app.router);
+	app.use(function (err, req, res, next) {
+		res.render('errors/500');
+	})
 });
 
 app.configure('development', function(){
@@ -116,7 +120,7 @@ app.configure('development', function(){
 app.configure('production', function(){
 	var oneYear = 31557600000;
 	app.use(express['static'](__dirname + '/public', { maxAge: oneYear }));
-	app.use(express.errorHandler());
+	//app.use(express.errorHandler());
 });
 
 //PJAX Baby!
@@ -166,34 +170,38 @@ hbs.registerHelper('time_ago', function(date, size) {
 	// Inspired by https://github.com/elving/swag/blob/00b3213de4811c0f27cb46c89b8ddae6b2e15702/src/swag.dates.coffee#L94
 
 	date = new Date(date)
-    seconds = Math.floor((new Date() - date) / 1000)
+	seconds = Math.floor((new Date() - date) / 1000)
 
-    interval = Math.floor(seconds / 31536000)
-    if (interval > 1)
-    return interval + " years ago"
+	interval = Math.floor(seconds / 31536000)
+	if (interval > 1)
+		return interval + " years ago"
 
-    interval = Math.floor(seconds / 2592000)
-    if (interval > 1)
-    return interval + " months ago"
+	interval = Math.floor(seconds / 2592000)
+	if (interval > 1)
+		return interval + " months ago"
 
-    interval = Math.floor(seconds / 86400)
-    if (interval > 1)
-    return interval + " days ago"
+	interval = Math.floor(seconds / 86400)
+	if (interval > 1)
+		return interval + " days ago"
 
-    interval = Math.floor(seconds / 3600)
-    if (interval > 1)
-    return interval + " hours ago"
+	interval = Math.floor(seconds / 3600)
+	if (interval > 1)
+		return interval + " hours ago"
 
-    interval = Math.floor(seconds / 60)
-    if (interval > 1)
-    return interval + " minutes ago"
+	interval = Math.floor(seconds / 60)
+	if (interval > 1)
+		return interval + " minutes ago"
 
-    if (Math.floor(seconds) == 0)
-    	return 'Just now'
-    else
-    	return Math.floor(seconds) + ' seconds ago';
+	if (Math.floor(seconds) == 0)
+		return 'Just now'
+	else
+		return Math.floor(seconds) + ' seconds ago';
 
 });
+
+app.get('/500', function(req, res, next) {
+	next('Test Error');
+})
 
 
 require('./app/controllers');
