@@ -27,7 +27,7 @@
 			<ul>
 				{{#if usersProjects}}
 				{{#usersProjects}}
-				<li><a href="/project/projectSlug"> projectName</a></li>
+				<li><a href="/project/{{this.name}}">{{this.name}}</a></li>
 				{{/usersProjects}}
 
 				{{else}}
@@ -40,7 +40,7 @@
 			<ul>
 				<?php if(isset($UserWatchedProjects)) { ?>
 				<?php foreach ($UserWatchedProjects as $UsersWatchedProject) { ?>
-				<li><a href="<?= BaseURL(); ?>project.php/<?= $UsersWatchedProject['Slug']; ?>"> <?= $UsersWatchedProject['Name']; ?></a></li>
+				<li><a href="/project/<?= $UsersWatchedProject['Slug']; ?>"> <?= $UsersWatchedProject['Name']; ?></a></li>
 				<?php }  } else { ?>
 				<li class="none">You have None</li>
 				<?php } ?>
