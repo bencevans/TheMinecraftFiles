@@ -107,6 +107,9 @@ app.configure(function(){
 	app.use(express['static'](__dirname + '/public'));
 	app.use(app.router);
 	app.use(function (err, req, res, next) {
+		console.log(err);
+		if(err == 404)
+			res.render('errors/404')
 		res.render('errors/500');
 	})
 });
@@ -204,11 +207,15 @@ hbs.registerHelper('time_ago', function(date, size) {
 
 app.get('/500', function(req, res, next) {
 	next('Test Error');
-})
+});
+
+app.get('/404', function(req, res, next) {
+	next(404);
+});
 
 
 require('./app/controllers');
 
 
 
-app.listen(3000);
+app.listen(process.env.PORT || 3000);
