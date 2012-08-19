@@ -11,7 +11,7 @@ app.get('/new', function (req, res, next) {
 
 });
 
-app.post('/new', function (req, res) {
+app.post('/new', function (req, res, next) {
 	if(typeof req.body.name !== 'undefined' && typeof req.body.category !== 'undefined' ) {
 
 		res.locals.title = 'New Project';
