@@ -13,9 +13,9 @@
 	</div>
 	<div class="span4">
 		<h3><a href="/discover/{{this.slug}}/recent">Recent</a></h3>
-		<a href="/project/projectslug"><img src="http://placehold.it/298x160" alt="Project Name" /></a>
-		<a href="/project/projectslug"><img src="http://placehold.it/298x160" alt="Project Name" /></a>
-		<a href="/project/projectslug"><img src="http://placehold.it/298x160" alt="Project Name" /></a>
+		{{#this.recent}}
+		{{{project_widget this}}}
+		{{/this.recent}}
 	</div>
 	<div class="span4">
 		<h3><a href="/discover/{{this.slug}}/trending">Trending</a></h3>

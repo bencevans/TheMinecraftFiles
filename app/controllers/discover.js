@@ -16,7 +16,7 @@ app.get('/discover', function (req, res) {
 
 app.get('/discover/:categorySlug', function (req, res) {
 
-	db.category.findOne({slug:req.params.categorySlug}, function (err, category) {
+	tmf.getCategory(req.params.categorySlug, function (err, category) {
 
 		if(err) return next(err);
 
