@@ -32,6 +32,7 @@
     "everyauth": "0.3.x",
     "mongoose": "2.7.2",
     "connect-redis": "1.4.0",
-    "async": "~0.1.22"
+    "async": "~0.1.22",
+    "flashify": "~0.1.0"
   }
 }

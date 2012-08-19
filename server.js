@@ -6,6 +6,7 @@ crypto = require('crypto');
 var hbs = require('hbs');
 
 app = express();
+var flashify = require('flashify');
 _ = require('underscore');
 
 //Database(s)
@@ -105,6 +106,7 @@ app.configure(function(){
 	app.use(everyauth.middleware(app));
 	app.use(express.methodOverride());
 	app.use(express['static'](__dirname + '/public'));
+	app.use(flashify);
 	app.use(app.router);
 	app.use(function (err, req, res, next) {
 		console.log(err);
@@ -133,7 +135,7 @@ app.configure('production', function(){
 
 app.all('*', function (req, res, next) {
 	if (req.headers['x-pjax'])
-		res.locals.layout = false;
+		res.locals.layout = 'layout-pjax.html';
 	next();
 });
 

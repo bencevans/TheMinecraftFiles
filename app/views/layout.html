@@ -73,6 +73,13 @@
 		</div>
 	</header>
 	<div class="container content" id="main">
+		{{#flash.message}}
+			<div class="row">
+			<div class="span12">
+				<div class="alert"><a href="#" onClick="$(this).parent().hide();" class="close">x</a> {{this}}</div>
+			</div>
+		</div>
+		{{/flash.message}}
 		{{{body}}}
 	</header>
 </body>

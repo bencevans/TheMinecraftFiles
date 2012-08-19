@@ -35,7 +35,8 @@ app.post('/new', function (req, res, next) {
 
 				if(err) return next(err);
 
-				console.log('Invalid Name');
+				req.flash('Invalid Name');
+
 				//Invalid Name Error
 				res.render('project/new', _.extend({categories:categories}, req.body));
 			});
@@ -43,8 +44,11 @@ app.post('/new', function (req, res, next) {
 		}
 
 	} else {
-		console.log('Not Enoutph');
+
 		// Not enouph data filled out.
+
+		req.flash('Please fill all required fields.');
+
 		db.category.find({}, function (err, categories) {
 
 			if(err) return next(err);
