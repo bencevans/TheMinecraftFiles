@@ -20,7 +20,8 @@ app.post('/new', function (req, res, next) {
 
 			var newproject = new db.project({
 				name: req.body.name,
-				category: req.body.category
+				category: req.body.category,
+				creator: req.user._id
 			});
 			newproject.save(function (err, category) {
 
