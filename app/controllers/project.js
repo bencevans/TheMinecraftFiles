@@ -61,13 +61,13 @@ app.post('/new', function (req, res, next) {
 	
 });
 
-app.get('/project/:projectSlug', function (req, res) {
+app.get('/project/:projectSlug', function (req, res, next) {
 
 	db.project.findOne({name:req.params.projectSlug}, function (err, project) {
 
 		if(err) return next(err);
 
-		if(!project) return res.send(404);
+		if(!project) return res.render('errors/404', {status:404});
 
 		res.locals.title = project.name;
 
