@@ -15,9 +15,9 @@
 	<div class="span2 sidebar">
 		<label class="lighter">Creator:</label>
 		<div class="scontent">
-		{{#project.creator}}
-		<a href="/user/{{this.username}}"><img src="{{gravatar_url this.gravatarhash 100}}" alt="{{this.username}}"></a>
-		{{/project.creator}}
+
+		<a href="/user/{{project.creator.username}}"><img src="{{gravatar_url project.creator.gravatarhash 100}}" alt="{{project.creator.username}}"></a>
+
 		</div>
 	</div>
 	<div class="span10">

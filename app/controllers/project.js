@@ -68,7 +68,6 @@ app.get('/project/:projectSlug', function (req, res, next) {
 		if(err) return next(err);
 
 		if(!project) return res.render('errors/404', {status:404});
-
 		res.locals.title = project.name;
 
 		res.render('project', {project:project});
