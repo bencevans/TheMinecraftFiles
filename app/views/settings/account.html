@@ -1,0 +1,21 @@
+<form method=POST action="/settings/account">
+	<label for="email">Email:</label>
+	<input type="text" name="email" id="email" value="{{userSettings.email}}"/>
+	<input type=submit value="Update Account Settings">
+</form>
+<form method=POST action="/settings/account">
+	<input type="hidden" name="Password" value="Yup">
+	<fieldset>
+		<legend>Change Password</legend>
+		<label for="CurrentPassword">Current Password:</label>
+		<input type="password" name="CurrentPassword" id="CurrentPassword"/>
+		<div class="clear"></div>
+		<label for="NewPassword">New Password:</label>
+		<input type="password" name="NewPassword" id="NewPassword"/>
+		<div class="clear"></div>
+		<label for="ConfirmPassword">Confirm Password:</label>
+		<input type="password" name="ConfirmPassword" id="ConfirmPassword"/>
+		<div class="clear"></div>
+		<input type="submit" value="Update Password">
+	</fieldset>
+</form>

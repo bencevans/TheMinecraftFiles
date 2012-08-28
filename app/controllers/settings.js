@@ -7,7 +7,8 @@ app.get('/settings', function (req, res) {
 app.get('/settings/:subPage', function (req, res) {
 
 	var subPages = {
-		profile: {name:'Profile', slug:'profile'}
+		profile: {name:'Profile', slug:'profile'},
+		account: {name:'Account', slug:'account'}
 	};
 
 	if(typeof subPages[req.params.subPage] == "undefined")
@@ -34,5 +35,12 @@ app.post('/settings/profile', function (req, res) {
 	db.user.update(req.user, req.body, function (err, user) {
 		if(err) return next(err);
 		res.redirect('/settings/profile');
+	});
+})
+
+app.post('/settings/account', function (req, res) {
+	db.user.update(req.user, req.body, function (err, user) {
+		if(err) return next(err);
+		res.redirect('/settings/account');
 	});
 })
