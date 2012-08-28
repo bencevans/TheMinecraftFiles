@@ -1,0 +1,34 @@
+{{^timeline}}
+<div class="lighter notimeline">
+	<p>There's Currently Nothing in The Timeline.</p>
+</div>
+{{/timeline}}
+
+
+{{#timeline}}
+<div class="timeline-action">
+	<a href="/user/{{this.actor.username}}"><img src="{{gravatar_url this.actor.gravatarhash 60}}"/></a>
+	<div class="action">
+		<a href="/user/{{this.actor.username}}">{{user_prefered_name this.actor}}</a>
+		<?= $TimelineAction['Action']; ?>
+		<?php switch ($TimelineAction['Action']) {
+			case 'created':
+				echo '<a href="' . SiteURL("project/" . $TimelineAction['ProjectInfo']['Slug']) . '">' . $TimelineAction['ProjectInfo']['Name'] . '</a>';
+				break;
+			case 'uploaded image':
+				$FileInfo = $Files->Info($TimelineAction['Assoc']);
+				echo " <a href='" . SiteURL('project/' . $TimelineAction['ProjectInfo']['Slug'] . '/gallery/' . $TimelineAction['Assoc']) . "'>" . $FileInfo['Name'] . "</a>";
+				break;
+
+			default:
+
+				break;
+		} ?>
+		{{time_ago this.when}}
+		<?= RealTimeTime($TimelineAction['When']->sec); ?>
+	</div>
+	<div class="description">
+
+	</div>
+</div>
+{{/timeline}}

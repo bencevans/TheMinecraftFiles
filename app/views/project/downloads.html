@@ -1,0 +1,25 @@
+<?php Load("Comments"); ?>
+<?php if ($Auth->HasPermission('Project.' . $ProjectInfo['_id'] . '.Owner')) { ?>
+
+<a style="float:right" href="<?= SiteURL("project/" . $ProjectInfo['Slug'] . "/downloads/new"); ?>">Add Download</a>
+
+<?php  } if(!$App['Downloads']->Count($ProjectInfo['_id'])) { ?>
+
+<div class="lighter nodownloads">
+	<p>Currently There Are No Downloads Available.</p>
+</div>
+
+<?php } else { ?>
+
+<?php foreach ($App['Downloads']->ForProject($ProjectInfo['_id']) as $Download) { ?>
+
+<div class="downloadbox">
+	<div class="downloadinfo">
+		<b><a href="<?= SiteURl("project/" . $ProjectInfo['Slug'] . "/downloads/" . $Download['Slug']); ?>"><?= $Download['Name']; ?></a></b> <span class="lighter">uploaded <?= RealTimeTime(strtotime($Download['Uploaded'])); ?> by <a href="<?= SiteURL("user/" . $Auth->Username($Download['UploaderID'])); ?>"><?= $Auth->PreferedName($Download['UploaderID']); ?></a></span> 
+	</div>
+	<div class="links lighter"><a href="<?= SiteURl("project/" . $ProjectInfo['Slug'] . "/downloads/" . $Download['Slug'] . "/download"); ?>">Download</a> | <a href="<?= SiteURl("project/" . $ProjectInfo['Slug'] . "/downloads/" . $Download['Slug']); ?>#description">Changelog</a> | <a href="<?= SiteURl("project/" . $ProjectInfo['Slug'] . "/downloads/" . $Download['Slug'] . "#comments"); ?>"><?= $App['Comments']->CountThread("Project." . $ProjectInfo['_id'] . ".Download." . $Download['_id']); ?> Comments</a></div>
+	<div class="downloadcount"><?= $App['Downloads']->Count($Download['_id']); ?> <span style="font-size:12px;">Downloads</span></div>
+	<div style="clear:both"></div>
+</div>
+
+<?php } }  

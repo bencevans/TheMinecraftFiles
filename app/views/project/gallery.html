@@ -1,0 +1,39 @@
+<?php if(isset($GalleryImages)) { ?>
+<?php if(!$GalleryImages->count()) { ?>
+<div class="lighter noimages">
+	<p>No Images in Gallery</p>
+</div>
+<?php } else {
+	foreach ($GalleryImages as $ImageInfo) { ?>
+<div class="galleryimage">
+	<a href="<?= SiteURL("project/" . $ProjectInfo['Slug'] . "/gallery/" . $ImageInfo['ImageFileID']); ?>">
+		<img src="<?= $Files->Thumbnail($ImageInfo['ImageFileID'], 179, 120); ?>"/>
+	</a>
+</div>
+	<?php } ?>
+<?php } ?>
+<?php if($Auth->HasPermission("Project." . $ProjectInfo['_id'] . ".Owner")) { ?>
+<div class="galleryuploadarea">
+	<form method="POST" action="<?= SiteURL("project/" . $ProjectInfo['Slug'] . "/gallery"); ?>" enctype="multipart/form-data">
+		<label for="GalleryFileUpload">Upload Image (png/gif/jpg) (Max Size: 700Kb)</label>
+		<input type="file" name="GalleryFileUpload" id="GalleryFileUpload">
+		<input type="submit" value="Upload">
+	</form>
+</div>
+<?php } } else { ?>
+
+<?php if($Auth->HasPermission("Project." . $ProjectInfo['_id'] . ".Owner")) { ?>
+<div class="goright" style="margin-top:10px;">
+	<a class="button" href="<?= SiteURL("project/" . $ProjectInfo['Slug'] . "/gallery/" . $GalleryImage['ImageFileID'] . '/default'); ?>">Set Default</a>
+	<a class="button danger delete" href="<?= SiteURL("project/" . $ProjectInfo['Slug'] . "/gallery/" . $GalleryImage['ImageFileID'] . '/delete'); ?>">Delete</a>
+</div>
+<?php } ?>
+
+<div class="clear gallerysingleimage">
+	<?php if(isset($GalleryImage['Name'])) { ?><h2><?= $GalleryImage['Name']; ?></h2><?php } ?>
+	<img src="<?= $Files->Address($GalleryImage['ImageFileID']); ?>"/>
+	<?php if(isset($GalleryImage['Description'])) { ?><p><?= $GalleryImage['Description']; ?></p><?php } ?>
+</div>
+<?= $this->RenderView("blocks/comments.php", array('ThreadName'=>'Project.' . $ProjectInfo['_id'] . '.Gallery.' . $GalleryImage['_id'])); ?>
+
+<?php } ?>

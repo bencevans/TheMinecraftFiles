@@ -22,10 +22,10 @@
 	</div>
 	<div class="span10">
 		<ul class="tabnav">
-			<?php foreach ($SubPages as $SubPageSlug => $SubPageName) { ?>
-			<li <?php if($CurrentSubPage == $SubPageSlug) { echo 'class="current"'; } ?>><a href="<?= SiteURL("project/" . $ProjectInfo['Slug'] . "/" . $SubPageSlug); ?>"><?= $SubPageName; ?></a></li>
-			<?php } ?>
+			{{#subPages}}
+			<li class=current><a href="{{url}}">{{name}}</a></li>
+			{{/subPages}}
 		</ul>
-		<?= $SubPageContent; ?>
+		{{{subPage.content}}}
 	</div>
 </div>
