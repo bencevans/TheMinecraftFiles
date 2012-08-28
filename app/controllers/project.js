@@ -63,7 +63,7 @@ app.post('/new', function (req, res, next) {
 
 app.get('/project/:projectSlug', function (req, res, next) {
 
-	db.project.findOne({name:req.params.projectSlug}, function (err, project) {
+	tmf.getProject(req.params.projectSlug, function (err, project) {
 
 		if(err) return next(err);
 

@@ -13,15 +13,11 @@
 </div>
 <div class="row">
 	<div class="span2 sidebar">
-		<label class="lighter">Owner<?php if(count($ProjectInfo['Owners']) > 1) { echo 's';} ?>:</label>
+		<label class="lighter">Creator:</label>
 		<div class="scontent">
-		<?php foreach ($ProjectInfo['Owners'] as $Owner) { ?>
-		<a href="<?= SiteURL('user/' . $Owner['Username']); ?>"><?= Gravatar($Owner['_id'], $Size = '40px', 'HTML'); ?></a>
-		<?php } ?>
-		</div>
-		<label class="lighter">Gallery:</label>
-		<div class="scontent">
-			None
+		{{#project.creator}}
+		<a href="/user/{{this.username}}"><img src="{{gravatar_url this.gravatarhash 100}}" alt="{{this.username}}"></a>
+		{{/project.creator}}
 		</div>
 	</div>
 	<div class="span10">
