@@ -1,7 +1,7 @@
 
 app.get('/user/:username', function (req, res) {
 
-	tmf.getUser('bencevans', function(err, user) {
+	tmf.getUser(req.params.username, function(err, user) {
 		if(err) return next(err);
 
 		if(user !== null) {
