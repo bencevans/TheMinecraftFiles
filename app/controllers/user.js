@@ -1,5 +1,5 @@
 
-app.get('/user/:username', function (req, res) {
+app.get('/user/:username', function (req, res, next) {
 
 	tmf.getUser(req.params.username, function(err, user) {
 		if(err) return next(err);
