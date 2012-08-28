@@ -21,13 +21,16 @@ describe('tmfLib', function(){
 	before(function(done){
 		testUser.save(function (err) {
 			if(err)
-				console.log(err);
-			done();
+				return done(err)
+			testCategory.save(function (err) {
+				done(err);
+			});
 		});
 	})
 
 	after(function(done){
 		testUser.remove();
+		testCategory.remove();
 		done();
 	})
 
@@ -37,8 +40,6 @@ describe('tmfLib', function(){
 			assert.equal(typeof tmf, "object");
 		})
 	})
-
-	
 
 	describe('#getUser()', function(){
 		it('should return a valid user object on username', function (done){
@@ -67,7 +68,25 @@ describe('tmfLib', function(){
 	})
 
 	describe('#getCategory()', function(){
-		it('should return an valid category object')
+		it('should return an valid category by slug', function (done) {
+			tmf.getCategory(testCategory.slug, function (err, category) {
+				assert.equal(err, null);
+				assert.notEqual(category, null);
+				assert.equal(typeof category,"object")
+				assert.equal(category._id.toString(),testCategory._id.toString())
+				done();
+			})
+		})
+		it('should return an valid category by objectID', function (done) {
+			tmf.getCategory(testCategory._id, function (err, category) {
+				assert.equal(err, null);
+				assert.notEqual(category, null);
+				assert.equal(typeof category,"object")
+				assert.equal(category._id.toString(),testCategory._id.toString())
+				done();
+			})
+		})
+
 		it('should resolve projects and project owners/creators')
 	})
 
