@@ -4,7 +4,7 @@
   "description": "Minecraft Addon Development Site",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "start": "node server.js"
   },
   "repository": {
@@ -34,5 +34,8 @@
     "connect-redis": "1.4.0",
     "async": "~0.1.22",
     "flashify": "~0.1.0"
+  },
+  "devDependencies": {
+    "mocha": "*"
   }
 }
