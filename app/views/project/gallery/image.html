@@ -1,0 +1,16 @@
+{{#if project.isOwner}}
+<div class="goright" style="margin-top:10px;">
+	<a class="button" href="/project/{{project.name}}/gallery/{{galleryImage._id}}/default">Set Default</a>
+	<a class="button danger delete" href="/project/{{project.name}}/gallery/{{galleryImage._id}}/delete'); ?>">Delete</a>
+</div>
+{{/if}}
+{{#galleryImage}}
+<div class="clear gallerysingleimage">
+	{{#if name}}<h2>{{name}}</h2>{{/if}}
+	<img src="{{this.src}}"/>
+	{{#if this.description}}<p>{{description}}</p>{{/if}}
+</div>
+{{/galleryImage}}
+<?= $this->RenderView("blocks/comments.php", array('ThreadName'=>'Project.' . $ProjectInfo['_id'] . '.Gallery.' . $GalleryImage['_id'])); ?>
+
+<?php } ?>

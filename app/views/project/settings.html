@@ -1,36 +1,7 @@
-<form method="POST" action="<?=SiteURL('project/' . $ProjectInfo['Slug'] . '/settings');?>">
-	<label for="ProjectName">Project Name:</label>
-	<input name="ProjectName" id="ProjectName" type="text" value="<?= $ProjectInfo['Name']; ?>">
-	<label for="ProjectName">Project Description:</label>
-	<input name="ProjectName" id="ProjectDescription" type="text" value="<?= $ProjectInfo['Description']; ?>">
+<form method="POST" action='/project/{{project.name}}/settings'>
+	<label for="name">Project Name:</label>
+	<input name="name" id="name" type="text" value="{{project.name}}">
+	<label for="description">Project Description:</label>
+	<input name="description" id="description" type="text" value="{{project.description}}">
 	<input type="submit" value="Update">
 </form>
-<fieldset>
-	<legend>Owners</legend>
-	<div class="goleft">
-
-	<div class="clear"></div>
-	<div class="goleft clear">
-	<form method="POST" action="<?=SiteURL('project/' . $ProjectInfo['Slug'] , '/settings');?>">
-	<table style="width:740px;">
-		<?php foreach ($ProjectInfo['Owners'] as $Owner) { ?>
-		<tr>
-			<td><a href="<?=SiteURL('user/' . $Auth->Username($Owner['_id']));?>"><?= Gravatar($Owner['_id'], '30px', 'HTML'); ?></a></td>
-			<td><?= $Auth->PreferedName($Owner['_id']); ?></td>
-			<td><a class="button" href="#">Revoke Permission</a></td>
-		</tr>
-		<?php } ?>
-	</table>
-	</form>
-	</div>
-	<form method="POST" action="<?=SiteURL('project/' . $ProjectInfo['Slug'] . '/settings');?>">
-	<div class="row">
-		<div class="span4" style="margin-top:20px">
-			<input type="text" name="NewOwner" class="goleft" placeholder="New Owner's Username">
-		</div>
-		<div class="span3" style="margin-top:20px">
-			<input class="button formbutton" value="Add User" type="submit">
-		</div>
-	</div>
-	</form>
-</fieldset>

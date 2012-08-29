@@ -75,11 +75,20 @@ app.all('/project/:projectSlug/:subPage', function (req, res, next) {
 
 		res.locals.title = project.name;
 		req.project = res.locals.project = project;
+		
+		
 		res.locals.subPages = [{name:'Timeline', slug:'timeline', url:'/project/' + project.name + '/timeline'},
 		{name:'Gallery', slug:'gallery', url:'/project/' + project.name + '/gallery'},
 		{name:'Downloads', slug:'downloads', url:'/project/' + project.name + '/downloads'},
 		{name:'Settings', slug:'settings', url:'/project/' + project.name + '/settings'},
 		{name:'Issues', slug:'issues', url:'/project/' + project.name + '/issues'}]
+
+		res.locals.subPage = _.find(res.locals.subPages, function(subPage) {
+			if(req.params.subPage == subPage.slug) {
+				subPage.current = true;
+				return true;
+			}
+		})
 
 		next();
 
@@ -98,13 +107,28 @@ app.get('/project/:projectSlug/timeline', function (req, res, next) {
 });
 
 app.get('/project/:projectSlug/downloads', function (req, res, next) {
-	next(404)
+
+	res.render('project/downloads', {layout:false}, function (err, html) {
+		if(err) return next(err);
+		res.render('project', {subPage:{content:html, name:'Timeline', slug:'downloads'}})
+	});
+
 });
 
 app.get('/project/:projectSlug/gallery', function (req, res, next) {
-	next(404)
+	
+	res.render('project/gallery', {layout:false}, function (err, html) {
+		if(err) return next(err);
+		res.render('project', {subPage:{content:html, name:'Timeline', slug:'gallery'}})
+	});
+
 });
 
 app.get('/project/:projectSlug/settings', function (req, res, next) {
-	next(404)
+
+	res.render('project/settings', {layout:false}, function (err, html) {
+		if(err) return next(err);
+		res.render('project', {subPage:{content:html, name:'Timeline', slug:'settings'}})
+	});
+
 });
