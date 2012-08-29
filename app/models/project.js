@@ -3,5 +3,6 @@ module.exports = new Schema({
 	created: { type: Date, 'default': Date.now },
 	creator: { type: Schema.ObjectId, required: true },
 	image: Schema.ObjectId,
-	name: { type: String, required: true, trim: true, index: { unique: true, sparse: true } }
+	name: { type: String, required: true, trim: true, index: { unique: true, sparse: true } },
+	description: {type: String, match: /.{0,24}/}
 });

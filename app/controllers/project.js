@@ -89,7 +89,7 @@ app.all('/project/:projectSlug/:subPage', function (req, res, next) {
 			}
 		})
 
-		if(project.creator._id.toString() == req.user._id.toString()) {
+		if(req.user && project.creator._id.toString() == req.user._id.toString()) {
 			project.isOwner = true;
 			res.locals.subPages.push({name:'Settings', slug:'settings', url:'/project/' + project.name + '/settings'});
 		}
@@ -105,7 +105,7 @@ app.get('/project/:projectSlug/timeline', function (req, res, next) {
 
 	res.render('project/timeline', {layout:false}, function (err, html) {
 		if(err) return next(err);
-		res.render('project', {subPage:{content:html, name:'Timeline', slug:'timeline'}})
+		res.render('project', {subPage:{content:html}})
 	});
 
 });
@@ -114,7 +114,7 @@ app.get('/project/:projectSlug/downloads', function (req, res, next) {
 
 	res.render('project/downloads', {layout:false}, function (err, html) {
 		if(err) return next(err);
-		res.render('project', {subPage:{content:html, name:'Timeline', slug:'downloads'}})
+		res.render('project', {subPage:{content:html}})
 	});
 
 });
@@ -123,16 +123,41 @@ app.get('/project/:projectSlug/gallery', function (req, res, next) {
 	
 	res.render('project/gallery', {layout:false}, function (err, html) {
 		if(err) return next(err);
-		res.render('project', {subPage:{content:html, name:'Timeline', slug:'gallery'}})
+		res.render('project', {subPage:{content:html}})
 	});
 
 });
 
 app.get('/project/:projectSlug/settings', function (req, res, next) {
 
+	if(!req.project.isOwner)
+		return next();
+
 	res.render('project/settings', {layout:false}, function (err, html) {
 		if(err) return next(err);
-		res.render('project', {subPage:{content:html, name:'Timeline', slug:'settings'}})
+		res.render('project', {subPage:{content:html}})
 	});
+
+});
+
+app.post('/project/:projectSlug/settings', function (req, res, next) {
+
+	if(!req.project.isOwner)
+		return next();
+
+	db.project.findById(req.project._id, function (err, project) {
+
+		if(err)
+			return next(err);
+
+		project.name = req.body.name;
+		project.description = req.body.description;
+
+		project.save(function (err, project) {
+			if(err)
+				return next(err);
+			res.redirect('/project/' + project.name + '/settings');
+		});
+	})
 
 });
