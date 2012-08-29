@@ -80,7 +80,6 @@ app.all('/project/:projectSlug/:subPage', function (req, res, next) {
 		res.locals.subPages = [{name:'Timeline', slug:'timeline', url:'/project/' + project.name + '/timeline'},
 		{name:'Gallery', slug:'gallery', url:'/project/' + project.name + '/gallery'},
 		{name:'Downloads', slug:'downloads', url:'/project/' + project.name + '/downloads'},
-		{name:'Settings', slug:'settings', url:'/project/' + project.name + '/settings'},
 		{name:'Issues', slug:'issues', url:'/project/' + project.name + '/issues'}]
 
 		res.locals.subPage = _.find(res.locals.subPages, function(subPage) {
@@ -89,6 +88,11 @@ app.all('/project/:projectSlug/:subPage', function (req, res, next) {
 				return true;
 			}
 		})
+
+		if(project.creator._id.toString() == req.user._id.toString()) {
+			project.isOwner = true;
+			res.locals.subPages.push({name:'Settings', slug:'settings', url:'/project/' + project.name + '/settings'});
+		}
 
 		next();
 
