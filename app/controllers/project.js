@@ -66,7 +66,7 @@ app.get('/project/:projectSlug', function (req, res, next) {
 	res.redirect('/project/' + req.params.projectSlug + '/timeline');
 });
 
-app.all('/project/:projectSlug/:subPage', function (req, res, next) {
+app.all('/project/:projectSlug/:subPage*', function (req, res, next) {
 
 	tmf.getProject(req.params.projectSlug, function (err, project) {
 
@@ -145,7 +145,6 @@ app.get('/project/:projectSlug/gallery', function (req, res, next) {
 });
 
 app.get('/project/:projectSlug/gallery/:imageId.png', function (req, res, next) {
-	console.log(req.params.imageId);
 	db.galleryImage.findById(req.params.imageId, function(err, image) {
 		if(err)
 			return next(err);
@@ -158,12 +157,19 @@ app.get('/project/:projectSlug/gallery/:imageId.png', function (req, res, next) 
 });
 
 app.get('/project/:projectSlug/gallery/:imageId', function (req, res, next) {
-
-	res.render('project/gallery/image', {layout:false}, function (err, html) {
-		if(err) return next(err);
-		res.render('project', {subPage:{content:html}})
-	});
-
+	db.galleryImage.findById(req.params.imageId, function(err, galleryImage) {
+		if(err)
+			return next(err);
+		if(!galleryImage)
+			return res.render('errors/404', {status:404});
+		galleryImage = galleryImage.toObject()
+		galleryImage.src = "/project/" + req.project.name + "/gallery/" + galleryImage._id+'.png';
+		galleryImage.href = "/project/" + req.project.name + "/gallery/" + galleryImage._id;
+		res.render('project/gallery/image', {layout:false, galleryImage:galleryImage}, function (err, html) {
+			if(err) return next(err);
+			res.render('project', {subPage:{content:html}})
+		})
+	})
 });
 
 app.post('/project/:projectSlug/gallery', function (req, res, next) {
