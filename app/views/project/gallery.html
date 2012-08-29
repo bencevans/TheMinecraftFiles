@@ -1,8 +1,8 @@
 {{#if galleryImages}}
 {{#galleryImages}}
 <div class="galleryimage">
-	<a href="<?= SiteURL("project/" . $ProjectInfo['Slug'] . "/gallery/" . $ImageInfo['ImageFileID']); ?>">
-		<img src="<?= $Files->Thumbnail($ImageInfo['ImageFileID'], 179, 120); ?>"/>
+	<a href="{{href}}">
+		<img src="{{src}}"/>
 	</a>
 </div>
 {{/galleryImages}}
@@ -15,8 +15,8 @@
 {{#if project.isOwner}}
 <div class="galleryuploadarea">
 	<form method="POST" action="/project/{{project.name}}/gallery" enctype="multipart/form-data">
-		<label for="GalleryFileUpload">Upload Image (png/gif/jpg) (Max Size: 700Kb)</label>
-		<input type="file" name="GalleryFileUpload" id="GalleryFileUpload">
+		<label for="galleryFileUpload">Upload Image (png/gif/jpg) (Max Size: 700Kb)</label>
+		<input type="file" name="galleryFileUpload" id="galleryFileUpload">
 		<input type="submit" value="Upload">
 	</form>
 </div>

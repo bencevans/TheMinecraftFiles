@@ -1,3 +1,4 @@
+var async = require('async');
 
 app.get('/new', function (req, res, next) {
 	db.category.find({}, function (err, categories) {
@@ -120,12 +121,67 @@ app.get('/project/:projectSlug/downloads', function (req, res, next) {
 });
 
 app.get('/project/:projectSlug/gallery', function (req, res, next) {
-	
-	res.render('project/gallery', {layout:false}, function (err, html) {
+
+	db.galleryImage.find({project:req.project._id}, function(err, galleryImages) {
+
+		async.map(galleryImages, function(galleryImage, callback) {
+			db.file.findById(galleryImage.file, function(err, galeryImageFile) {
+				galleryImage = galleryImage.toObject()
+				galleryImage.src = "/project/" + req.project.name + "/gallery/" + galleryImage._id+'.png';
+				galleryImage.href = "/project/" + req.project.name + "/gallery/" + galleryImage._id;
+				callback(err, galleryImage);
+			});
+		}, function(err, results) {
+			if(err)
+				return next(err)
+			console.log(results);
+			res.render('project/gallery', {layout:false, galleryImages:results}, function (err, html) {
+				if(err) return next(err);
+				res.render('project', {subPage:{content:html}})
+			});
+		})
+
+	})
+});
+
+app.get('/project/:projectSlug/gallery/:imageId.png', function (req, res, next) {
+	console.log(req.params.imageId);
+	db.galleryImage.findById(req.params.imageId, function(err, image) {
+		if(err)
+			return next(err);
+		if(!image)
+			return res.render('errors/404', {status:404});
+		db.file.findById(image.file, function(err, file) {
+			res.status(200).sendfile(file.path)
+		})
+	})
+});
+
+app.get('/project/:projectSlug/gallery/:imageId', function (req, res, next) {
+
+	res.render('project/gallery/image', {layout:false}, function (err, html) {
 		if(err) return next(err);
 		res.render('project', {subPage:{content:html}})
 	});
 
+});
+
+app.post('/project/:projectSlug/gallery', function (req, res, next) {
+
+	if(!req.project.isOwner)
+		return next();
+
+	var upload = new db.file({path:req.files.galleryFileUpload.path});
+	upload.save(function(err, upload) {
+		if(err)
+			return next(err);
+		var galleryImage = new db.galleryImage({file:upload._id, project:req.project._id})
+		galleryImage.save(function (err, galleryImage) {
+			if(err)
+				return next(err)
+			res.redirect('/project/' + req.project.name + '/gallery/' + galleryImage._id);
+		})
+	});
 });
 
 app.get('/project/:projectSlug/settings', function (req, res, next) {
