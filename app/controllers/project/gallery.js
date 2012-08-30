@@ -5,9 +5,9 @@ app.get('/project/:projectSlug/gallery/:imageId.png', function (req, res, next) 
 		if(!image)
 			return res.render('errors/404', {status:404});
 		db.file.findById(image.file, function(err, file) {
-			res.status(200).sendfile(file.path)
-		})
-	})
+			res.status(200).sendfile(file.path);
+		});
+	});
 });
 
 app.get('/project/:projectSlug/gallery/:imageId', function (req, res, next) {
@@ -17,14 +17,14 @@ app.get('/project/:projectSlug/gallery/:imageId', function (req, res, next) {
 			return next(err);
 		if(!galleryImage)
 			return res.render('errors/404', {status:404});
-		galleryImage = galleryImage.toObject()
+		galleryImage = galleryImage.toObject();
 		galleryImage.src = "/project/" + req.project.name + "/gallery/" + galleryImage._id+'.png';
 		galleryImage.href = "/project/" + req.project.name + "/gallery/" + galleryImage._id;
 		res.render('project/gallery/image', {layout:false, galleryImage:galleryImage}, function (err, html) {
 			if(err) return next(err);
-			res.render('project', {subPage:{content:html}})
-		})
-	})
+			res.render('project', {subPage:{content:html}});
+		});
+	});
 });
 
 app.post('/project/:projectSlug/gallery', function (req, res, next) {
@@ -36,11 +36,11 @@ app.post('/project/:projectSlug/gallery', function (req, res, next) {
 	upload.save(function(err, upload) {
 		if(err)
 			return next(err);
-		var galleryImage = new db.galleryImage({file:upload._id, project:req.project._id})
+		var galleryImage = new db.galleryImage({file:upload._id, project:req.project._id});
 		galleryImage.save(function (err, galleryImage) {
 			if(err)
-				return next(err)
+				return next(err);
 			res.redirect('/project/' + req.project.name + '/gallery/' + galleryImage._id);
-		})
+		});
 	});
 });

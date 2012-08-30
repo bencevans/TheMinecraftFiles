@@ -1,5 +1,5 @@
-var fs = require('fs')
-, path = require('path')
+var fs = require('fs'),
+path = require('path'),
 _ = require('underscore');
 
 app.all('*', function(req, res, next) {
@@ -18,7 +18,7 @@ require('./project');
 
 _.each(fs.readdirSync(path.resolve(__dirname, './project')), function (file) {
 	require(path.resolve(__dirname, './project/', file));
-})
+});
 
 // Check Authentication
 app.all('*', function (req, res, next) {

@@ -17,14 +17,14 @@ app.all('/project/:projectSlug/:subPage*', function (req, res, next) {
 		res.locals.subPages = [{name:'Timeline', slug:'timeline', url:'/project/' + project.name + '/timeline'},
 		{name:'Gallery', slug:'gallery', url:'/project/' + project.name + '/gallery'},
 		{name:'Downloads', slug:'downloads', url:'/project/' + project.name + '/downloads'},
-		{name:'Issues', slug:'issues', url:'/project/' + project.name + '/issues'}]
+		{name:'Issues', slug:'issues', url:'/project/' + project.name + '/issues'}];
 
 		res.locals.subPage = _.find(res.locals.subPages, function(subPage) {
 			if(req.params.subPage == subPage.slug) {
 				subPage.current = true;
 				return true;
 			}
-		})
+		});
 
 		if(req.user && project.creator._id.toString() == req.user._id.toString()) {
 			project.isOwner = true;
@@ -43,22 +43,21 @@ app.get('/project/:projectSlug/gallery', function (req, res, next) {
 
 		async.map(galleryImages, function(galleryImage, callback) {
 			db.file.findById(galleryImage.file, function(err, galeryImageFile) {
-				galleryImage = galleryImage.toObject()
+				galleryImage = galleryImage.toObject();
 				galleryImage.src = "/project/" + req.project.name + "/gallery/" + galleryImage._id+'.png';
 				galleryImage.href = "/project/" + req.project.name + "/gallery/" + galleryImage._id;
 				callback(err, galleryImage);
 			});
 		}, function(err, results) {
 			if(err)
-				return next(err)
-			console.log(results);
+				return next(err);
+
 			res.render('project/gallery', {layout:false, galleryImages:results}, function (err, html) {
 				if(err) return next(err);
-				res.render('project', {subPage:{content:html}})
+				res.render('project', {subPage:{content:html}});
 			});
-		})
-
-	})
+		});
+	});
 });
 
 

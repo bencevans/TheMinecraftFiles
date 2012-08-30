@@ -1,4 +1,3 @@
-
 var _ = require('underscore');
 var fs = require('fs');
 mongoose = require('mongoose');
@@ -20,5 +19,5 @@ _.each(fs.readdirSync('./app/models'), function (fileName, index) {
 	db[schemaName] = mongoose.model(schemaName, require('./app/models/' + fileName));
 });
 
-tmflib = require('./lib/tmf.js')
+tmflib = require('./lib/tmf.js');
 tmf= tmflib.createInterface(db);

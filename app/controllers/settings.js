@@ -1,5 +1,4 @@
 
-
 app.get('/settings', function (req, res) {
 	res.redirect('/settings/profile');
 });
@@ -36,11 +35,11 @@ app.post('/settings/profile', function (req, res) {
 		if(err) return next(err);
 		res.redirect('/settings/profile');
 	});
-})
+});
 
 app.post('/settings/account', function (req, res) {
 	db.user.update(req.user, req.body, function (err, user) {
 		if(err) return next(err);
 		res.redirect('/settings/account');
 	});
-})
+});

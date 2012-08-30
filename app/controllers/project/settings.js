@@ -6,7 +6,7 @@ app.get('/project/:projectSlug/settings', function (req, res, next) {
 
 	res.render('project/settings', {layout:false}, function (err, html) {
 		if(err) return next(err);
-		res.render('project', {subPage:{content:html}})
+		res.render('project', {subPage:{content:html}});
 	});
 
 });
@@ -29,6 +29,5 @@ app.post('/project/:projectSlug/settings', function (req, res, next) {
 				return next(err);
 			res.redirect('/project/' + project.name + '/settings');
 		});
-	})
-
+	});
 });

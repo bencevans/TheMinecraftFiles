@@ -8,136 +8,136 @@ var hbs = require('hbs');
 app = express();
 var flashify = require('flashify');
 _ = require('underscore');
-config = {mongo:{}}
+config = {mongo:{}};
 //Bootstrap (DB Etc.)
-require('./bootstrap.js')
+require('./bootstrap.js');
 
-tmflib = require('./lib/tmf.js')
+tmflib = require('./lib/tmf.js');
 tmf= tmflib.createInterface(db);
 
 
 // Authentication Requirements
 var everyauth = require('everyauth');
 everyauth.github
-.appId('9a5e15b6d6071293280c')
-.appSecret('eb08869d2f61b387222f6494b95069cd1f44e1a5')
-.moduleTimeout( 8000 )
-.findOrCreateUser( function (session, accessToken, accessTokenExtra, githubUserMetadata) {
+	.appId('9a5e15b6d6071293280c')
+	.appSecret('eb08869d2f61b387222f6494b95069cd1f44e1a5')
+	.moduleTimeout( 8000 )
+	.findOrCreateUser( function (session, accessToken, accessTokenExtra, githubUserMetadata) {
 
-	var promise = this.Promise();
-
-
-
-	db.user.count({}, function (err, count) {
-
-		if(err){
-			console.error('Problem Counting Current User');
-			return false;
-		}
-
-		if(count === 0) {
-
-			var newUser = new db.user({
-				username: githubUserMetadata.login,
-				gitHubID: githubUserMetadata.id
-			});
-			newUser.save(function (err) {
-				if(err)
-					return false;
-				promise.fulfill(newUser);
-			});
+		var promise = this.Promise();
 
 
 
+		db.user.count({}, function (err, count) {
 
-		} else {
+			if(err){
+				console.error('Problem Counting Current User');
+				return false;
+			}
 
-			db.user.findOne({ gitHubID: githubUserMetadata.id}, function (err, user) {
-				if (err) return promise.fulfill([err]);
-				promise.fulfill(user);
-			});
+			if(count === 0) {
 
-		}
-	});
+				var newUser = new db.user({
+					username: githubUserMetadata.login,
+					gitHubID: githubUserMetadata.id
+				});
+				newUser.save(function (err) {
+					if(err)
+						return false;
+					promise.fulfill(newUser);
+				});
 
-	return promise;
-})
-.redirectPath('/');
+
+
+
+			} else {
+
+				db.user.findOne({ gitHubID: githubUserMetadata.id}, function (err, user) {
+					if (err) return promise.fulfill([err]);
+					promise.fulfill(user);
+				});
+
+			}
+		});
+
+		return promise;
+	})
+	.redirectPath('/');
 
 var usersByLogin = {
 	'jim': {
 		login: 'jim',
-		email: 'jim@jimpick.com'
-		, password: 'jim'
+		email: 'jim@jimpick.com',
+		password: 'jim'
 	}
 };
 
 
 everyauth
-.password
-    .loginWith('login')
-    .getLoginPath('/login')
-    .postLoginPath('/auth/login')
-    .loginView('login.html')
-    .loginLocals( function (req, res, done) {
-        setTimeout( function () {
-    		done(null, {
-    			title: 'Login'
-    		});
-    	}, 200);
-    })
-    .authenticate( function (login, password) {
-    	var errors = [];
-    	if (!login) errors.push('Missing login');
-    	if (!password) errors.push('Missing password');
-    	if (errors.length) return errors;
+	.password
+	.loginWith('login')
+	.getLoginPath('/login')
+	.postLoginPath('/auth/login')
+	.loginView('login.html')
+	.loginLocals( function (req, res, done) {
+		setTimeout( function () {
+			done(null, {
+				title: 'Login'
+			});
+		}, 200);
+	})
+	.authenticate( function (login, password) {
+		var errors = [];
+		if (!login) errors.push('Missing login');
+		if (!password) errors.push('Missing password');
+		if (errors.length) return errors;
 
-    	var promise = this.Promise();
+		var promise = this.Promise();
 
-    	db.user.findOne({username:login}, function(err, user) {
-    		if (user.password !== password) return promise.fulfill(['Login failed']);
-    		promise.fulfill(user);
-    	})
+		db.user.findOne({username:login}, function(err, user) {
+			if (user.password !== password) return promise.fulfill(['Login failed']);
+			promise.fulfill(user);
+		});
 
-    	return promise;
-    })
+		return promise;
+	})
 
-    .getRegisterPath('/register')
-    .postRegisterPath('/register')
-    .registerView('register.html')
-    .registerLocals( function (req, res, done) {
-    	setTimeout( function () {
-    		done(null, {
-    			title: 'Register'
-    		});
-    	}, 200);
-    })
-    .extractExtraRegistrationParams( function (req) {
-    	return {
-    		email: req.body.email
-    	};
-    })
-    .validateRegistration( function (newUserAttrs, errors) {
-    	var login = newUserAttrs.login;
-    	if (usersByLogin[login]) errors.push('Login already taken');
-    	return errors;
-    })
-    .registerUser( function (newUserAttrs) {
-    	var login = newUserAttrs[this.loginKey()];
-    	return usersByLogin[login] = newUserAttrs;
-    })
+	.getRegisterPath('/register')
+	.postRegisterPath('/register')
+	.registerView('register.html')
+	.registerLocals( function (req, res, done) {
+		setTimeout( function () {
+			done(null, {
+				title: 'Register'
+			});
+		}, 200);
+	})
+	.extractExtraRegistrationParams( function (req) {
+		return {
+			email: req.body.email
+		};
+	})
+	.validateRegistration( function (newUserAttrs, errors) {
+		var login = newUserAttrs.login;
+		if (usersByLogin[login]) errors.push('Login already taken');
+		return errors;
+	})
+	.registerUser( function (newUserAttrs) {
+		var login = newUserAttrs[this.loginKey()];
+		return usersByLogin[login] = newUserAttrs;
+	})
 
-    .loginSuccessRedirect('/')
-    .registerSuccessRedirect('/');
+	.loginSuccessRedirect('/')
+	.registerSuccessRedirect('/');
 
 
-    everyauth.everymodule.logoutRedirectPath('/');
+everyauth.everymodule.logoutRedirectPath('/');
 
-    everyauth.everymodule.findUserById(function (userId, callback) {
-    	db.user.findById(userId, function (err, data) {
-    		callback(err, data);
-    	});
-    });
+everyauth.everymodule.findUserById(function (userId, callback) {
+	db.user.findById(userId, function (err, data) {
+		callback(err, data);
+	});
+});
 
 
 // App Config
@@ -162,9 +162,9 @@ app.configure(function(){
 	app.use(function (err, req, res, next) {
 		console.log(err);
 		if(err == 404)
-			res.render('errors/404')
+			res.render('errors/404');
 		res.render('errors/500');
-	})
+	});
 });
 
 app.configure('development', function(){
@@ -172,8 +172,8 @@ app.configure('development', function(){
 	//app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 	app.use(function(err, req, res, next) {
 		console.error(err);
-		res.send(500, 'Sorry We\'ve had a problem')
-	})
+		res.send(500, 'Sorry We\'ve had a problem');
+	});
 });
 
 app.configure('production', function(){
@@ -230,31 +230,31 @@ hbs.registerHelper('time_ago', function(date, size) {
 
 	// Inspired by https://github.com/elving/swag/blob/00b3213de4811c0f27cb46c89b8ddae6b2e15702/src/swag.dates.coffee#L94
 
-	date = new Date(date)
-	seconds = Math.floor((new Date() - date) / 1000)
+	date = new Date(date);
+	seconds = Math.floor((new Date() - date) / 1000);
 
-	interval = Math.floor(seconds / 31536000)
+	interval = Math.floor(seconds / 31536000);
 	if (interval > 1)
-		return interval + " years ago"
+		return interval + " years ago";
 
-	interval = Math.floor(seconds / 2592000)
+	interval = Math.floor(seconds / 2592000);
 	if (interval > 1)
-		return interval + " months ago"
+		return interval + " months ago";
 
-	interval = Math.floor(seconds / 86400)
+	interval = Math.floor(seconds / 86400);
 	if (interval > 1)
-		return interval + " days ago"
+		return interval + " days ago";
 
-	interval = Math.floor(seconds / 3600)
+	interval = Math.floor(seconds / 3600);
 	if (interval > 1)
-		return interval + " hours ago"
+		return interval + " hours ago";
 
-	interval = Math.floor(seconds / 60)
+	interval = Math.floor(seconds / 60);
 	if (interval > 1)
-		return interval + " minutes ago"
+		return interval + " minutes ago";
 
-	if (Math.floor(seconds) == 0)
-		return 'Just now'
+	if (Math.floor(seconds) === 0)
+		return 'Just now';
 	else
 		return Math.floor(seconds) + ' seconds ago';
 
@@ -264,10 +264,10 @@ hbs.registerHelper('project_widget', function(project) {
 
 	projectImage = '/assets/img/DefaultProjectWidget.png';
 	return [' <div class="projectwidget" onclick="location.href=\'/project/' + project.name + '\';" style="background-image:url(\'' + projectImage + '\');">',
-				'<div class="info">',
-				'	<h3>' + project.name + '</h3><p>Created By: <a href="user/' + project.creator.username + '">' + project.creator.username + '</a>.</p>',
-				'</div>',
-			'</div>'].join('');
+	'<div class="info">',
+	'	<h3>' + project.name + '</h3><p>Created By: <a href="user/' + project.creator.username + '">' + project.creator.username + '</a>.</p>',
+	'</div>',
+	'</div>'].join('');
 
 });
 
