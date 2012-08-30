@@ -1,3 +1,7 @@
+var fs = require('fs')
+, path = require('path')
+_ = require('underscore');
+
 app.all('*', function(req, res, next) {
 	if(req.user){
 		res.locals.everyauth = {user:req.user};
@@ -12,6 +16,9 @@ require('./discover');
 require('./user');
 require('./project');
 
+_.each(fs.readdirSync(path.resolve(__dirname, './project')), function (file) {
+	require(path.resolve(__dirname, './project/', file));
+})
 
 // Check Authentication
 app.all('*', function (req, res, next) {
