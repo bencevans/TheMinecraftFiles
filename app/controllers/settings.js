@@ -21,6 +21,7 @@ app.get('/settings/:subPage', function (req, res) {
 				if(err) return next(err);
 
 				res.render('settings', {
+					title:subPages[req.params.subPage].name,
 					subPages: helpers._.toArray(subPages),
 					subPage: {view:view, name:subPages[req.params.subPage].name, slug:subPages[req.params.subPage].slug}
 				});
