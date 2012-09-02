@@ -3,7 +3,6 @@ stylus = require('stylus'),
 fs = require('fs'),
 redisStore = require('connect-redis')(express),
 crypto = require('crypto'),
-hbs = require('hbs'),
 http = require('http');
 
 app = express();
@@ -11,6 +10,7 @@ var server = http.createServer(app);
 
 var flashify = require('flashify');
 _ = require('underscore');
+hbs = require('hbs');
 config = {mongo:{}};
 
 // Bootstrap (DB Etc.)
@@ -109,64 +109,10 @@ helpers.md5 = function (string) {
 
 
 // Register hbs/handlebars helpers & partials
-hbs.registerHelper('user_preferred_name', function(userProfile) {
-	if(typeof userProfile.realName !== "undefined")
-		return userProfile.realName;
-	return userProfile.username;
-});
 
-hbs.registerHelper('gravatar_url', function(gravatarHash, size) {
-	if(typeof gravatarHash !== "string")
-		return false;
-	if(gravatarHash.match(/@/))
-		gravatarHash = helpers.md5(gravatarHash);
-	return "http://www.gravatar.com/avatar/" + gravatarHash + "?s=" + size || 140;
-});
-
-hbs.registerHelper('time_ago', function(date, size) {
-
-	// Inspired by https://github.com/elving/swag/blob/00b3213de4811c0f27cb46c89b8ddae6b2e15702/src/swag.dates.coffee#L94
-
-	date = new Date(date);
-	seconds = Math.floor((new Date() - date) / 1000);
-
-	interval = Math.floor(seconds / 31536000);
-	if (interval > 1)
-		return interval + " years ago";
-
-	interval = Math.floor(seconds / 2592000);
-	if (interval > 1)
-		return interval + " months ago";
-
-	interval = Math.floor(seconds / 86400);
-	if (interval > 1)
-		return interval + " days ago";
-
-	interval = Math.floor(seconds / 3600);
-	if (interval > 1)
-		return interval + " hours ago";
-
-	interval = Math.floor(seconds / 60);
-	if (interval > 1)
-		return interval + " minutes ago";
-
-	if (Math.floor(seconds) === 0)
-		return 'Just now';
-	else
-		return Math.floor(seconds) + ' seconds ago';
-
-});
-
-hbs.registerHelper('project_widget', function(project) {
-
-	projectImage = '/assets/img/DefaultProjectWidget.png';
-	return [' <div class="projectwidget" onclick="location.href=\'/project/' + project.name + '\';" style="background-image:url(\'' + projectImage + '\');">',
-	'<div class="info">',
-	'	<h3>' + project.name + '</h3><p>Created By: <a href="user/' + project.creator.username + '">' + project.creator.username + '</a>.</p>',
-	'</div>',
-	'</div>'].join('');
-
-});
+_.each(fs.readdirSync('./app/view_helpers'), function(view_helper) {
+	require('./app/view_helpers/' + view_helper);
+})
 
 app.get('/500', function(req, res, next) {
 	next('Test Error');
