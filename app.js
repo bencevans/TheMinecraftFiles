@@ -2,8 +2,8 @@ var express = require('express'),
 stylus = require('stylus'),
 fs = require('fs'),
 redisStore = require('connect-redis')(express),
-crypto = require('crypto');
-var hbs = require('hbs'),
+crypto = require('crypto'),
+hbs = require('hbs'),
 http = require('http');
 
 app = express();
@@ -12,127 +12,21 @@ var server = http.createServer(app);
 var flashify = require('flashify');
 _ = require('underscore');
 config = {mongo:{}};
-//Bootstrap (DB Etc.)
+
+// Bootstrap (DB Etc.)
 require('./bootstrap.js');
 
+// TMF Library
 tmflib = require('./lib/tmf.js');
 tmf= tmflib.createInterface(db);
 
 
 // Authentication Requirements
-var everyauth = require('everyauth');
-everyauth.github
-.appId('9a5e15b6d6071293280c')
-.appSecret('eb08869d2f61b387222f6494b95069cd1f44e1a5')
-.moduleTimeout( 8000 )
-.findOrCreateUser( function (session, accessToken, accessTokenExtra, githubUserMetadata) {
+everyauth = require('everyauth');
 
-	var promise = this.Promise();
-
-
-
-	db.user.count({}, function (err, count) {
-
-		if(err){
-			console.error('Problem Counting Current User');
-			return false;
-		}
-
-		if(count === 0) {
-
-			var newUser = new db.user({
-				username: githubUserMetadata.login,
-				gitHubID: githubUserMetadata.id
-			});
-			newUser.save(function (err) {
-				if(err)
-					return false;
-				promise.fulfill(newUser);
-			});
-
-
-
-
-		} else {
-
-			db.user.findOne({ gitHubID: githubUserMetadata.id}, function (err, user) {
-				if (err) return promise.fulfill([err]);
-				promise.fulfill(user);
-			});
-
-		}
-	});
-
-	return promise;
+_.each(fs.readdirSync('./app/auth'), function(authModule) {
+	require('./app/auth/' + authModule);
 })
-.redirectPath('/');
-
-var usersByLogin = {
-	'jim': {
-		login: 'jim',
-		email: 'jim@jimpick.com',
-		password: 'jim'
-	}
-};
-
-
-everyauth
-.password
-.loginWith('login')
-.getLoginPath('/login')
-.postLoginPath('/auth/login')
-.loginView('login.html')
-.loginLocals( function (req, res, done) {
-	setTimeout( function () {
-		done(null, {
-			title: 'Login'
-		});
-	}, 200);
-})
-.authenticate( function (login, password) {
-	var errors = [];
-	if (!login) errors.push('Missing login');
-	if (!password) errors.push('Missing password');
-	if (errors.length) return errors;
-
-	var promise = this.Promise();
-
-	db.user.findOne({username:login}, function(err, user) {
-		if (user.password !== password) return promise.fulfill(['Login failed']);
-		promise.fulfill(user);
-	});
-
-	return promise;
-})
-
-.getRegisterPath('/register')
-.postRegisterPath('/register')
-.registerView('register.html')
-.registerLocals( function (req, res, done) {
-	setTimeout( function () {
-		done(null, {
-			title: 'Register'
-		});
-	}, 200);
-})
-.extractExtraRegistrationParams( function (req) {
-	return {
-		email: req.body.email
-	};
-})
-.validateRegistration( function (newUserAttrs, errors) {
-	var login = newUserAttrs.login;
-	if (usersByLogin[login]) errors.push('Login already taken');
-	return errors;
-})
-.registerUser( function (newUserAttrs) {
-	var login = newUserAttrs[this.loginKey()];
-	return usersByLogin[login] = newUserAttrs;
-})
-
-.loginSuccessRedirect('/')
-.registerSuccessRedirect('/');
-
 
 everyauth.everymodule.logoutRedirectPath('/');
 
@@ -172,7 +66,7 @@ app.configure(function(){
 
 app.configure('development', function(){
 	app.use(express['static'](__dirname + '/public'));
-	//app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+	// app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 	app.use(function(err, req, res, next) {
 		console.error(err);
 		res.send(500, 'Sorry We\'ve had a problem');
@@ -182,10 +76,10 @@ app.configure('development', function(){
 app.configure('production', function(){
 	var oneYear = 31557600000;
 	app.use(express['static'](__dirname + '/public', { maxAge: oneYear }));
-	//app.use(express.errorHandler());
+	// app.use(express.errorHandler());
 });
 
-//PJAX Baby!
+// PJAX
 
 app.all('*', function (req, res, next) {
 	if (req.headers['x-pjax'])
