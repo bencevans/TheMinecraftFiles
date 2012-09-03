@@ -1,3 +1,5 @@
+var fs = require('fs');
+
 app.get('/project/:projectSlug/gallery/:imageId.png', function (req, res, next) {
 	db.galleryImage.findById(req.params.imageId, function(err, image) {
 		if(err)
@@ -11,7 +13,6 @@ app.get('/project/:projectSlug/gallery/:imageId.png', function (req, res, next) 
 });
 
 app.get('/project/:projectSlug/gallery/:imageId', function (req, res, next) {
-	console.log('here');
 	db.galleryImage.findById(req.params.imageId, function(err, galleryImage) {
 		if(err)
 			return next(err);
@@ -23,6 +24,40 @@ app.get('/project/:projectSlug/gallery/:imageId', function (req, res, next) {
 		res.render('project/gallery/image', {layout:false, galleryImage:galleryImage}, function (err, html) {
 			if(err) return next(err);
 			res.render('project', {subPage:{content:html}});
+		});
+	});
+});
+
+app.get('/project/:projectSlug/gallery/:imageId/delete', function (req, res, next) {
+
+	if(!req.project.isOwner)
+		return next();
+
+	db.galleryImage.findById(req.params.imageId, function(err, galleryImage) {
+		if(err)
+			return next(err);
+		if(!galleryImage)
+			return res.render('errors/404', {status:404});
+
+		db.file.findById(galleryImage.file, function(err, file) {
+			if(err)
+				return next(err);
+			if(!galleryImage)
+				return res.render('errors/404', {status:404});
+
+			galleryImage.remove(function(err) {
+				if(err)
+					return next(err);
+				fs.unlink(file.path, function(err) {
+					if(err)
+						return next(err);
+					file.remove(function(err) {
+						if(err)
+							return next(err);
+						res.redirect('/project/' + req.params.projectSlug + '/gallery');
+					})
+				})
+			})
 		});
 	});
 });
