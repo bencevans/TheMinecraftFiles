@@ -1,5 +1,6 @@
 test:
 	./node_modules/.bin/mocha \
-	--reporter list
+	--reporter list \
+	--compilers coffee:coffee-script
 
 .PHONY: test

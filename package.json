@@ -4,8 +4,8 @@
   "description": "Minecraft Addon Development Site",
   "main": "server.js",
   "scripts": {
-    "test": "mocha",
-    "start": "node server.js"
+    "test": "mocha -compilers coffee:coffee-script",
+    "start": "coffee server"
   },
   "repository": {
     "type": "git",
@@ -37,7 +37,8 @@
     "express-messages": "0.0.x",
     "flow": "0.2.x",
     "hbs": "1.0.x",
-    "jquery": "1.7.x"
+    "jquery": "1.7.x",
+    "coffee-script": "1.3.x"
   },
   "devDependencies": {
     "mocha": "*"
