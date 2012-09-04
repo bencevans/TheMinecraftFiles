@@ -33,29 +33,22 @@ app.get('/project/:projectSlug/gallery/:imageId/delete', function (req, res, nex
 	if(!req.project.isOwner)
 		return next();
 
-	db.galleryImage.findById(req.params.imageId, function(err, galleryImage) {
+	db.galleryImage.findById(req.params.imageId).populate('file').exec(function(err, galleryImage) {
 		if(err)
 			return next(err);
 		if(!galleryImage)
 			return res.render('errors/404', {status:404});
 
-		db.file.findById(galleryImage.file, function(err, file) {
+		galleryImage.remove(function(err) {
 			if(err)
 				return next(err);
-			if(!galleryImage)
-				return res.render('errors/404', {status:404});
-
-			galleryImage.remove(function(err) {
+			fs.unlink(galleryImage.file.path, function(err) {
 				if(err)
 					return next(err);
-				fs.unlink(file.path, function(err) {
+				galleryImage.file.remove(function(err) {
 					if(err)
 						return next(err);
-					file.remove(function(err) {
-						if(err)
-							return next(err);
-						res.redirect('/project/' + req.params.projectSlug + '/gallery');
-					})
+					res.redirect('/project/' + req.params.projectSlug + '/gallery');
 				})
 			})
 		});

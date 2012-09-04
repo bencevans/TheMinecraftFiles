@@ -30,14 +30,14 @@
     "express": "3.0.x",
     "ejs": "0.8.1",
     "everyauth": "0.3.x",
-    "mongoose": "2.7.2",
+    "mongoose": "3.1.x",
     "connect-redis": "1.4.0",
     "async": "~0.1.22",
     "flashify": "~0.1.0",
     "express-messages": "0.0.x",
     "flow": "0.2.x",
     "hbs": "1.0.x",
-    "jquery": "1.7.x"
+    "jquery": "1.7.x",
   },
   "devDependencies": {
     "mocha": "*"
