@@ -37,7 +37,7 @@
     "express-messages": "0.0.x",
     "flow": "0.2.x",
     "hbs": "1.0.x",
-    "jquery": "1.7.x",
+    "jquery": "1.7.x"
   },
   "devDependencies": {
     "mocha": "*"
