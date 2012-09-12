@@ -26,6 +26,7 @@ app.all "*", (req, res, next) ->
 
 require "./dashboard"
 require "./settings"
+require "./comment"
 
 # 404
 app.all "*", (req, res) ->
