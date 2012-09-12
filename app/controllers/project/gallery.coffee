@@ -32,7 +32,16 @@ app.get "/project/:projectSlug/gallery/:imageId", (req, res, next) ->
           content: html
 
 
-
+app.get "/project/:projectSlug/gallery/:imageId/default", (req, res, next) ->
+  return next()  unless req.project.isOwner
+  db.project.findById req.project._id, (err, project) ->
+    next err if err
+    db.galleryImage.findById req.params.imageId, (err, galleryImage) ->
+      return next(err) if err
+      return res.render "errors/404", {status: 404} unless galleryImage
+      project.update {image:req.params.imageId}, (err, updatedDoc) ->
+        next err if err
+        res.redirect "/project/" + req.params.projectSlug + "/gallery/" + req.params.imageId
 
 app.get "/project/:projectSlug/gallery/:imageId/delete", (req, res, next) ->
   return next()  unless req.project.isOwner
@@ -49,8 +58,6 @@ app.get "/project/:projectSlug/gallery/:imageId/delete", (req, res, next) ->
         galleryImage.file.remove (err) ->
           return next(err)  if err
           res.redirect "/project/" + req.params.projectSlug + "/gallery"
-
-
 
 
 

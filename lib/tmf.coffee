@@ -1,21 +1,7 @@
-#
-#
-#dashboard.timeline
-#
-#users.profile :username
-#users.projects :username
-#users.watching
-#users.following
-#users.update :username? {name:"New Name"}
-#
-#projects.overview :projectName
-#projects.update :projectName? {website:"http://projectssite.com"}
-#projects.members :projectName
-#
-#issues.overiew :projectName {paginationOptions etc.}
-#issues.new :projectName {}
-#
-#
+# Requires
+_ = require 'underscore'
+
+# Helpers
 md5 = (string) ->
   crypto.createHash("md5").update(string).digest "hex"
 async = require("async")
@@ -44,6 +30,7 @@ Interface::getUser = (userIdentifier, callback) ->
       returnUser.gravatarhash = md5(returnUser.email or "default-user@theminecraftfiles.com")
       _.each returnUser.projects, (project) ->
         project.creator.username = returnUser.username
+        project.image.src = "/project/" + project.name + "/gallery/" + project.image + ".png" if project.image
 
       callback null, returnUser
 
@@ -61,7 +48,11 @@ Interface::getCategory = (categoryIndetifier, callback) ->
     , (callback) ->
       
       # Gather Recent
-      self.db.project.find(category: category._id).populate("creator", "username").exec callback
+      self.db.project.find(category: category._id).populate("creator", "username").exec (err, projects) ->
+        return callback(err) if err
+        _.each projects, (project) ->
+          project.image.src = "/project/" + project.name + "/gallery/" + project.image + ".png" if project.image
+        callback null, projects
     , (callback) ->
       
       # Gather Trending
@@ -78,15 +69,14 @@ Interface::getCategory = (categoryIndetifier, callback) ->
 
 Interface::getProject = (nameIndetifier, callback) ->
   self = this
-  self.db.project.findOne
-    name: nameIndetifier
-  , (err, project) ->
+  self.db.project.findOne({name: nameIndetifier}).populate('image').exec (err, project) ->
     return callback(err, null)  if err
     return callback(null, project)  unless project
     self.getUser project.creator, (err, creator) ->
       return callback(err, null)  if err
       return callback(null, project)  unless creator
       returnProject = project.toObject()
+      returnProject.image.src = "/project/" + project.name + "/gallery/" + project.image + ".png" if project.image
       returnProject.creator = creator
       callback null, returnProject
 
