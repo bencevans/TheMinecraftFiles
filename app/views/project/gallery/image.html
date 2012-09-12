@@ -11,6 +11,23 @@
 	{{#if this.description}}<p>{{description}}</p>{{/if}}
 </div>
 {{/galleryImage}}
-<?= $this->RenderView("blocks/comments.php", array('ThreadName'=>'Project.' . $ProjectInfo['_id'] . '.Gallery.' . $GalleryImage['_id'])); ?>
 
-<?php } ?>
+
+<div class=comments>
+</div>
+
+<script type="text/javascript">
+$.getJSON('/comments?identifier[type]=galleryImage&identifier[id]={{galleryImage._id}}', function (body, err) {
+	for (var i = body.length - 1; i >= 0; i--) {
+		$('.comments').append('<div class=message>' + body[i].text + '</div>')
+	};
+	
+})
+</script>
+
+<form method=POST action="/comment">
+	<input type=text name="text">
+	<input type=hidden name="identifier[type]" value="galleryImage">
+	<input type=hidden name="identifier[id]" value="{{galleryImage._id}}">
+	<input type=submit value="Comment">
+</form>

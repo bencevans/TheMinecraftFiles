@@ -1,5 +1,6 @@
 fs = require 'fs'
 
+# Route to return Actual Image in PNG Format.
 app.get "/project/:projectSlug/gallery/:imageId.png", (req, res, next) ->
   db.galleryImage.findById req.params.imageId, (err, image) ->
     return next(err)  if err
@@ -11,7 +12,7 @@ app.get "/project/:projectSlug/gallery/:imageId.png", (req, res, next) ->
       res.status(200).sendfile file.path
 
 
-
+# Route to return an individual image gallery page
 app.get "/project/:projectSlug/gallery/:imageId", (req, res, next) ->
   db.galleryImage.findById req.params.imageId, (err, galleryImage) ->
     return next(err)  if err
@@ -31,7 +32,7 @@ app.get "/project/:projectSlug/gallery/:imageId", (req, res, next) ->
         subPage:
           content: html
 
-
+# Route to set an image to the default project image (Project Owners Only)
 app.get "/project/:projectSlug/gallery/:imageId/default", (req, res, next) ->
   return next()  unless req.project.isOwner
   db.project.findById req.project._id, (err, project) ->
@@ -43,6 +44,7 @@ app.get "/project/:projectSlug/gallery/:imageId/default", (req, res, next) ->
         next err if err
         res.redirect "/project/" + req.params.projectSlug + "/gallery/" + req.params.imageId
 
+# Route to delete an Image (Project Owners Only)
 app.get "/project/:projectSlug/gallery/:imageId/delete", (req, res, next) ->
   return next()  unless req.project.isOwner
   db.galleryImage.findById(req.params.imageId).populate("file").exec (err, galleryImage) ->
@@ -60,7 +62,7 @@ app.get "/project/:projectSlug/gallery/:imageId/delete", (req, res, next) ->
           res.redirect "/project/" + req.params.projectSlug + "/gallery"
 
 
-
+# Displays an overview of all images in gallery
 app.post "/project/:projectSlug/gallery", (req, res, next) ->
   return next()  unless req.project.isOwner
   upload = new db.file(path: req.files.galleryFileUpload.path)
