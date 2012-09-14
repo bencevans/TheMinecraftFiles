@@ -16,8 +16,8 @@ global.config = mongo: {}
 require "./bootstrap"
 
 # TMF Library
-tmflib = require("./lib/tmf")
-tmf = tmflib.createInterface(db)
+tmf = require("./lib/tmf")
+tmf.db = db
 
 # Authentication Requirements
 global.everyauth = require("everyauth")

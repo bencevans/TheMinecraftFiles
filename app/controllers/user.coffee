@@ -1,3 +1,5 @@
+async = require 'async'
+
 app.get "/user/:username", (req, res, next) ->
   tmf.getUser req.params.username, (err, user) ->
     return next(err)  if err
@@ -5,8 +7,15 @@ app.get "/user/:username", (req, res, next) ->
       
       # User Exists
       res.locals.title = user.username
-      res.render "user",
-        profile: user
+
+      user.getProjects ->
+        async.map user.projects, (project, callback) ->
+          project.getCreator (err) ->
+            callback err, project
+        , (err, results) ->
+          console.log results
+          res.render "user",
+           profile: user
 
     else
       

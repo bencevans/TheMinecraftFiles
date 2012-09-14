@@ -1,83 +1,119 @@
 # Requires
+crypto = require("crypto")
 _ = require 'underscore'
+async = require 'async'
 
 # Helpers
 md5 = (string) ->
   crypto.createHash("md5").update(string).digest "hex"
-async = require("async")
-crypto = require("crypto")
-_ = require("underscore")
 
-# db = pbject containing all Mongo Models.
-exports.createInterface = (db) ->
-  new Interface(db)
 
-Interface = (db) ->
-  @db = db
-  this
+# db = Object containing all Mongo Models.
+db
+exports.db = db
 
-Interface::getUser = (userIdentifier, callback) ->
+# getUser - get info about a particular user
+exports.getUser = getUser = (userIdentifier, callback) ->
   self = this
-  self.db.user.findOne (if (typeof userIdentifier is "object") then _id: userIdentifier else username: userIdentifier), (err, user) ->
+  self.db.user.findOne (if (typeof userIdentifier is "object") then _id: userIdentifier else username: userIdentifier), (err, userMongoObject) ->
     return callback(err, null)  if err
-    return callback(null, user)  unless user
-    self.db.project.find
-      creator: user._id
-    , (err, projects) ->
-      return callback(err)  if err
-      returnUser = user.toObject()
-      returnUser.projects = projects
-      returnUser.gravatarhash = md5(returnUser.email or "default-user@theminecraftfiles.com")
-      _.each returnUser.projects, (project) ->
-        project.creator.username = returnUser.username
-        project.image.src = "/project/" + project.name + "/gallery/" + project.image + ".png" if project.image
+    return callback(null, userMongoObject)  unless userMongoObject
+    new user userMongoObject.toObject(), callback
 
-      callback null, returnUser
+# User Object, This proccesses a user db lookup and filters ou to be only public data
+user = (user, callback) ->
+  this._id = user._id
+  this.username = user.username
+  this.minecraftUsername = user.minecraftUsername
+  this.twitterUsername = user.twitterUsername
+  this.gitHubUsername = user.gitHubUsername
+  this.website = user.website
+  this.realName = user.realName
+  this.gravatarhash = md5(user.email or "default-user@theminecraftfiles.com")
+  this.href = "http://localhost:3000/user/" + user.username
+  callback null, this
 
-
-
-Interface::getCategory = (categoryIndetifier, callback) ->
+# Get all projects with the user set as creator
+user::getProjects = (callback) ->
   self = this
-  self.db.category.findOne (if (typeof categoryIndetifier is "object") then _id: categoryIndetifier else slug: categoryIndetifier), (err, category) ->
-    return callback(err, null)  if err
-    return callback(null, category)  unless category
-    async.parallel [(callback) ->
-      
-      # Gather Popular
-      callback null, null
-    , (callback) ->
-      
-      # Gather Recent
-      self.db.project.find(category: category._id).populate("creator", "username").exec (err, projects) ->
-        return callback(err) if err
-        _.each projects, (project) ->
-          project.image.src = "/project/" + project.name + "/gallery/" + project.image + ".png" if project.image
-        callback null, projects
-    , (callback) ->
-      
-      # Gather Trending
-      callback null, null
-    ], (err, results) ->
-      return callback(err)  if err
-      returnCategory = category
-      returnCategory.popular = results[0]
-      returnCategory.recent = results[1]
-      returnCategory.trending = results[2]
-      callback null, returnCategory
+  db.project.find {creator:this._id}, (err, projects) ->
+    async.map projects, (MongoProjectObject, callback) ->
+      new project MongoProjectObject, callback
+      #new project MongoProjectObject callback
+    , (err, results) ->
+      self.projects = results
+      callback err, self
 
+# getProject from a projects name
+exports.getProject = getProject = (nameIndetifier, callback) ->
+  db.project.findOne {name: nameIndetifier}, (err, mongoProjectObject) ->
+    callback err if err
+    new project mongoProjectObject, callback
 
+# project object
+project = (project, callback) ->
+  this._id = project._id
+  this.name = project.name
+  this._creator = project.creator
+  this._image = project.image
+  this.image =
+    src:"/project/" + project.name + "/gallery/" + project.image + ".png" if project.image
+  this.description = project.description
+  this.image = {}
+  this.image.src = "/project/" + project.name + "/gallery/" + project.image + ".png" if project.image
+  callback null, this
 
-Interface::getProject = (nameIndetifier, callback) ->
+project::getWatchers = (callback) ->
+  # TODO: DB Lookup
+  this.watchers = {}
+  callback null, this
+
+project::getCreator = (callback) ->
   self = this
-  self.db.project.findOne({name: nameIndetifier}).populate('image').exec (err, project) ->
-    return callback(err, null)  if err
-    return callback(null, project)  unless project
-    self.getUser project.creator, (err, creator) ->
-      return callback(err, null)  if err
-      return callback(null, project)  unless creator
-      returnProject = project.toObject()
-      returnProject.image.src = "/project/" + project.name + "/gallery/" + project.image + ".png" if project.image
-      returnProject.creator = creator
-      callback null, returnProject
+  getUser this._creator, (err, user) ->
+    callback err if err
+    self.creator = user
+    callback null, self
 
+project::getWatcherCount = (callback) ->
+  # TODO: DB Lookup
+  this.watcherCount = 0
+  callback null, this
+
+project::getImage = (callback) ->
+  # TODO: DB Lookup
+  this.watcherCount = 0
+  callback null, this
+
+
+exports.getCategory = getCategory = (categoryIndetifier, callback) ->
+  self = this
+  db.category.findOne (if (typeof categoryIndetifier is "object") then _id: categoryIndetifier else slug: categoryIndetifier), (err, mongoCategory) ->
+    return callback(err, null)  if err
+    return callback(null, mongoCategory)  unless mongoCategory
+    new category mongoCategory, callback
+
+category = (category, callback) ->
+  this._id = category._id
+  this.name = category.name
+  this.slug = category.slug
+  callback null, this
+
+category::getRecent = (callback) ->
+  self = this
+  db.project.find {category: self._id}, (err, projects) ->
+    async.map projects, (MongoProjectObject, callback) ->
+      new project MongoProjectObject, callback
+      #new project MongoProjectObject callback
+    , (err, results) ->
+      self.recent = results
+      callback err, self
+
+category::getPopular = (callback) ->
+  this.popular = {}
+  callback null, this
+
+category::getTrending = (callback) ->
+  this.trending = {}
+  callback null, this
 

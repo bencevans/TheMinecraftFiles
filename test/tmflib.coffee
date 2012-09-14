@@ -1,17 +1,20 @@
 assert = require("assert")
 path = require("path")
-tmfLib = require(path.resolve(__dirname, "../lib/tmf"))
 global.config = mongo:
   uri: "mongodb://localhost/TheMinecraftFilesTEST"
 
 require path.resolve(__dirname, "../bootstrap")
+
+
 testUser = new db.user(username: "johnsmith")
 testCategory = new db.category(
   name: "Mods"
   slug: "mods"
 )
 describe "tmfLib", ->
-  tmf = undefined
+  tmf = require(path.resolve(__dirname, "../lib/tmf"))
+  tmf.db = global.db
+
   before (done) ->
     testUser.save (err) ->
       return done(err)  if err
@@ -25,10 +28,7 @@ describe "tmfLib", ->
     testCategory.remove()
     done()
 
-  describe "#createInterface()", ->
-    it "should return an Interface instance", ->
-      tmf = tmfLib.createInterface(db)
-      assert.equal typeof tmf, "object"
+
 
 
   describe "#getUser()", ->

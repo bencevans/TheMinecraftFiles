@@ -1,3 +1,6 @@
+
+async = require 'async'
+
 app.get "/discover", (req, res) ->
   db.category.find {}, (err, categories) ->
     return next(err)  if err
@@ -13,9 +16,15 @@ app.get "/discover/:categorySlug", (req, res) ->
     unless category
       res.send 404
     else
-      res.render "discover_category",
-        category: category
-        title: category.name
+      category.getRecent (err) ->
+        next err if err
+        async.map category.recent, (project, callback) ->
+          project.getCreator callback
+        , (err, results) ->
+
+          res.render "discover_category",
+            category: category
+            title: category.name
 
 
 
