@@ -117,3 +117,37 @@ category::getTrending = (callback) ->
   this.trending = {}
   callback null, this
 
+
+exports.getComments = getComments = (identifier, callback) ->
+  console.log identifier
+  db.comment.find {}, (err, comments) ->
+    next(err) if err
+
+    # Due to issues with mongoose, currently this pulls all comments in and is filtered here to match qeuery
+    filteredComments = _.filter comments, (comment) ->
+      return true  if comment.identifier.type is identifier.type
+
+    async.map filteredComments, (commentObject, callback) ->
+      new comment commentObject, callback
+    , (err, results) ->
+      return callback err if err
+      callback null, results
+
+
+comment = (object, callback) ->
+
+  getUser object.creator, (err, user) ->
+    callback err if err
+
+    callback null,
+      _id: object._id
+      creator:
+        user
+      text:
+        object.text
+      created:
+        object.created
+      identifier:
+        object.identifier
+
+

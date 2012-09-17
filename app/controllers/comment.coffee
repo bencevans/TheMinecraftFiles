@@ -20,12 +20,9 @@ app.get '/comments', (req, res, next) ->
   # Return Error if not enouph parameters are met.
   return res.send error: "Not Enouph Info"  if typeof req.query.identifier is "undefined"
 
-  db.comment.find({}).populate('creator').exec (err, comments) ->
-    next(err) if err
-
-    # Due to issues with mongoose, currently this pulls all comments in and is filtered here to match qeuery
-    filteredComments = _.filter comments, (comment) ->
-      return true  if comment.identifier.type is req.query.type and comment.identifier.id is req.query.id
-      false
-
-    res.send filteredComments
+  tmf.getComments
+    type: req.query.identifier.type
+    id: req.query.identifier.id
+  , (err, comments) ->
+    next err if err
+    res.send comments
