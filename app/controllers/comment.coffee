@@ -29,4 +29,3 @@ app.get '/comments', (req, res, next) ->
       false
 
     res.send filteredComments
-    console.log filteredComments

@@ -13,7 +13,7 @@ app.get "/user/:username", (req, res, next) ->
           project.getCreator (err) ->
             callback err, project
         , (err, results) ->
-          console.log results
+          next err if err
           res.render "user",
            profile: user
 
