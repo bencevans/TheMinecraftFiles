@@ -87,7 +87,7 @@ project::getImage = (callback) ->
 
 project::getTimeline = (callback) ->
   self = this
-  db.action.find {project:self._id}, (err, actions) ->
+  db.action.find {project:self._id, type:{"$ne":'watch'}}, (err, actions) ->
     timeline = []
     _.each actions, (actionObject) ->
       new action actionObject, (err, action) ->
@@ -96,6 +96,34 @@ project::getTimeline = (callback) ->
     self.timeline = timeline
     callback null, self
 
+project::watch = (userId, callback) ->
+  new db.watch
+    user: userId
+    watching: this._id
+  .save callback
+
+project::isWatching = (userId, callback) ->
+  console.log
+    user: userId
+    watching: this._id
+  db.watch.findOne
+    user: userId
+    watching: this._id
+  , (err, watchObject) ->
+    console.log err
+    console.log watchObject
+    callback err if err
+    callback null, (if watchObject then true else false)
+
+project::unwatch = (userId, callback) ->
+
+  #find rather than findOne just incase multiple watch objects have got through
+  db.watch.find(
+    user: userId
+    project: this._id
+  ).remove()
+
+  callback null, true
 
 exports.getCategory = getCategory = (categoryIndetifier, callback) ->
   self = this
@@ -191,4 +219,15 @@ action::getProject = (callback) ->
   getProject this._project, (err, project) ->
     return callback err if err
     self.project = project
+    callback null, self
+
+exports.getTimeline = getTimeline = (projectIdArray, callback) ->
+  self = this
+  db.action.find {project:"$elemMatch":projectIdArray}, (err, actions) ->
+    timeline = []
+    _.each actions, (actionObject) ->
+      new action actionObject, (err, action) ->
+        return callback err if err
+        timeline.push action
+    self.timeline = timeline
     callback null, self

@@ -45,6 +45,12 @@ app.all "/project/:projectSlug/:subPage*", (req, res, next) ->
           slug: "settings"
           url: "/project/" + project.name + "/settings"
 
+      if req.user
+        req.project.isWatching req.user._id, (err, watching) ->
+          next err if err
+          res.locals.watching = watching
+      else
+        res.locals.watching = false
       next()
 
 
