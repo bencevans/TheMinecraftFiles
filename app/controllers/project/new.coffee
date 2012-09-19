@@ -20,6 +20,13 @@ app.post "/new", (req, res, next) ->
         return next(err)  if err
         res.redirect "/project/" + category.name
 
+        tmf.createAction
+          type: "create"
+          actor: req.user._id
+          project: newproject._id
+        , (err, action) ->
+          next err if err
+
     else
       db.category.find {}, (err, categories) ->
         return next(err)  if err

@@ -46,7 +46,7 @@ user::getProjects = (callback) ->
 
 # getProject from a projects name
 exports.getProject = getProject = (nameIndetifier, callback) ->
-  db.project.findOne {name: nameIndetifier}, (err, mongoProjectObject) ->
+  db.project.findOne (if (typeof nameIndetifier is "object") then _id: nameIndetifier else name: nameIndetifier), (err, mongoProjectObject) ->
     callback err if err
     new project mongoProjectObject, callback
 
@@ -84,6 +84,17 @@ project::getImage = (callback) ->
   # TODO: DB Lookup
   this.watcherCount = 0
   callback null, this
+
+project::getTimeline = (callback) ->
+  self = this
+  db.action.find {project:self._id}, (err, actions) ->
+    timeline = []
+    _.each actions, (actionObject) ->
+      new action actionObject, (err, action) ->
+        return callback err if err
+        timeline.push action
+    self.timeline = timeline
+    callback null, self
 
 
 exports.getCategory = getCategory = (categoryIndetifier, callback) ->
@@ -150,4 +161,34 @@ comment = (object, callback) ->
       identifier:
         object.identifier
 
+exports.createAction = createAction = (actionObject, callback) ->
+  actionMongoObject = new db.action(actionObject)
+  actionMongoObject.save (err, saveObject) ->
+    return callback err if err
+    new action saveObject, callback
 
+
+action = (object, callback) ->
+  this._id = object._id
+  this._actor = object.actor
+  this._project = object.project
+  this.when = object.when
+  this.type = object.type
+  this.data = this.data or {}
+  callback null, this
+
+action::getActor = (callback) ->
+  self = this
+
+  getUser this._actor, (err, user) ->
+    return callback err if err
+    self.actor = user
+    callback null, self
+
+action::getProject = (callback) ->
+  self = this
+
+  getProject this._project, (err, project) ->
+    return callback err if err
+    self.project = project
+    callback null, self
