@@ -137,9 +137,10 @@ category = (category, callback) ->
   this.slug = category.slug
   callback null, this
 
-category::getRecent = (callback) ->
+category::getRecent = (options,callback) ->
   self = this
-  db.project.find {category: self._id}, (err, projects) ->
+  options.skip = (if options.page then options.page - 1 else 0) * options.limit
+  db.project.find({category: self._id}).limit(options.limit or 3).skip(options.skip).exec (err, projects) ->
     async.map projects, (MongoProjectObject, callback) ->
       new project MongoProjectObject, callback
       #new project MongoProjectObject callback

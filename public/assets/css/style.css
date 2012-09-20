@@ -314,7 +314,7 @@ footer .container {
 .projectwidget:hover, .projectwidget:hover *, .projectwidget:hover * * {
 	cursor:pointer;
 }
-.usersprojects .projectwidget {
+.usersprojects .projectwidget, .discoverprojects .projectwidget {
 	float:left;
 	margin-right:10px;
 }
