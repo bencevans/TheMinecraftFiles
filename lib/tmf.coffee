@@ -76,9 +76,13 @@ project::getCreator = (callback) ->
     callback null, self
 
 project::getWatcherCount = (callback) ->
-  # TODO: DB Lookup
-  this.watcherCount = 0
-  callback null, this
+  self = this
+  db.watch.find
+    watching: this._id
+  .count (err, count) ->
+    self.watcherCount = count
+    callback err, count
+
 
 project::getImage = (callback) ->
   # TODO: DB Lookup
@@ -103,15 +107,10 @@ project::watch = (userId, callback) ->
   .save callback
 
 project::isWatching = (userId, callback) ->
-  console.log
-    user: userId
-    watching: this._id
   db.watch.findOne
     user: userId
     watching: this._id
   , (err, watchObject) ->
-    console.log err
-    console.log watchObject
     callback err if err
     callback null, (if watchObject then true else false)
 
