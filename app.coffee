@@ -37,6 +37,7 @@ app.configure "development", ->
   everyauth.debug = true
 
 app.configure ->
+  app.set "port", process.env.PORT or 3000
   app.set "views", __dirname + "/app/views"
   app.set "view engine", "html"
   app.engine "html", hbs.__express
@@ -110,4 +111,5 @@ app.get "/worker", (req, res, next) ->
   res.send 200, cluster.worker.process.pid + " " + cluster.worker.id
 
 require "./app/controllers"
-server.listen process.env.PORT or 3000
+server.listen app.get('port')
+console.log 'TheMinecraftFiles is listening on port ' + app.get 'port'
