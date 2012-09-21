@@ -113,3 +113,7 @@ app.get "/worker", (req, res, next) ->
 require "./app/controllers"
 server.listen app.get('port')
 console.log 'TheMinecraftFiles is listening on port ' + app.get 'port'
+
+if 'development' is app.get('env')
+  growl = require 'growl'
+  growl 'TheMinecraftFiles is listening on port ' + app.get 'port'
