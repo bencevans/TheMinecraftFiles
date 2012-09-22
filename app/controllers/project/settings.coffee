@@ -16,6 +16,7 @@ app.post "/project/:projectSlug/settings", (req, res, next) ->
     return next(err)  if err
     project.name = req.body.name
     project.description = req.body.description
+    project.githubRepoURI = req.body.githubrepouri
     project.save (err, project) ->
       return next(err)  if err
       res.redirect "/project/" + project.name + "/settings"

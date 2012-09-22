@@ -59,6 +59,7 @@ app.all "/project/:projectSlug/:subPage*", (req, res, next) ->
         next()
 
 
+
 app.get "/project/:projectSlug/gallery", (req, res, next) ->
   db.galleryImage.find
     project: req.project._id
@@ -80,8 +81,4 @@ app.get "/project/:projectSlug/gallery", (req, res, next) ->
         res.render "project",
           subPage:
             content: html
-
-
-
-
 

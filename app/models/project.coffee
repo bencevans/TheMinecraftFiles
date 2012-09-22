@@ -15,6 +15,10 @@ module.exports = new Schema(
     type: Schema.ObjectId
     ref: "galleryImage"
 
+  githubRepoURI:
+    type: String
+    match: /^[a-zA-Z0-9|-]+\/[a-zA-Z0-9|-]+$/
+
   name:
     type: String
     required: true

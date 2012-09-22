@@ -1,7 +1,12 @@
 <form method="POST" action='/project/{{project.name}}/settings'>
 	<label for="name">Project Name:</label>
 	<input name="name" id="name" type="text" value="{{project.name}}">
+
 	<label for="description">Project Description:</label>
 	<input name="description" id="description" type="text" value="{{project.description}}">
+
+	<label for="githubrepouri">GitHub Repo:</label>
+	<input name="githubrepouri" id="githubrepouri" type="text"  value="{{project.githubRepoURI}}"placeholder="e.g username/RepoName">
+
 	<input type="submit" value="Update">
 </form>

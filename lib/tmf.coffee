@@ -2,7 +2,7 @@
 crypto = require("crypto")
 _ = require 'underscore'
 async = require 'async'
-
+request = require 'request'
 # Helpers
 md5 = (string) ->
   crypto.createHash("md5").update(string).digest "hex"
@@ -54,6 +54,7 @@ exports.getProject = getProject = (nameIndetifier, callback) ->
 project = (project, callback) ->
   this._id = project._id
   this.name = project.name
+  this.githubRepoURI = project.githubRepoURI
   this._creator = project.creator
   this._image = project.image
   this.image =
@@ -62,6 +63,25 @@ project = (project, callback) ->
   this.image = {}
   this.image.src = "/project/" + project.name + "/gallery/" + project.image + ".png" if project.image
   callback null, this
+
+project::getIssues = (callback) ->
+  self = this
+
+  request 'https://api.github.com/repos/'+ self.githubRepoURI + '/issues', (err, res, body) ->
+    callback err if err
+
+    # self.githubRepoURI = false implies there is no issue provider attached
+    if not self.githubRepoURI
+      self.githubRepoURI = false
+      callback null, self
+
+    bodyObject = JSON.parse(body)
+
+    async.map bodyObject, (issueObject, callback) ->
+      new issue issueObject, callback
+    , (err, issues) ->
+      self.issues = issues
+      callback err, self
 
 project::getWatchers = (callback) ->
   # TODO: DB Lookup
@@ -158,7 +178,6 @@ category::getTrending = (callback) ->
 
 
 exports.getComments = getComments = (identifier, callback) ->
-  console.log identifier
   db.comment.find {}, (err, comments) ->
     next(err) if err
 
@@ -231,3 +250,17 @@ exports.getTimeline = getTimeline = (projectIdArray, callback) ->
         timeline.push action
     self.timeline = timeline
     callback null, self
+
+issue = (object, callback) ->
+  console.log object
+  this._id = object.id
+  this.title = object.title
+  this.assignee = object.assignee
+  this.state = object.state
+  this.number = object.number
+  this.updated_at = object.updated_at
+  this.body = object.body
+  this.labels = object.labels
+  this.user = object.user
+
+  callback null, this
