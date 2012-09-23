@@ -6,26 +6,38 @@ global.config = mongo:
 require path.resolve(__dirname, "../bootstrap")
 
 
-testUser = new db.user(username: "johnsmith")
+testUser = new db.user(
+  username: "johnsmith"
+)
+
 testCategory = new db.category(
   name: "Mods"
   slug: "mods"
 )
+
+testProject = new db.project(
+  name: "Tronic"
+  slug: "Ttronic"
+)
+
 describe "tmfLib", ->
   tmf = require(path.resolve(__dirname, "../lib/tmf"))
   tmf.db = global.db
 
   before (done) ->
     testUser.save (err) ->
-      return done(err)  if err
+      return done(err) if err
       testCategory.save (err) ->
-        done err
+        return done(err) if err
+        testProject.save (err) ->
+          done err
 
 
 
   after (done) ->
     testUser.remove()
     testCategory.remove()
+    testProject.remove()
     done()
 
 
@@ -78,7 +90,13 @@ describe "tmfLib", ->
     it "should resolve projects and project owners/creators"
 
   describe "#getProject()", ->
-    it "should return an valid project object"
-    it "should resolve projects owners/creators"
+    it "should return a valid project object by ObjectID", (done) ->
+      tmf.getProject testProject._id, (err, project) ->
+        assert.equal err, null
+        assert.notEqual project, null
+        assert.equal typeof project, "object"
+        assert.equal project._id.toString(), testProject._id.toString()
+        done()
+
 
 
