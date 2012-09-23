@@ -10,7 +10,7 @@ flashify = require("flashify")
 _ = require("underscore")
 global.hbs = require("hbs")
 
-global.config = mongo: {}
+global.config = mongo: if process.env.MONGOLAB_URI then {uri:process.env.MONGOLAB_URI} else {}
 
 # Bootstrap (DB Etc.)
 require "./bootstrap"
