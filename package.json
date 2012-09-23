@@ -44,5 +44,9 @@
   "devDependencies": {
     "mocha": "*",
     "growl": "~1.6.0"
+  },
+  "engines": {
+    "node": "0.8.x",
+    "npm": "1.1.x"
   }
 }
