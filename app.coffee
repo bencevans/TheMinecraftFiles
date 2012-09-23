@@ -1,7 +1,7 @@
 express = require("express")
 stylus = require("stylus")
 fs = require("fs")
-redisStore = require("connect-redis")(express)
+redisStore = if process.env.REDISTOGO_URL then require('connect-heroku-redis')(express) else require("connect-redis")(express)
 crypto = require("crypto")
 http = require("http")
 global.app = express()
