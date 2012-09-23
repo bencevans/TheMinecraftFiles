@@ -1,12 +1,13 @@
 app.get "/", (req, res) ->
-  db.project.find
-    creator: req.user._id
-  , (err, usersProjects) ->
-    return next(err)  if err
-    res.locals.title = "Timeline"
-    res.render "timeline",
-      usersFeedTimeline: []
-      usersProjects: usersProjects
 
+  tmf.getUser req.user._id, (err, dashboardUser) ->
+    next(err) if err
 
+    dashboardUser.getProjects (err) ->
+      next(err) if err
+
+      res.locals.title = "Timeline"
+      res.render "timeline",
+        usersFeedTimeline: []
+        usersProjects: dashboardUser.projects
 
