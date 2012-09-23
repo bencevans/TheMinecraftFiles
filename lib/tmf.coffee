@@ -44,6 +44,11 @@ user::getProjects = (callback) ->
       self.projects = results
       callback err, self
 
+user::getWatching = (callback) ->
+  this.watching = []
+  callback null, this
+
+
 # getProject from a projects name
 exports.getProject = getProject = (nameIndetifier, callback) ->
   db.project.findOne (if (typeof nameIndetifier is "object") then _id: nameIndetifier else name: nameIndetifier), (err, mongoProjectObject) ->

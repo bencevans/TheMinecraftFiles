@@ -6,6 +6,8 @@ app.get "/", (req, res) ->
     dashboardUser.getProjects (err) ->
       next(err) if err
 
+      dashboardUser.getWatching () ->
+
       res.locals.title = "Timeline"
       res.render "timeline",
         usersFeedTimeline: []
