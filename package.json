@@ -38,9 +38,11 @@
     "flow": "0.2.x",
     "hbs": "1.0.x",
     "jquery": "1.7.x",
-    "coffee-script": "1.3.x"
+    "coffee-script": "1.3.x",
+    "request": "~2.11.4"
   },
   "devDependencies": {
-    "mocha": "*"
+    "mocha": "*",
+    "growl": "~1.6.0"
   }
 }
