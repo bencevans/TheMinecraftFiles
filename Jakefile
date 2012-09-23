@@ -1,7 +1,9 @@
+require('coffee-script');
+
 namespace('setup', function() {
 
 	desc('Setup Default Categories');
-	task('categories', ['npm'], function (params) {
+	task('categories', function (params) {
 
 		_ = require('underscore');
 		fs = require('fs');
@@ -19,8 +21,8 @@ namespace('setup', function() {
 		db = {}
 
 		_.each(fs.readdirSync('./app/models'), function (fileName, index) {
-			// Retreive Schema Name (user.js => user)
-			var schemaName = fileName.match(/([a-zA-Z]+)\.js/)[1];
+			// Retreive Schema Name (user.coffee => user)
+			var schemaName = fileName.match(/([a-zA-Z]+)\.coffee/)[1];
 			db[schemaName] = mongoose.model(schemaName, require('./app/models/' + fileName));
 		});
 
