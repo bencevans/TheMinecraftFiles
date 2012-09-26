@@ -1,19 +1,37 @@
+
+# Required Packages
 express = require("express")
 stylus = require("stylus")
 fs = require("fs")
 redisStore = if process.env.REDISTOGO_URL then require('connect-heroku-redis')(express) else require("connect-redis")(express)
 crypto = require("crypto")
 http = require("http")
-global.app = express()
-server = http.createServer(app)
 flashify = require("flashify")
 _ = require("underscore")
-global.hbs = require("hbs")
 
-global.config = mongo: if process.env.MONGOLAB_URI then {uri:process.env.MONGOLAB_URI} else {}
+# Globals
+global.app = express()
+global.hbs = require("hbs")
+global.config =
+  mongo: {}
+  forceLocation: {}
+
+#MongoDB Configuration
+config.mongo.uri = if process.env.MONGOLAB_URI then {uri:process.env.MONGOLAB_URI} else null
+
+# Force Location Configuration
+config.forceLocation.domain = if process.env.FORCE_DOMAIN then process.env.FORCE_DOMAIN else null
+# If not set the current domain/host should be assumed for use.
+config.forceLocation.port   = if process.env.FORCE_PORT then process.env.FORCE_PORT else null
+# If not set the port should be assumed as 80
+config.forceLocation.protocol   = if process.env.FORCE_PROTOCOL then process.env.FORCE_PROTOCOL else null
+#If not set the protocol should be assumed as 'http://'
 
 # Bootstrap (DB Etc.)
 require "./bootstrap"
+
+# Create Web Server
+server = http.createServer(app)
 
 # TMF Library
 tmf = require("./lib/tmf")
@@ -74,11 +92,18 @@ app.configure "production", ->
     maxAge: oneYear
   )
 
-
-# app.use(express.errorHandler());
-
-# PJAX
 app.all "*", (req, res, next) ->
+
+  # Force Domain if Config Options are set.
+  if config.forceLocation
+    if config.forceLocation.domain
+      if req.domain != config.forceLocation.domain
+        # Redirect with Defaults if Required
+        res.redirect (if config.forceLocation.protocol then config.forceLocation.protocol else 'http://') +
+        config.forceLocation.domain +
+        (if config.forceLocation.port then ':' + config.forceLocation.port else '') + req.url
+
+  # PJAX
   res.locals.layout = "layout-pjax.html"  if req.headers["x-pjax"]
   next()
 
