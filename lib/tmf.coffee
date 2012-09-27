@@ -64,6 +64,10 @@ user = (user, callback) ->
 user::getProjects = (callback) ->
   self = this
   db.project.find {creator:this._id}, (err, projects) ->
+
+    # Return with Null if no Projects Exists
+    unless projects then callback null, null
+
     async.map projects, (MongoProjectObject, callback) ->
       new project MongoProjectObject, callback
       #new project MongoProjectObject callback
@@ -80,6 +84,10 @@ user::getWatching = (callback) ->
 exports.getProject = getProject = (nameIndetifier, callback) ->
   db.project.findOne (if (typeof nameIndetifier is "object") then _id: nameIndetifier else name: nameIndetifier), (err, mongoProjectObject) ->
     callback err if err
+
+    # Return with Null if no Project Exists
+    unless mongoProjectObject then return callback null, null
+
     new project mongoProjectObject, callback
 
 # project object
@@ -267,8 +275,15 @@ action::getActor = (callback) ->
 action::getProject = (callback) ->
   self = this
 
+  # Return with Null if no Project Exists
+  unless project then callback null, null
+
   getProject this._project, (err, project) ->
-    return callback err if err
+    if err then callback
+
+    # Return with Null if no Project Exists
+    unless project then callback null, null
+
     self.project = project
     callback null, self
 
