@@ -1,0 +1,19 @@
+<div class="row">
+	<div class="span12">
+		<h1>Register</h1>
+	</div>
+</div>
+<div class="row">
+	<div class="span6">
+		<form action="/register" method="POST">
+			<label for="login">Username:</label> <input type="text" placeholder="Username" name="login" id="login">
+			<label for="email">Email:</label> <input type="email" placeholder="e.g john@example.com" name="email" id="email">
+			<label for="password">Password:</label> <input type="password" placeholder="Secure1Pass!" name="password" id="password">
+			<input type="password" placeholder="Repeat Password" name="passwordCheck" id="PasswordCheck">
+			<input type="submit" value="Register">
+		</form>
+	</div>
+	<div class="span6">
+		<a href="/auth/github">Register using GitHub</a>
+	</div>
+</div>

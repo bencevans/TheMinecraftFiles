@@ -12,6 +12,33 @@ md5 = (string) ->
 db
 exports.db = db
 
+# createUser - Creates a User, Saves to DB and returns as a User Object.
+#
+# userInfo = Object
+# Object Attributes should include:
+#   - username - String - Remeberable Identifier
+#   For identification it should include at least one of the following:
+#   - gitHubID - Integer - Numeral GitHub ID Provided from GitHub's OAuth API
+#   - password - String
+#   Optional:
+#   - website - String - URL of Website (Could be GitHub's blog field from OAuth API)
+#   + Anything accepted by the User Model.
+#
+exports.createUser = createUser = (userInfo, callback) ->
+
+  # Check for required attributes.
+  if not userInfo.username then callback 'No `username` has been provided'
+  if not userInfo.password or not userInfo.gitHubID then callback 'No authenticating attribute has been provided'
+
+  newUser = new db.user(userInfo)
+
+  # Create DB Document
+  newUser.save (err, mongoUserObject) ->
+    callback err, mongoUserObject if err
+
+    # Create a user object and it returns to callback with the object.
+    new user mongoUserObject, callback
+
 # getUser - get info about a particular user
 exports.getUser = getUser = (userIdentifier, callback) ->
   self = this
@@ -257,7 +284,7 @@ exports.getTimeline = getTimeline = (projectIdArray, callback) ->
     callback null, self
 
 issue = (object, callback) ->
-  console.log object
+
   this._id = object.id
   this.title = object.title
   this.assignee = object.assignee

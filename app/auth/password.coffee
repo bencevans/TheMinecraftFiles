@@ -1,8 +1,3 @@
-usersByLogin = jim:
-  login: "jim"
-  email: "jim@jimpick.com"
-  password: "jim"
-
 everyauth.password.loginWith("login").getLoginPath("/login").postLoginPath("/auth/login").loginView("login.html").loginLocals((req, res, done) ->
   setTimeout (->
     done null,
@@ -33,21 +28,44 @@ everyauth.password.loginWith("login").getLoginPath("/login").postLoginPath("/aut
 
   ), 200
 ).extractExtraRegistrationParams((req) ->
-  email: req.body.email
-).validateRegistration((newUserAttrs, errors) ->
-  promise = @promise()
+  user =
+    username: req.body.login
+    email: req.body.email
+    password: req.body.password
+    passwordCheck: req.body.passwordCheck
 
-  getUser newUserAttrs.login, (err, user) ->
+  return user
+
+).validateRegistration((newUserAttrs, errors) ->
+  promise = @Promise()
+
+  tmf.getUser newUserAttrs.login, (err, user) ->
     if err then promise.fulfill [err]
 
+    # Check password and the passwordCheck match
+    promise.fulfill ["Passwords don't match"] unless newUserAttrs.passwordCheck is newUserAttrs.password
+
     # OK if no other user is returned
-    if user = null then promise.fulfill true
+    promise.fulfill true unless user
 
     # Then user exists so anouther should not be allowed
-    promise.fulfill ["Another user already exists with that username"]
+    promise.fulfill false
 
   promise
 ).registerUser((newUserAttrs) ->
-  login = newUserAttrs[@loginKey()]
-  usersByLogin[login] = newUserAttrs
+
+  console.log 'newUserAttrs', newUserAttrs
+
+  promise = @Promise()
+
+  tmf.createUser
+    username: newUserAttrs.login
+    email: newUserAttrs.email
+    password: newUserAttrs.password
+  , (err, user) ->
+    promise.fulfill [err] if err
+    promise.fulfill user if err
+
+  promise
+
 ).loginSuccessRedirect("/").registerSuccessRedirect "/"
