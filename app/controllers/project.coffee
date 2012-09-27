@@ -1,17 +1,17 @@
 _ = require 'underscore'
 async = require 'async'
 
-app.get "/project/:projectSlug", (req, res, next) ->
-  res.redirect "/project/" + req.params.projectSlug + "/timeline"
-
-app.all "/project/:projectSlug/:subPage*", (req, res, next) ->
+app.all "/project/:projectSlug/:subPage?*", (req, res, next) ->
 
   tmf.getProject req.params.projectSlug, (err, project) ->
     return next(err)  if err
+
     unless project
-      return res.render("errors/404",
-        status: 404
-      )
+      res.status 404
+      return res.render "errors/404"
+
+    unless req.params.subPage
+      res.redirect "/project/" + req.params.projectSlug + "/timeline"
 
     project.getCreator (err) ->
       next err if err

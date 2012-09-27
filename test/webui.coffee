@@ -51,6 +51,17 @@ describe "WebUI", ->
       it "should return ask for a captcha code"
 
 
+  describe "WebUI - Projects", ->
+    describe "going to a url of a project that doesn't exist", ->
+      it "should return a 404 error", (done) ->
+
+        this.timeout 10000
+
+        # Visit Login Page
+        browser.visit baseURL + "/project/someprojecthatdoesntexist", ->
+
+          assert.equal browser.statusCode, 404
+          done()
 
 
 
