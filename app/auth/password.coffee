@@ -15,10 +15,14 @@ everyauth.password.loginWith("login").getLoginPath("/login").postLoginPath("/aut
   errors.push "Missing password"  unless password
   return errors  if errors.length
   promise = @Promise()
+
+
+
   db.user.findOne
     username: login
   , (err, user) ->
     return promise.fulfill(["Login failed"])  if user.password isnt password
+
     promise.fulfill user
 
   promise
@@ -31,9 +35,18 @@ everyauth.password.loginWith("login").getLoginPath("/login").postLoginPath("/aut
 ).extractExtraRegistrationParams((req) ->
   email: req.body.email
 ).validateRegistration((newUserAttrs, errors) ->
-  login = newUserAttrs.login
-  errors.push "Login already taken"  if usersByLogin[login]
-  errors
+  promise = @promise()
+
+  getUser newUserAttrs.login, (err, user) ->
+    if err then promise.fulfill [err]
+
+    # OK if no other user is returned
+    if user = null then promise.fulfill true
+
+    # Then user exists so anouther should not be allowed
+    promise.fulfill ["Another user already exists with that username"]
+
+  promise
 ).registerUser((newUserAttrs) ->
   login = newUserAttrs[@loginKey()]
   usersByLogin[login] = newUserAttrs
