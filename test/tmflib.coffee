@@ -25,6 +25,8 @@ describe "tmfLib", ->
   tmf.db = global.db
 
   before (done) ->
+
+    this.timeout 10000
     testUser.save (err) ->
       return done(err) if err
       testCategory.save (err) ->
