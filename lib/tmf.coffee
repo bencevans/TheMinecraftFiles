@@ -34,7 +34,7 @@ exports.createUser = createUser = (userInfo, callback) ->
 
   # Create DB Document
   newUser.save (err, mongoUserObject) ->
-    callback err, mongoUserObject if err
+    return callback err, mongoUserObject if err
 
     # Create a user object and it returns to callback with the object.
     new user mongoUserObject, callback

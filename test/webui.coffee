@@ -34,7 +34,16 @@ describe "WebUI", ->
 
 
     describe "try to register with a username that already exists", ->
-      it "should return with an error"
+      it "should return with an error", (done) ->
+        # Visit Login Page
+        browser.visit baseURL + "/register", ->
+
+          # Fill username, password and submit form
+          browser.fill("login", "richard").fill("email", "john@example.com").fill("password", "AnAwsomePassword").fill("passwordCheck", "AnAwsomePassword").pressButton "registersubmit", ->
+
+            assert.ok browser.success
+            #assert.equal browser.text("title"), "Timeline | TheMinecraftFiles"
+            done()
 
     describe "try to register with an invalid username", ->
       it "should return with an error"
