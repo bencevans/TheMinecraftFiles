@@ -9,17 +9,32 @@ module.exports = new Schema(
       sparse: true
 
   password: String
-  email: String
+
+  email:
+    type: String
+    match: /^.+@.+\..+$/
+
   joined:
     type: Date
     default: Date.now
 
   realName: String
-  minecraftUsername: String
-  website: String
-  twitterUsername: String
-  gitHubUsername: String
-  gitHubID: String
-)
 
-#mongoose.model('user', userSchema)
+  minecraftUsername:
+    type: String
+    match: /^[A-Za-z0-9_]+$/
+
+  website:
+    type: String
+    match: /^https?\:\/\/.+\..+$/
+
+  twitterUsername:
+    type: String
+    match: /^[A-Za-z0-9_]+$/
+
+  gitHubUsername:
+    type: String
+    match: /^[A-Za-z0-9_]+$/
+
+  gitHubID: Number
+)
