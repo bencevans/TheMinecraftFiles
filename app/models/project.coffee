@@ -29,5 +29,5 @@ module.exports = new Schema(
 
   description:
     type: String
-    match: /.{0,24}/
+    match: /^.{0,64}$/
 )
