@@ -1,5 +1,6 @@
 Browser = require("zombie")
 assert = require("assert")
+request = require("request")
 browser = undefined
 
 
@@ -57,10 +58,10 @@ describe "WebUI", ->
 
         this.timeout 10000
 
-        # Visit Login Page
-        browser.visit baseURL + "/project/someprojecthatdoesntexist", ->
+        request baseURL + "/project/someprojecthatdoesntexist", (err, res) ->
+          assert.equal null, err
+          assert.equal res.statusCode, 404
 
-          assert.equal browser.statusCode, 404
           done()
 
 

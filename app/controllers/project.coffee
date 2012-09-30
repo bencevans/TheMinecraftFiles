@@ -7,8 +7,7 @@ app.all "/project/:projectSlug/:subPage?*", (req, res, next) ->
     return next(err)  if err
 
     unless project
-      res.status 404
-      return res.render "errors/404"
+      return res.status(404).render "errors/404"
 
     unless req.params.subPage
       res.redirect "/project/" + req.params.projectSlug + "/timeline"
