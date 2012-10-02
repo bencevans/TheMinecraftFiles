@@ -12,20 +12,7 @@ _ = require("underscore")
 # Globals
 global.app = express()
 global.hbs = require("hbs")
-global.config =
-  mongo: {}
-  forceLocation: {}
-
-#MongoDB Configuration
-config.mongo.uri = if process.env.MONGOLAB_URI then {uri:process.env.MONGOLAB_URI} else null
-
-# Force Location Configuration
-config.forceLocation.domain = if process.env.FORCE_DOMAIN then process.env.FORCE_DOMAIN else null
-# If not set the current domain/host should be assumed for use.
-config.forceLocation.port   = if process.env.FORCE_PORT then process.env.FORCE_PORT else null
-# If not set the port should be assumed as 80
-config.forceLocation.protocol   = if process.env.FORCE_PROTOCOL then process.env.FORCE_PROTOCOL else null
-#If not set the protocol should be assumed as 'http://'
+global.config = require("./config")
 
 # Bootstrap (DB Etc.)
 require "./bootstrap"

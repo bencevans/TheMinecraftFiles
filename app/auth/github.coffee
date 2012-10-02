@@ -1,4 +1,4 @@
-everyauth.github.appId("9a5e15b6d6071293280c").appSecret("eb08869d2f61b387222f6494b95069cd1f44e1a5").moduleTimeout(8000).findOrCreateUser((session, accessToken, accessTokenExtra, githubUserMetadata) ->
+everyauth.github.appId(config.auth.github.id).appSecret(config.auth.github.secret).moduleTimeout(8000).findOrCreateUser((session, accessToken, accessTokenExtra, githubUserMetadata) ->
   promise = @Promise()
   db.user.count {}, (err, count) ->
     if err
