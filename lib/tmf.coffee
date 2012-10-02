@@ -132,9 +132,13 @@ project::getIssue = (issueId, callback) ->
     # self.githubRepoURI = false implies there is no issue provider attached
     if not self.githubRepoURI
       self.githubRepoURI = false
-      callback null, self
+      return callback null, self
 
     bodyObject = JSON.parse(body)
+
+    if res.statusCode = 404
+      return callback null, null
+
 
     new issue bodyObject, callback
 

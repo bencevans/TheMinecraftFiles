@@ -17,6 +17,10 @@ app.get "/project/:projectSlug/issues", (req, res, next) ->
 app.get "/project/:projectSlug/issues/:issueid", (req, res, next) ->
   req.project.getIssue req.params.issueid, (err, issue) ->
 
+    if issue == null
+      # Issue doesn't exist
+      return res.status(404).render 'errors/404'
+
     res.locals.issue = issue
 
     res.render "project/issues/issue",
