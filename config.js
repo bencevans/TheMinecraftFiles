@@ -17,7 +17,7 @@ module.exports = {
 
 	// MongoDB Configuration
 	mongo: {
-		uri: (process.env.MONGOLAB_URI) ? {uri:process.env.MONGOLAB_URI} : null
+		uri: (process.env.MONGOLAB_URI) ? process.env.MONGOLAB_URI : null
 	},
 
 	// Force Location Configuration
