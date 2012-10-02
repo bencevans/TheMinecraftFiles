@@ -3,6 +3,7 @@ fs = require("fs")
 mongoose = require("mongoose")
 mongoConn = mongoose.connect(config.mongo.uri or "mongodb://localhost/TheMinecraftFiles", (err) ->
   if err
+    console.log config.mongo
     console.error err
 )
 
