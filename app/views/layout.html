@@ -81,6 +81,13 @@
 			</div>
 		</div>
 		{{/flash.message}}
+		{{#errors}}
+			<div class="row">
+			<div class="span12">
+				<div class="error alert"><a href="#" onClick="$(this).parent().hide();" class="close">x</a> {{this}}</div>
+			</div>
+		</div>
+		{{/errors}}
 		{{{body}}}
 	</header>
 </body>

@@ -142,15 +142,6 @@ footer .container {
 ::-moz-selection {
 	background: #00FF83; /* Firefox */
 }
-.notice {
-	color:#5288D8;
-}
-.warning {
-	color:#D8734B;
-}
-.error {
-	color: #D82C37;
-}
 .alert {
 	padding:5px;
 	border:1px solid #777;
@@ -174,6 +165,15 @@ footer .container {
 .alert .close:hover {
 	color:#555;
 	background-color:#ccc;
+}
+.notice {
+	color:#5288D8;
+}
+.warning {
+	color:#D8734B;
+}
+.error {
+	color: #D82C37;
 }
 .lighter {
 	opacity: 0.7;
