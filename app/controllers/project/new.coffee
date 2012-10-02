@@ -1,3 +1,5 @@
+_ = require("underscore")
+
 app.get "/new", (req, res, next) ->
   db.category.find {}, (err, categories) ->
     return next(err)  if err
