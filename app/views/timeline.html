@@ -38,12 +38,14 @@
 		<div class="projectlist">
 			<h3>Watched Projects</h3>
 			<ul>
-				<?php if(isset($UserWatchedProjects)) { ?>
-				<?php foreach ($UserWatchedProjects as $UsersWatchedProject) { ?>
-				<li><a href="/project/<?= $UsersWatchedProject['Slug']; ?>"> <?= $UsersWatchedProject['Name']; ?></a></li>
-				<?php }  } else { ?>
+				{{#if usersWatching}}
+				{{#usersWatching}}
+				<li><a href="/project/{{this.name}}">{{this.name}}</a></li>
+				{{/usersWatching}}
+
+				{{else}}
 				<li class="none">You have None</li>
-				<?php } ?>
+				{{/if}}
 			</ul>
 		</div>
 	</div>

@@ -6,10 +6,11 @@ app.get "/", (req, res) ->
     dashboardUser.getProjects (err) ->
       next(err) if err
 
-      dashboardUser.getWatching () ->
+      dashboardUser.getWatching (err) ->
 
-      res.locals.title = "Timeline"
-      res.render "timeline",
-        usersFeedTimeline: []
-        usersProjects: dashboardUser.projects
+        res.locals.title = "Timeline"
+        res.render "timeline",
+          usersFeedTimeline: []
+          usersProjects: dashboardUser.projects
+          usersWatching: dashboardUser.watching
 

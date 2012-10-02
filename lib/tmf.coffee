@@ -76,8 +76,18 @@ user::getProjects = (callback) ->
       callback err, self
 
 user::getWatching = (callback) ->
-  this.watching = []
-  callback null, this
+  self = this
+
+  db.watch.find {user:this._id}, (err, watching) ->
+    return callback err if err
+
+    async.map watching, (watch, callback) ->
+      db.project.findOne ObjectId(watch), (err, projectObject) ->
+        new project projectObject, callback
+    , (err, results) ->
+      return callback err if err
+      self.watching = results
+      callback null, self
 
 
 # getProject from a projects name
