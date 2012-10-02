@@ -13,3 +13,17 @@ app.get "/project/:projectSlug/issues", (req, res, next) ->
       res.render "project",
         subPage:
           content: html
+
+app.get "/project/:projectSlug/issues/:issueid", (req, res, next) ->
+  req.project.getIssue req.params.issueid, (err, issue) ->
+
+    res.locals.issue = issue
+
+    res.render "project/issues/issue",
+      layout: false
+    , (err, html) ->
+      return next(err)  if err
+      res.render "project",
+        subPage:
+          content: html
+

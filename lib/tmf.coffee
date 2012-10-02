@@ -123,6 +123,21 @@ project::getIssues = (callback) ->
       self.issues = issues
       callback err, self
 
+project::getIssue = (issueId, callback) ->
+  self = this
+
+  request 'https://api.github.com/repos/'+ self.githubRepoURI + '/issues/' + issueId, (err, res, body) ->
+    callback err if err
+
+    # self.githubRepoURI = false implies there is no issue provider attached
+    if not self.githubRepoURI
+      self.githubRepoURI = false
+      callback null, self
+
+    bodyObject = JSON.parse(body)
+
+    new issue bodyObject, callback
+
 project::getWatchers = (callback) ->
   # TODO: DB Lookup
   this.watchers = {}
