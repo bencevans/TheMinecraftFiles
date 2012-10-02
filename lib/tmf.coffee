@@ -136,7 +136,7 @@ project::getIssue = (issueId, callback) ->
 
     bodyObject = JSON.parse(body)
 
-    if res.statusCode = 404
+    if res.statusCode == 404
       return callback null, null
 
 
