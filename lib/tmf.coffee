@@ -120,6 +120,41 @@ project = (project, callback) ->
   this.image.src = "/project/" + project.name + "/gallery/" + project.image + ".png" if project.image
   callback null, this
 
+project::getDownloads = (callback) ->
+  self = this
+
+  # self.githubRepoURI = false implies there is no issue provider attached
+  if not self.githubRepoURI
+    self.githubRepoURI = false
+    return callback null, self
+
+  cachey.cache 'githubapi/repos/'+ self.githubRepoURI + '/downloads', 60, (callback) ->
+    request 'https://api.github.com/repos/'+ self.githubRepoURI + '/downloads', (err, res, body) ->
+
+      if(!res.statusCode)
+        return callback "Unknown Responce", null
+
+      if res.statusCode == 404
+        return callback null, null
+
+      callback null, body
+
+  , (err, body) ->
+    return callback err if err
+
+    return callback null, null unless body
+
+    downloads = JSON.parse body
+
+    async.map downloads, (downloadObject, callback) ->
+      new download downloadObject, callback
+    , (err, downloads) ->
+      return callback err if err
+
+      self.downloads = downloads
+      callback null, self
+
+
 project::getIssues = (callback) ->
   self = this
 
@@ -359,5 +394,21 @@ issue = (object, callback) ->
   this.body = object.body
   this.labels = object.labels
   this.user = object.user
+
+  callback null, this
+
+download = (object, callback) ->
+
+  this._id = object.id
+  this._gitHubApiId = object.id
+  this._gitHubApiURL = object.url
+  this.uploaded = object.created_at
+  this.downloadURL = object.html_url
+  this.count = object.download_count
+  this.name = object.name
+  this.description = object.description
+  this.size = object.size
+  this.download_count = object.download_count
+  this.content_type = object.content_type
 
   callback null, this
