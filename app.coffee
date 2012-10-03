@@ -23,6 +23,7 @@ server = http.createServer(app)
 # TMF Library
 tmf = require("./lib/tmf")
 tmf.db = db
+tmf.setupCache(global.redisClient)
 
 # Authentication Requirements
 global.everyauth = require("everyauth")

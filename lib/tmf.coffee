@@ -3,10 +3,16 @@ crypto = require("crypto")
 _ = require 'underscore'
 async = require 'async'
 request = require 'request'
+cachey = null
+
 # Helpers
 md5 = (string) ->
   crypto.createHash("md5").update(string).digest "hex"
 
+redisClient = null
+exports.setupCache = setupCache = (providedRedisClient, callback) ->
+  redisClient = providedRedisClient
+  cachey = require('cachey')({redisClient:providedRedisClient})
 
 # db = Object containing all Mongo Models.
 db
@@ -117,38 +123,53 @@ project = (project, callback) ->
 project::getIssues = (callback) ->
   self = this
 
-  request 'https://api.github.com/repos/'+ self.githubRepoURI + '/issues', (err, res, body) ->
-    callback err if err
+  # self.githubRepoURI = false implies there is no issue provider attached
+  if not self.githubRepoURI
+    self.githubRepoURI = false
+    return callback null, self
 
-    # self.githubRepoURI = false implies there is no issue provider attached
-    if not self.githubRepoURI
-      self.githubRepoURI = false
-      callback null, self
+  cachey.cache 'githubapi/repos/'+ self.githubRepoURI + '/issues', 60, (callback) ->
+    request 'https://api.github.com/repos/'+ self.githubRepoURI + '/issues', (err, res, body) ->
+      callback err if err
 
-    bodyObject = JSON.parse(body)
+      if res.statusCode == 404
+        return callback null, null
 
-    async.map bodyObject, (issueObject, callback) ->
-      new issue issueObject, callback
-    , (err, issues) ->
-      self.issues = issues
-      callback err, self
+      callback null, body
+  , (err, body) ->
+      return callback err if err
+
+      bodyObject = JSON.parse(body)
+
+      async.map bodyObject, (issueObject, callback) ->
+        new issue issueObject, callback
+      , (err, issues) ->
+        self.issues = issues
+        callback err, self
 
 project::getIssue = (issueId, callback) ->
   self = this
 
-  request 'https://api.github.com/repos/'+ self.githubRepoURI + '/issues/' + issueId, (err, res, body) ->
-    callback err if err
+  # self.githubRepoURI = false implies there is no issue provider attached
+  if not self.githubRepoURI
+    self.githubRepoURI = false
+    return callback null, self
 
-    # self.githubRepoURI = false implies there is no issue provider attached
-    if not self.githubRepoURI
-      self.githubRepoURI = false
-      return callback null, self
+  cachey.cache 'githubapi/repos/'+ self.githubRepoURI + '/issues/' + issueId, 60, (callback) ->
+
+    request 'https://api.github.com/repos/'+ self.githubRepoURI + '/issues/' + issueId, (err, res, body) ->
+      callback err if err
+
+      if res.statusCode == 404
+        return callback null, null
+
+      callback null, body
+
+  , (err, body) ->
+
+    return callback err if err
 
     bodyObject = JSON.parse(body)
-
-    if res.statusCode == 404
-      return callback null, null
-
 
     new issue bodyObject, callback
 
