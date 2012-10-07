@@ -293,12 +293,12 @@ category::getRecent = (options,callback) ->
       self.recent = results
       callback err, self
 
-category::getPopular = (callback) ->
-  this.popular = {}
+category::getPopular = (options, callback) ->
+  this.popular = []
   callback null, this
 
-category::getTrending = (callback) ->
-  this.trending = {}
+category::getTrending = (options, callback) ->
+  this.trending = []
   callback null, this
 
 

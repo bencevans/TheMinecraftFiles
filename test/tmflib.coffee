@@ -1,5 +1,8 @@
 assert = require("assert")
 path = require("path")
+async = require("async")
+_ = require("underscore")
+
 global.config = mongo:
   uri: "mongodb://localhost/TheMinecraftFilesTEST"
 
@@ -80,7 +83,7 @@ describe "tmfLib", ->
         done()
 
 
-    it "should return an valid category by objectID", (done) ->
+    it "should return a valid category by objectID", (done) ->
       tmf.getCategory testCategory._id, (err, category) ->
         assert.equal err, null
         assert.notEqual category, null
@@ -89,7 +92,21 @@ describe "tmfLib", ->
         done()
 
 
-    it "should resolve projects and project owners/creators"
+    it "#getRecent, #getTrending and #getPopular should resolve appropriate arrays on object", (done) ->
+      tmf.getCategory testCategory._id, (err, category) ->
+        assert.equal null, err
+        assert.notEqual null, category
+
+        async.map _.keys(category.__proto__), (funcName, callback) ->
+          category[funcName] {}, callback
+
+        , (err) ->
+          return done(err) if err
+
+          assert.equal true, _.isArray category.recent
+          assert.equal true, _.isArray category.trending
+          assert.equal true, _.isArray category.popular
+          done()
 
   describe "#getProject()", ->
     it "should return a valid project object by ObjectID", (done) ->
