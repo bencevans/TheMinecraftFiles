@@ -46,7 +46,8 @@
   },
   "devDependencies": {
     "mocha": "*",
-    "growl": "~1.6.0"
+    "growl": "~1.6.0",
+    "zombie": "~2.0.0-alpha4"
   },
   "engines": {
     "node": "0.8.x",
