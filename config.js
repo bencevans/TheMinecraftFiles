@@ -11,7 +11,7 @@ module.exports = {
 	auth: {
 		github: {
 			id: process.env.CONFIG__AUTH__GITHUB__ID || null,
-			secret: process.env.CONFIG__AUTH__GITHUB__SECRET || null,
+			secret: process.env.CONFIG__AUTH__GITHUB__SECRET || null
 		}
 	},
 
@@ -27,7 +27,7 @@ module.exports = {
 		// If not set the port should be assumed as 80
 		port: (process.env.FORCE_PORT) ? process.env.FORCE_PORT : null,
 		// If not set the protocol should be assumed as 'http://'
-		protocol: (process.env.FORCE_PROTOCOL) ? process.env.FORCE_PROTOCOL : null,
+		protocol: (process.env.FORCE_PROTOCOL) ? process.env.FORCE_PROTOCOL : null
 	}
 
 }
