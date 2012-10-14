@@ -2,7 +2,7 @@
   "name": "TheMinecraftFiles",
   "version": "0.0.0",
   "description": "Minecraft Addon Development Site",
-  "main": "server.js",
+  "main": "app.coffee",
   "scripts": {
     "test": "mocha -compilers coffee:coffee-script",
     "start": "coffee server"
