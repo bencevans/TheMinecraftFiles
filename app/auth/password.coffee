@@ -16,6 +16,7 @@ everyauth.password.loginWith("login").getLoginPath("/login").postLoginPath("/aut
   db.user.findOne
     username: login
   , (err, user) ->
+    return promise.fulfill(["No User Exists"])  unless user
     return promise.fulfill(["Login failed"])  if user.password isnt password
 
     promise.fulfill user
