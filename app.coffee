@@ -53,6 +53,7 @@ app.configure ->
     secret: "dsfdsf"
     store: new redisStore()
   )
+  app.use express.vhost('api.localhost'), require('./api/app.js')
   app.use express.bodyParser()
   app.use everyauth.middleware(app)
   app.use express.methodOverride()
@@ -126,6 +127,7 @@ app.get "/worker", (req, res, next) ->
   res.send 200, cluster.worker.process.pid + " " + cluster.worker.id
 
 require "./app/controllers"
+
 server.listen app.get('port')
 console.log 'TheMinecraftFiles is listening on port ' + app.get 'port'
 
