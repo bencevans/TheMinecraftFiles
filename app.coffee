@@ -8,6 +8,7 @@ crypto = require("crypto")
 http = require("http")
 flashify = require("flashify")
 _ = require("underscore")
+ThrowAndTell = require("throwandtell")
 
 # Globals
 global.app = express()
@@ -59,6 +60,7 @@ app.configure ->
   app.use flashify
   app.use app.router
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+  app.use require('express-throwandtell')(config.throwandtell.accessKey) if config.throwandtell.accessKey
   app.use (err, req, res, next) ->
     console.error err
     res.render "errors/404"  if err is 404

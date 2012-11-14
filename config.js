@@ -28,6 +28,11 @@ module.exports = {
 		port: (process.env.FORCE_PORT) ? process.env.FORCE_PORT : null,
 		// If not set the protocol should be assumed as 'http://'
 		protocol: (process.env.FORCE_PROTOCOL) ? process.env.FORCE_PROTOCOL : null
+	},
+
+	// ThrowAndTell
+	throwandtell: {
+		accessKey: process.env.THROWANDTELL_ACCESSKEY || false
 	}
 
 }
