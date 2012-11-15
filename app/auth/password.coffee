@@ -1,13 +1,13 @@
-everyauth.password.loginWith("login").getLoginPath("/login").postLoginPath("/auth/login").loginView("login.html").loginLocals((req, res, done) ->
+everyauth.password.loginWith('login').getLoginPath('/login').postLoginPath('/auth/login').loginView('login.html').loginLocals((req, res, done) ->
   setTimeout (->
     done null,
-      title: "Login"
+      title: 'Login'
 
   ), 200
 ).authenticate((login, password) ->
   errors = []
-  errors.push "Missing login"  unless login
-  errors.push "Missing password"  unless password
+  errors.push 'Missing login'  unless login
+  errors.push 'Missing password'  unless password
   return errors  if errors.length
   promise = @Promise()
 
@@ -16,16 +16,16 @@ everyauth.password.loginWith("login").getLoginPath("/login").postLoginPath("/aut
   db.user.findOne
     username: login
   , (err, user) ->
-    return promise.fulfill(["No User Exists"])  unless user
-    return promise.fulfill(["Login failed"])  if user.password isnt password
+    return promise.fulfill(['No User Exists'])  unless user
+    return promise.fulfill(['Login failed'])  if user.password isnt password
 
     promise.fulfill user
 
   promise
-).getRegisterPath("/register").postRegisterPath("/register").registerView("register.html").registerLocals((req, res, done) ->
+).getRegisterPath('/register').postRegisterPath('/register').registerView('register.html').registerLocals((req, res, done) ->
   setTimeout (->
     done null,
-      title: "Register"
+      title: 'Register'
 
   ), 200
 ).extractExtraRegistrationParams((req) ->
@@ -44,7 +44,7 @@ everyauth.password.loginWith("login").getLoginPath("/login").postLoginPath("/aut
     if err then promise.fulfill [err]
 
     # Check password and the passwordCheck match
-    promise.fulfill ["Passwords don't match"] unless newUserAttrs.passwordCheck is newUserAttrs.password
+    promise.fulfill ['Passwords don\'t match'] unless newUserAttrs.passwordCheck is newUserAttrs.password
 
     # OK if no other user is returned
     promise.fulfill true unless user
@@ -69,4 +69,4 @@ everyauth.password.loginWith("login").getLoginPath("/login").postLoginPath("/aut
 
   promise
 
-).loginSuccessRedirect("/").registerSuccessRedirect "/"
+).loginSuccessRedirect('/').registerSuccessRedirect '/'

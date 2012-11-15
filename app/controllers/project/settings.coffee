@@ -1,16 +1,16 @@
-app.get "/project/:projectSlug/settings", (req, res, next) ->
+app.get '/project/:projectSlug/settings', (req, res, next) ->
   return next()  unless req.project.isOwner
-  res.render "project/settings",
+  res.render 'project/settings',
     layout: false
   , (err, html) ->
     return next(err)  if err
-    res.render "project",
+    res.render 'project',
       subPage:
         content: html
 
 
 
-app.post "/project/:projectSlug/settings", (req, res, next) ->
+app.post '/project/:projectSlug/settings', (req, res, next) ->
   return next()  unless req.project.isOwner
   db.project.findById req.project._id, (err, project) ->
     return next(err)  if err
@@ -19,7 +19,7 @@ app.post "/project/:projectSlug/settings", (req, res, next) ->
     project.githubRepoURI = req.body.githubrepouri
     project.save (err, project) ->
       return next(err)  if err
-      res.redirect "/project/" + project.name + "/settings"
+      res.redirect '/project/' + project.name + '/settings'
 
 
 

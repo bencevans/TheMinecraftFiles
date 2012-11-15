@@ -1,7 +1,7 @@
 module.exports = new Schema(
   category:
     type: Schema.ObjectId
-    ref: "category"
+    ref: 'category'
 
   created:
     type: Date
@@ -9,11 +9,11 @@ module.exports = new Schema(
 
   creator:
     type: Schema.ObjectId
-    ref: "user"
+    ref: 'user'
 
   image:
     type: Schema.ObjectId
-    ref: "galleryImage"
+    ref: 'galleryImage'
 
   githubRepoURI:
     type: String

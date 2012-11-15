@@ -1,12 +1,12 @@
 _ = require 'underscore'
 
-app.get "/project/:projectSlug/issues", (req, res, next) ->
+app.get '/project/:projectSlug/issues', (req, res, next) ->
   req.project.getIssues (err) ->
 
     _.each req.project.issues, (issue) ->
       issue.href = '/project/' + req.project.name + '/issues/' + issue.number
 
-    res.render "project/issues",
+    res.render 'project/issues',
       layout: false
     , (err, html) ->
       return next(err)  if err
@@ -14,7 +14,7 @@ app.get "/project/:projectSlug/issues", (req, res, next) ->
         subPage:
           content: html
 
-app.get "/project/:projectSlug/issues/:issueid", (req, res, next) ->
+app.get '/project/:projectSlug/issues/:issueid', (req, res, next) ->
   req.project.getIssue req.params.issueid, (err, issue) ->
 
     if issue == null
@@ -23,11 +23,11 @@ app.get "/project/:projectSlug/issues/:issueid", (req, res, next) ->
 
     res.locals.issue = issue
 
-    res.render "project/issues/issue",
+    res.render 'project/issues/issue',
       layout: false
     , (err, html) ->
       return next(err)  if err
-      res.render "project",
+      res.render 'project',
         subPage:
           content: html
 

@@ -4,7 +4,7 @@ everyauth.github.appId(config.auth.github.id).appSecret(config.auth.github.secre
     gitHubID: githubUserMetadata.id
     }, (err, count) ->
     if err
-      console.error "Problem Counting Current User"
+      console.error 'Problem Counting Current User'
       promise.fulfill([err])  if err
     if count is 0
       newUser = new db.user(
@@ -23,4 +23,4 @@ everyauth.github.appId(config.auth.github.id).appSecret(config.auth.github.secre
 
 
   promise
-).redirectPath "/"
+).redirectPath '/'

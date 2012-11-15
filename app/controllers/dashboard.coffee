@@ -1,4 +1,4 @@
-app.get "/", (req, res) ->
+app.get '/', (req, res) ->
 
   tmf.getUser req.user._id, (err, dashboardUser) ->
     next(err) if err
@@ -8,8 +8,8 @@ app.get "/", (req, res) ->
 
       dashboardUser.getWatching (err) ->
 
-        res.locals.title = "Timeline"
-        res.render "timeline",
+        res.locals.title = 'Timeline'
+        res.render 'timeline',
           usersFeedTimeline: []
           usersProjects: dashboardUser.projects
           usersWatching: dashboardUser.watching

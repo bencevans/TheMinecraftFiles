@@ -51,7 +51,7 @@ namespace('setup', function() {
 
 task('npm', function (params) {
 
-	console.log("Installing NPM Modules listed in package.json");
+	console.log('Installing NPM Modules listed in package.json');
 
 	jake.exec(['npm install'], function () {
 

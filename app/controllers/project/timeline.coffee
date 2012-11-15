@@ -1,6 +1,6 @@
 async = require 'async'
 
-app.get "/project/:projectSlug/timeline", (req, res, next) ->
+app.get '/project/:projectSlug/timeline', (req, res, next) ->
   req.project.getTimeline (err, project) ->
     async.map project.timeline, (action, callback) ->
       action.getActor (err, project) ->
@@ -9,11 +9,11 @@ app.get "/project/:projectSlug/timeline", (req, res, next) ->
 
     , (err, timeline) ->
       return next err if err
-      res.render "project/timeline",
+      res.render 'project/timeline',
         layout: false
       , (err, html) ->
         return next(err)  if err
-        res.render "project",
+        res.render 'project',
           subPage:
             content: html
 

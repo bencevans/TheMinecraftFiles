@@ -1,16 +1,16 @@
 
 async = require 'async'
 
-app.get "/discover", (req, res, next) ->
+app.get '/discover', (req, res, next) ->
   db.category.find {}, (err, categories) ->
     return next(err)  if err
-    res.locals.title = "Discover"
-    res.render "discover",
+    res.locals.title = 'Discover'
+    res.render 'discover',
       categories: categories
 
 
 
-app.get "/discover/:categorySlug", (req, res, next) ->
+app.get '/discover/:categorySlug', (req, res, next) ->
   tmf.getCategory req.params.categorySlug, (err, category) ->
     return next(err)  if err
     unless category
@@ -22,16 +22,16 @@ app.get "/discover/:categorySlug", (req, res, next) ->
           project.getCreator callback
         , (err, results) ->
 
-          res.render "discover_category",
+          res.render 'discover_category',
             category: category
             title: category.name
 
 
 
-app.get "/discover/:categorySlug/popular", (req, res, next) ->
-  res.send "Not Here Yet", 404
+app.get '/discover/:categorySlug/popular', (req, res, next) ->
+  res.send 'Not Here Yet', 404
 
-app.get "/discover/:categorySlug/recent", (req, res, next) ->
+app.get '/discover/:categorySlug/recent', (req, res, next) ->
   tmf.getCategory req.params.categorySlug, (err, category) ->
     return next(err)  if err
     unless category
@@ -42,10 +42,10 @@ app.get "/discover/:categorySlug/recent", (req, res, next) ->
         async.map category.recent, (project, callback) ->
           project.getCreator callback
         , (err, results) ->
-          res.render "discover/recent",
+          res.render 'discover/recent',
             category: category
             title: category.name
 
-app.get "/discover/:categorySlug/trending", (req, res, next) ->
-  res.send "Not Here Yet", 404
+app.get '/discover/:categorySlug/trending', (req, res, next) ->
+  res.send 'Not Here Yet', 404
 

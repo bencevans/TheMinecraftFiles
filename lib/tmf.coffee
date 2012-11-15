@@ -1,5 +1,5 @@
 # Requires
-crypto = require("crypto")
+crypto = require 'crypto'
 _ = require 'underscore'
 async = require 'async'
 request = require 'request'
@@ -7,7 +7,7 @@ cachey = null
 
 # Helpers
 md5 = (string) ->
-  crypto.createHash("md5").update(string).digest "hex"
+  crypto.createHash('md5').update(string).digest 'hex'
 
 redisClient = null
 exports.setupCache = setupCache = (providedRedisClient, callback) ->
@@ -48,7 +48,7 @@ exports.createUser = createUser = (userInfo, callback) ->
 # getUser - get info about a particular user
 exports.getUser = getUser = (userIdentifier, callback) ->
   self = this
-  self.db.user.findOne (if (typeof userIdentifier is "object") then _id: userIdentifier else username: userIdentifier), (err, userMongoObject) ->
+  self.db.user.findOne (if (typeof userIdentifier is 'object') then _id: userIdentifier else username: userIdentifier), (err, userMongoObject) ->
     return callback(err, null)  if err
     return callback(null, userMongoObject)  unless userMongoObject
     new user userMongoObject.toObject(), callback
@@ -62,8 +62,8 @@ user = (user, callback) ->
   this.gitHubUsername = user.gitHubUsername
   this.website = user.website
   this.realName = user.realName
-  this.gravatarhash = md5(user.email or "default-user@theminecraftfiles.com")
-  this.href = "http://localhost:3000/user/" + user.username
+  this.gravatarhash = md5(user.email or 'default-user@theminecraftfiles.com')
+  this.href = 'http://localhost:3000/user/' + user.username
   callback null, this
 
 # Get all projects with the user set as creator
@@ -98,7 +98,7 @@ user::getWatching = (callback) ->
 
 # getProject from a projects name
 exports.getProject = getProject = (nameIndetifier, callback) ->
-  db.project.findOne (if (typeof nameIndetifier is "object") then _id: nameIndetifier else name: nameIndetifier), (err, mongoProjectObject) ->
+  db.project.findOne (if (typeof nameIndetifier is 'object') then _id: nameIndetifier else name: nameIndetifier), (err, mongoProjectObject) ->
     callback err if err
 
     # Return with Null if no Project Exists
@@ -114,10 +114,10 @@ project = (project, callback) ->
   this._creator = project.creator
   this._image = project.image
   this.image =
-    src:"/project/" + project.name + "/gallery/" + project.image + ".png" if project.image
+    src:'/project/' + project.name + '/gallery/' + project.image + '.png' if project.image
   this.description = project.description
   this.image = {}
-  this.image.src = "/project/" + project.name + "/gallery/" + project.image + ".png" if project.image
+  this.image.src = '/project/' + project.name + '/gallery/' + project.image + '.png' if project.image
   callback null, this
 
 project::getDownloads = (callback) ->
@@ -132,7 +132,7 @@ project::getDownloads = (callback) ->
     request 'https://api.github.com/repos/'+ self.githubRepoURI + '/downloads', (err, res, body) ->
 
       if(!res.statusCode)
-        return callback "Unknown Responce", null
+        return callback 'Unknown Responce', null
 
       if res.statusCode == 404
         return callback null, null
@@ -236,7 +236,7 @@ project::getImage = (callback) ->
 
 project::getTimeline = (callback) ->
   self = this
-  db.action.find {project:self._id, type:{"$ne":'watch'}}, (err, actions) ->
+  db.action.find {project:self._id, type:{'$ne':'watch'}}, (err, actions) ->
     timeline = []
     _.each actions, (actionObject) ->
       new action actionObject, (err, action) ->
@@ -271,7 +271,7 @@ project::unwatch = (userId, callback) ->
 
 exports.getCategory = getCategory = (categoryIndetifier, callback) ->
   self = this
-  db.category.findOne (if (typeof categoryIndetifier is "object") then _id: categoryIndetifier else slug: categoryIndetifier), (err, mongoCategory) ->
+  db.category.findOne (if (typeof categoryIndetifier is 'object') then _id: categoryIndetifier else slug: categoryIndetifier), (err, mongoCategory) ->
     return callback(err, null)  if err
     return callback(null, mongoCategory)  unless mongoCategory
     new category mongoCategory, callback
@@ -374,7 +374,7 @@ action::getProject = (callback) ->
 
 exports.getTimeline = getTimeline = (projectIdArray, callback) ->
   self = this
-  db.action.find {project:"$elemMatch":projectIdArray}, (err, actions) ->
+  db.action.find {project:'$elemMatch':projectIdArray}, (err, actions) ->
     timeline = []
     _.each actions, (actionObject) ->
       new action actionObject, (err, action) ->

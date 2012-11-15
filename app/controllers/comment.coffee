@@ -18,7 +18,7 @@ app.post '/comment', (req, res, next) ->
 app.get '/comments', (req, res, next) ->
 
   # Return Error if not enouph parameters are met.
-  return res.send error: "Not Enouph Info"  if typeof req.query.identifier is "undefined"
+  return res.send error: 'Not Enouph Info'  if typeof req.query.identifier is 'undefined'
 
   tmf.getComments
     type: req.query.identifier.type

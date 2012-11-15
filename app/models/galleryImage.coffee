@@ -5,12 +5,12 @@ module.exports = new Schema(
 
   file:
     type: Schema.ObjectId
-    ref: "file"
+    ref: 'file'
 
   project:
     type: Schema.ObjectId
     required: true
-    ref: "project"
+    ref: 'project'
 
   description:
     type: String

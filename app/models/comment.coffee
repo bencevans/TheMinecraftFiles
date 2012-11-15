@@ -2,7 +2,7 @@ module.exports = new Schema(
   creator:
     type: Schema.ObjectId
     required: true
-    ref: "user"
+    ref: 'user'
 
   text:
     type: String
