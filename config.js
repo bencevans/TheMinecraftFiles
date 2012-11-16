@@ -10,8 +10,8 @@ module.exports = {
 	// Everyauth Additional Config
 	auth: {
 		github: {
-			id: 'e2786c5a58ea63eaa507',
-			secret: '00da63143f07a812b475b224623fec52865165ae'
+			id: process.env.AUTH_GITHUB_ID || 'e2786c5a58ea63eaa507',
+			secret: process.env.AUTH_GITHUB_SECRET || '00da63143f07a812b475b224623fec52865165ae'
 		}
 	},
 
@@ -35,4 +35,4 @@ module.exports = {
 		accessKey: process.env.THROWANDTELL_ACCESSKEY || false
 	}
 
-}
+};
