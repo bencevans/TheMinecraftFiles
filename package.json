@@ -43,7 +43,8 @@
     "connect-heroku-redis": "~0.1.5",
     "cachey": "0.0.1",
     "redis": "~0.8.1",
-    "throwandtell": "~0.1.0"
+    "throwandtell": "~0.1.0",
+    "express-throwandtell": "~0.2.0"
   },
   "devDependencies": {
     "mocha": "*",
