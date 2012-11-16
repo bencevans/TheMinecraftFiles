@@ -10,4 +10,4 @@ app.use express.vhost('api.*', apiInterface)
 app.use express.vhost('*', webInterface)
 
 
-app.listen 3000
+app.listen process.env.PORT || 3000
