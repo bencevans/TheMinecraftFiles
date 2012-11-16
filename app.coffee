@@ -49,11 +49,9 @@ app.configure ->
   app.set 'view engine', 'html'
   app.engine 'html', hbs.__express
   app.use express.cookieParser()
-  app.use express.session(
+  app.use express.session
     secret: 'dsfdsf'
     store: new redisStore()
-  )
-  app.use express.vhost('api.localhost'), require './api/app.js'
   app.use express.bodyParser()
   app.use everyauth.middleware(app)
   app.use express.methodOverride()
@@ -128,8 +126,13 @@ app.get '/worker', (req, res, next) ->
 
 require './app/controllers'
 
-server.listen app.get('port')
-console.log 'TheMinecraftFiles is listening on port ' + app.get 'port'
+
+
+if module.parent
+  module.exports = app
+else
+  server.listen app.get('port')
+  console.log 'TheMinecraftFiles is listening on port ' + app.get 'port'
 
 if 'development' is app.get('env')
   growl = require 'growl'
