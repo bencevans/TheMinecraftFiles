@@ -55,6 +55,10 @@ app.configure ->
   app.use express.bodyParser()
   app.use everyauth.middleware(app)
   app.use express.methodOverride()
+  app.use (err, req, res, next) ->
+    res.removeHeader("X-Powered-By");
+    next();
+
   app.use express['static'](__dirname + '/public')
   app.use flashify
   app.use app.router
