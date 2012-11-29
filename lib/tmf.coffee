@@ -176,6 +176,8 @@ project::getIssues = (callback) ->
 
       bodyObject = JSON.parse(body)
 
+      return callback null, null unless bodyObject
+
       async.map bodyObject, (issueObject, callback) ->
         new issue issueObject, callback
       , (err, issues) ->
