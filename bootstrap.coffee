@@ -30,5 +30,6 @@ _.each fs.readdirSync('./app/models'), (fileName, index) ->
   schemaName = fileName.match(/([a-zA-Z]+)\..+/)[1]
   global.db[schemaName] = mongoose.model(schemaName, require('./app/models/' + fileName))
 
-  global.tmf = require(__dirname + '/lib/tmf')
-  tmf.db = global.db
+# Setup TMF (TheMinecraftFiles) Library
+global.tmf = require(__dirname + '/lib/tmf')
+tmf.db = global.db
