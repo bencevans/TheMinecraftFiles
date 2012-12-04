@@ -7,6 +7,10 @@ var express = require('express')
 var app = express();
 
 app.configure(function(){
+  app.use(function (req, res, next) {
+    res.removeHeader("X-Powered-By");
+    next();
+  });
   app.set('port', process.env.PORT || 3000);
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
