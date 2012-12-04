@@ -1,3 +1,9 @@
+#
+# lib/tmf.coffee
+#
+# This is the library that
+#
+
 # Requires
 crypto = require 'crypto'
 _ = require 'underscore'
@@ -81,6 +87,7 @@ User::getProjects = (callback) ->
       self.projects = results
       callback err, self
 
+# Finds all projects a user is watching and generates an array at {User Object}.watching
 User::getWatching = (callback) ->
   self = this
 
@@ -96,7 +103,7 @@ User::getWatching = (callback) ->
       callback null, self
 
 
-# getProject from a projects name
+# Returns a Project Object given a projects name
 exports.getProject = getProject = (nameIndetifier, callback) ->
   db.project.findOne (if (typeof nameIndetifier is 'object') then _id: nameIndetifier else name: nameIndetifier), (err, mongoProjectObject) ->
     callback err if err
@@ -106,7 +113,7 @@ exports.getProject = getProject = (nameIndetifier, callback) ->
 
     new Project mongoProjectObject, callback
 
-# project object
+# Project Class Object
 Project = (project, callback) ->
   this._id = project._id
   this.name = project.name
@@ -120,6 +127,7 @@ Project = (project, callback) ->
   this.image.src = '/project/' + project.name + '/gallery/' + project.image + '.png' if project.image
   callback null, this
 
+# Generates an array of available Downloads for a Project at {Project Object}.downloads
 Project::getDownloads = (callback) ->
   self = this
 
@@ -154,7 +162,7 @@ Project::getDownloads = (callback) ->
       self.downloads = downloads
       callback null, self
 
-
+# Generates an array of issues for a Project at {Project Object}.issues
 Project::getIssues = (callback) ->
   self = this
 
@@ -184,6 +192,7 @@ Project::getIssues = (callback) ->
         self.issues = issues
         callback err, self
 
+# Returns an issue given an issued Id
 Project::getIssue = (issueId, callback) ->
   self = this
 
@@ -210,11 +219,13 @@ Project::getIssue = (issueId, callback) ->
 
     new Issue bodyObject, callback
 
+# Generates an array of Users watching the Project at {Project Object}.watchers
 Project::getWatchers = (callback) ->
   # TODO: DB Lookup
   this.watchers = {}
   callback null, this
 
+# Finds the Creator and adds their User to {Project Object}.creator
 Project::getCreator = (callback) ->
   self = this
   getUser this._creator, (err, user) ->
@@ -222,6 +233,7 @@ Project::getCreator = (callback) ->
     self.creator = user
     callback null, self
 
+# Returns a count of Users watching the Project
 Project::getWatcherCount = (callback) ->
   self = this
   db.watch.find
@@ -230,12 +242,13 @@ Project::getWatcherCount = (callback) ->
     self.watcherCount = count
     callback err, count
 
-
+# Returns an Image for the project
 Project::getImage = (callback) ->
   # TODO: DB Lookup
   this.watcherCount = 0
   callback null, this
 
+# Generates an array of Events relating to the Project at {Project Object}.timeline
 Project::getTimeline = (callback) ->
   self = this
   db.action.find {project:self._id, type:{'$ne':'watch'}}, (err, actions) ->
@@ -247,12 +260,14 @@ Project::getTimeline = (callback) ->
     self.timeline = timeline
     callback null, self
 
+# Sets a User to watch the Project given the User's Id
 Project::watch = (userId, callback) ->
   new db.watch
     user: userId
     watching: this._id
   .save callback
 
+# Returns if the User is watching the Project, given their User Id
 Project::isWatching = (userId, callback) ->
   db.watch.findOne
     user: userId
@@ -261,6 +276,7 @@ Project::isWatching = (userId, callback) ->
     callback err if err
     callback null, (if watchObject then true else false)
 
+# Unwatches the Project given a User Id
 Project::unwatch = (userId, callback) ->
 
   #find rather than findOne just incase multiple watch objects have got through
