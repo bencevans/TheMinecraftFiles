@@ -59,6 +59,11 @@ app.configure ->
     res.removeHeader("X-Powered-By");
     next();
 
+
+app.configure 'development', ->
+  app.use '/admin/mongomate', require('mongomate')(config.mongo.uri or 'mongodb://localhost/TheMinecraftFiles')
+
+app.configure ->
   app.use express['static'](__dirname + '/public')
   app.use flashify
   app.use app.router

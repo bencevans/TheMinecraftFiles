@@ -44,7 +44,8 @@
     "cachey": "0.0.1",
     "redis": "~0.8.1",
     "throwandtell": "~0.1.0",
-    "express-throwandtell": "~0.2.0"
+    "express-throwandtell": "~0.2.0",
+    "mongomate": "~0.1.1"
   },
   "devDependencies": {
     "mocha": "*",
