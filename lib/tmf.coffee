@@ -1,7 +1,10 @@
 #
 # lib/tmf.coffee
 #
-# This is the library that
+# This is the library that maps the data in the datbase to objects.
+# The objects returned have prototypes (class functions) to provide
+# additional info such as if you have a Project object you can call
+# Project.getIssues() to return the issues for that project.
 #
 
 # Requires
