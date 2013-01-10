@@ -1,0 +1,30 @@
+<div style="width:400px;margin:auto;">
+
+  <h2>Register</h2>
+
+  <form method="POST" action="/auth/user_info">
+
+    <fieldset>
+      <legend>Required</legend>
+      <label>Username</label>
+      <input type="username" name="username" value="{{username}}">
+      <label>Real/Prefered Name</label>
+      <input type="text" name="realName" value="{{realName}}">
+      <label>Email</label>
+      <input type="text" name="email" value="{{email}}">
+    </fieldset>
+
+    <fieldset>
+      <legend>Optional</legend>
+      <label>Minecraft Username</label>
+      <input type="text" name="minecraftUsername" value="{{minecraftUsername}}">
+      <label>Twitter Username</label>
+      <input type="text" name="twitterUsername" value="{{twitterUsername}}">
+      <label>Website</label>
+      <input type="text" name="website" value="{{website}}">
+    </fieldset>
+    <input type="submit">
+
+  </form>
+
+</div>
