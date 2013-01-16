@@ -1,5 +1,5 @@
 module.exports =
-  
+
   # Redis Database Connection Info
   redis:
     host: null

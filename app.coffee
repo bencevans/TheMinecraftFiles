@@ -1,35 +1,38 @@
 
-# Required Packages
+#
+# Require Modules
+#
+
 express = require 'express'
 stylus = require 'stylus'
 fs = require 'fs'
-redisStore = if process.env.REDISTOGO_URL then require('connect-heroku-redis')(express) else require('connect-redis')(express)
 crypto = require 'crypto'
 http = require 'http'
 flashify = require 'flashify'
 _ = require 'underscore'
 ThrowAndTell = require 'throwandtell'
 
-# Globals
-global.app = express()
-global.hbs = require 'hbs'
-global.config = require './config'
+#
+# Read Global Config
+#
 
-# Bootstrap (DB Etc.)
-require './bootstrap'
+config = require './config'
 
-# Create Web Server
-server = http.createServer(app)
+#
+# Bootstrap TMF Lib, Mongo, Redis
+#
 
-# TMF Library
-tmf = require './lib/tmf'
-tmf.db = db
-tmf.setupCache global.redisClient
+[tmf, db, redisClient] = require('./bootstrap')(config)
 
-# Authentication Requirements
-global.everyauth = require 'everyauth'
+console.log tmf
+
+#
+# EveryAuth Setup
+#
+
+everyauth = require 'everyauth'
 _.each fs.readdirSync('./app/auth'), (authModule) ->
-  require './app/auth/' + authModule
+  require('./app/auth/' + authModule)(everyauth, {tmf, db, config})
 
 everyauth.everymodule.logoutRedirectPath '/'
 everyauth.everymodule.findUserById (userId, callback) ->
@@ -37,8 +40,13 @@ everyauth.everymodule.findUserById (userId, callback) ->
     callback err, data
 
 
+#
+# App Set/Config
+#
 
-# App Config
+app = express()
+hbs = require 'hbs'
+
 app.configure 'development', ->
   app.use express.logger('dev')
   everyauth.debug = true
@@ -51,7 +59,7 @@ app.configure ->
   app.use express.cookieParser()
   app.use express.session
     secret: 'dsfdsf'
-    store: new redisStore()
+    store: require('connect-redis')(express)({client:redisClient})
   app.use express.bodyParser()
   app.use everyauth.middleware(app)
   app.use express.methodOverride()
@@ -59,6 +67,7 @@ app.configure ->
     res.removeHeader("X-Powered-By");
     next();
 
+# In Development: add mongomate (mongodb explorer)
 
 app.configure 'development', ->
   app.use '/admin/mongomate', require('mongomate')(config.mongo.uri or 'mongodb://localhost/TheMinecraftFiles')
@@ -113,7 +122,7 @@ app.get '/', (req, res, next) ->
 
 
 # Setup Helpers required in controllers
-global.helpers = {}
+helpers = {}
 helpers._ = _
 helpers.md5 = (string) ->
   crypto.createHash('md5').update(string).digest 'hex'
@@ -121,7 +130,7 @@ helpers.md5 = (string) ->
 
 # Register hbs/handlebars helpers & partials
 _.each fs.readdirSync('./app/view_helpers'), (view_helper) ->
-  require './app/view_helpers/' + view_helper
+  require('./app/view_helpers/' + view_helper)(hbs)
 
 app.get '/500', (req, res, next) ->
   next 'Test Error'
@@ -133,16 +142,16 @@ app.get '/worker', (req, res, next) ->
   cluster = require('cluster')
   res.send 200, cluster.worker.process.pid + ' ' + cluster.worker.id
 
-require './app/controllers'
+require('./app/controllers')(app, {tmf})
 
 
 
 if module.parent
   module.exports = app
 else
-  server.listen app.get('port')
+  app.listen app.get('port')
   console.log 'TheMinecraftFiles is listening on port ' + app.get 'port'
 
-if 'development' is app.get('env')
+if app.get('env') is 'development'
   growl = require 'growl'
   growl 'TheMinecraftFiles is listening on port ' + app.get 'port'

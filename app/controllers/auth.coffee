@@ -1,17 +1,19 @@
 
-# Login Page.
-app.get '/login', (req, res) ->
-  res.locals.title = 'Login'
-  if req.loggedIn
-    res.redirect '/'
-  else
-    res.render 'login'
+module.exports = (app, sys) ->
 
-# Aditional Info View and Save
-app.get '/auth/user_info', (req, res, next) ->
-  res.render 'auth/user_info', req.user
+  # Login Page.
+  app.get '/login', (req, res) ->
+    res.locals.title = 'Login'
+    if req.loggedIn
+      res.redirect '/'
+    else
+      res.render 'login'
 
-app.post '/auth/user_info', (req, res, next) ->
-  res.render 'auth/user_info', req.user
+  # Aditional Info View and Save
+  app.get '/auth/user_info', (req, res, next) ->
+    res.render 'auth/user_info', req.user
 
-#Logout, handled by everyauth along with all login logic.
+  app.post '/auth/user_info', (req, res, next) ->
+    res.render 'auth/user_info', req.user
+
+  #Logout, handled by everyauth along with all login logic.

@@ -41,12 +41,19 @@ app.configure('development', function(){
 });
 
 app.get('/project/:project', routes.project);
+app.get('/project/:project/gallery', routes.project.gallery);
 app.get('/user/:user', routes.user);
 app.get('/user/:user/projects', routes.user.projects);
 
 app.get('*', function (req, res, next) {
+
   // If Browser, redirect to User Interface
-  if(req.accepts('html')) return res.redirect('http://theminecraftfiles.com');
+  /*
+  if(req.accepts('html')) {
+    return res.redirect('http://theminecraftfiles.com');
+  }
+  */
+
   // Else JSON Not Found
   res.status(404);
   res.send({message: 'Not Found'});

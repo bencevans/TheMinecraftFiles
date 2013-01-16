@@ -1,18 +1,19 @@
-module.exports = new Schema(
-  name:
-    type: String
-    match: /^.{0,12}$/
+module.exports = (Schema) ->
+  new Schema(
+    name:
+      type: String
+      match: /^.{0,12}$/
 
-  file:
-    type: Schema.ObjectId
-    ref: 'file'
+    file:
+      type: Schema.ObjectId
+      ref: 'file'
 
-  project:
-    type: Schema.ObjectId
-    required: true
-    ref: 'project'
+    project:
+      type: Schema.ObjectId
+      required: true
+      ref: 'project'
 
-  description:
-    type: String
-    match: /^.{0,24}$/
-)
+    description:
+      type: String
+      match: /^.{0,24}$/
+  )

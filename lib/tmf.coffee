@@ -12,58 +12,104 @@ crypto = require 'crypto'
 _ = require 'underscore'
 async = require 'async'
 request = require 'request'
-cachey = null
+cachey = require 'cachey'
 
 # Helpers
 md5 = (string) ->
   crypto.createHash('md5').update(string).digest 'hex'
 
-redisClient = null
-exports.setupCache = setupCache = (providedRedisClient, callback) ->
-  redisClient = providedRedisClient
-  cachey = require('cachey')({redisClient:providedRedisClient})
+module.exports = (db, redis) ->
+  return new TMF(db, redis)
 
-# db = Object containing all Mongo Models.
-db
-exports.db = db
+class TMF
 
-# createUser - Creates a User, Saves to DB and returns as a User Object.
-#
-# userInfo = Object
-# Object Attributes should include:
-#   - username - String - Remeberable Identifier
-#   For identification it should include at least one of the following:
-#   - gitHubID - Integer - Numeral GitHub ID Provided from GitHub's OAuth API
-#   - password - String
-#   Optional:
-#   - website - String - URL of Website (Could be GitHub's blog field from OAuth API)
-#   + Anything accepted by the User Model.
-#
-exports.createUser = createUser = (userInfo, callback) ->
+  client = this
 
-  # Check for required attributes.
-  if not userInfo.username then callback 'No `username` has been provided'
-  if not userInfo.password or not userInfo.gitHubID then callback 'No authenticating attribute has been provided'
+  constructor: (@db, @redis) ->
 
-  newUser = new db.user(userInfo)
+    @cache = cachey {redisClient:@redis}
 
-  # Create DB Document
-  newUser.save (err, mongoUserObject) ->
-    return callback err, mongoUserObject if err
 
-    # Create a user object and it returns to callback with the object.
-    new User mongoUserObject, callback
+  # createUser - Creates a User, Saves to DB and returns as a User Object.
+  #
+  # userInfo = Object
+  # Object Attributes should include:
+  #   - username - String - Remeberable Identifier
+  #   For identification it should include at least one of the following:
+  #   - gitHubID - Integer - Numeral GitHub ID Provided from GitHub's OAuth API
+  #   - password - String
+  #   Optional:
+  #   - website - String - URL of Website (Could be GitHub's blog field from OAuth API)
+  #   + Anything accepted by the User Model.
+  #
+  createUser: (userInfo, callback) ->
 
-# getUser - get info about a particular user
-exports.getUser = getUser = (userIdentifier, callback) ->
-  self = this
-  self.db.user.findOne (if (typeof userIdentifier is 'object') then _id: userIdentifier else username: userIdentifier), (err, userMongoObject) ->
-    return callback(err, null)  if err
-    return callback(null, userMongoObject)  unless userMongoObject
-    new User userMongoObject.toObject(), callback
+    # Check for required attributes.
+    if not userInfo.username then callback 'No `username` has been provided'
+    if not userInfo.password or not userInfo.gitHubID then callback 'No authenticating attribute has been provided'
+
+    newUser = new db.user(userInfo)
+
+    # Create DB Document
+    newUser.save (err, mongoUserObject) ->
+      return callback err, mongoUserObject if err
+
+      # Create a user object and it returns to callback with the object.
+      new User mongoUserObject, client, callback
+
+  # getUser - get info about a particular user
+  getUser: (userIdentifier, callback) ->
+    self = this
+    self.db.user.findOne (if (typeof userIdentifier is 'object') then _id: userIdentifier else username: userIdentifier), (err, userMongoObject) ->
+      return callback(err, null)  if err
+      return callback(null, userMongoObject)  unless userMongoObject
+      new User userMongoObject.toObject(), client, callback
+
+  # Returns a Project Object given a projects name
+  getProject: (nameIndetifier, callback) ->
+    db.project.findOne (if (typeof nameIndetifier is 'object') then _id: nameIndetifier else name: nameIndetifier), (err, mongoProjectObject) ->
+      callback err if err
+
+      # Return with Null if no Project Exists
+      unless mongoProjectObject then return callback null, null
+
+      new Project mongoProjectObject, callback
+
+  getCategory: (categoryIndetifier, callback) ->
+    self = this
+    db.category.findOne (if (typeof categoryIndetifier is 'object') then _id: categoryIndetifier else slug: categoryIndetifier), (err, mongoCategory) ->
+      return callback(err, null)  if err
+      return callback(null, mongoCategory)  unless mongoCategory
+      new Category mongoCategory, callback
+
+  getComments = (identifier, callback) ->
+    db.comment.find {}, (err, comments) ->
+      next(err) if err
+
+      # Due to issues with mongoose, currently this pulls all comments in and is filtered here to match qeuery
+      filteredComments = _.filter comments, (comment) ->
+        return true  if comment.identifier.type is identifier.type
+
+      async.map filteredComments, (commentObject, callback) ->
+        new Comment commentObject, callback
+      , (err, results) ->
+        return callback err if err
+        callback null, results
+
+  getTimeline = (projectIdArray, callback) ->
+    self = this
+    self.db.action.find {project:'$elemMatch':projectIdArray}, (err, actions) ->
+      timeline = []
+      _.each actions, (actionObject) ->
+        new Action actionObject, (err, action) ->
+          return callback err if err
+          timeline.push action
+      self.timeline = timeline
+      callback null, self
+
 
 # User Object, This proccesses a user db lookup and filters ou to be only public data
-User = (user, callback) ->
+User = (user, client, callback) ->
   this._id = user._id
   this.username = user.username
   this.minecraftUsername = user.minecraftUsername
@@ -73,12 +119,13 @@ User = (user, callback) ->
   this.realName = user.realName
   this.gravatarhash = md5(user.email or 'default-user@theminecraftfiles.com')
   this.href = 'http://localhost:3000/user/' + user.username
+  this._client = client
   callback null, this
 
 # Get all projects with the user set as creator
 User::getProjects = (callback) ->
   self = this
-  db.project.find {creator:this._id}, (err, projects) ->
+  self._client.db.project.find {creator:this._id}, (err, projects) ->
 
     # Return with Null if no Projects Exists
     unless projects then callback null, null
@@ -94,27 +141,17 @@ User::getProjects = (callback) ->
 User::getWatching = (callback) ->
   self = this
 
-  db.watch.find {user:this._id}, (err, watching) ->
+  self.db.watch.find {user:this._id}, (err, watching) ->
     return callback err if err
 
     async.map watching, (watch, callback) ->
-      db.project.findOne ObjectId(watch), (err, projectObject) ->
+      self.db.project.findOne ObjectId(watch), (err, projectObject) ->
         new Project projectObject, callback
     , (err, results) ->
       return callback err if err
       self.watching = results
       callback null, self
 
-
-# Returns a Project Object given a projects name
-exports.getProject = getProject = (nameIndetifier, callback) ->
-  db.project.findOne (if (typeof nameIndetifier is 'object') then _id: nameIndetifier else name: nameIndetifier), (err, mongoProjectObject) ->
-    callback err if err
-
-    # Return with Null if no Project Exists
-    unless mongoProjectObject then return callback null, null
-
-    new Project mongoProjectObject, callback
 
 # Project Class Object
 Project = (project, callback) ->
@@ -290,12 +327,6 @@ Project::unwatch = (userId, callback) ->
 
   callback null, true
 
-exports.getCategory = getCategory = (categoryIndetifier, callback) ->
-  self = this
-  db.category.findOne (if (typeof categoryIndetifier is 'object') then _id: categoryIndetifier else slug: categoryIndetifier), (err, mongoCategory) ->
-    return callback(err, null)  if err
-    return callback(null, mongoCategory)  unless mongoCategory
-    new Category mongoCategory, callback
 
 Category = (category, callback) ->
   this._id = category._id
@@ -320,22 +351,6 @@ Category::getPopular = (options, callback) ->
 Category::getTrending = (options, callback) ->
   this.trending = []
   callback null, this
-
-
-exports.getComments = getComments = (identifier, callback) ->
-  db.comment.find {}, (err, comments) ->
-    next(err) if err
-
-    # Due to issues with mongoose, currently this pulls all comments in and is filtered here to match qeuery
-    filteredComments = _.filter comments, (comment) ->
-      return true  if comment.identifier.type is identifier.type
-
-    async.map filteredComments, (commentObject, callback) ->
-      new Comment commentObject, callback
-    , (err, results) ->
-      return callback err if err
-      callback null, results
-
 
 Comment = (object, callback) ->
 
@@ -390,17 +405,6 @@ Action::getProject = (callback) ->
     unless project then callback null, null
 
     self.project = project
-    callback null, self
-
-exports.getTimeline = getTimeline = (projectIdArray, callback) ->
-  self = this
-  db.action.find {project:'$elemMatch':projectIdArray}, (err, actions) ->
-    timeline = []
-    _.each actions, (actionObject) ->
-      new Action actionObject, (err, action) ->
-        return callback err if err
-        timeline.push action
-    self.timeline = timeline
     callback null, self
 
 Issue = (object, callback) ->

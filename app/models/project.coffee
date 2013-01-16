@@ -1,33 +1,34 @@
-module.exports = new Schema(
-  category:
-    type: Schema.ObjectId
-    ref: 'category'
+module.exports = (Schema) ->
+  new Schema(
+    category:
+      type: Schema.ObjectId
+      ref: 'category'
 
-  created:
-    type: Date
-    default: Date.now
+    created:
+      type: Date
+      default: Date.now
 
-  creator:
-    type: Schema.ObjectId
-    ref: 'user'
+    creator:
+      type: Schema.ObjectId
+      ref: 'user'
 
-  image:
-    type: Schema.ObjectId
-    ref: 'galleryImage'
+    image:
+      type: Schema.ObjectId
+      ref: 'galleryImage'
 
-  githubRepoURI:
-    type: String
-    match: /^[a-zA-Z0-9|-]+\/[a-zA-Z0-9|-]+$/
+    githubRepoURI:
+      type: String
+      match: /^[a-zA-Z0-9|-]+\/[a-zA-Z0-9|-]+$/
 
-  name:
-    type: String
-    required: true
-    trim: true
-    index:
-      unique: true
-      sparse: true
+    name:
+      type: String
+      required: true
+      trim: true
+      index:
+        unique: true
+        sparse: true
 
-  description:
-    type: String
-    match: /^.{0,64}$/
-)
+    description:
+      type: String
+      match: /^.{0,64}$/
+  )
