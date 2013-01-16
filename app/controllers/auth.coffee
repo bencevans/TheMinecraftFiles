@@ -1,17 +1,27 @@
 
-# Login Page.
-app.get '/login', (req, res) ->
-  res.locals.title = 'Login'
-  if req.loggedIn
-    res.redirect '/'
-  else
-    res.render 'login'
+###*
+ * Auth Controller
+###
 
-# Aditional Info View and Save
-app.get '/auth/user_info', (req, res, next) ->
-  res.render 'auth/user_info', req.user
+module.exports = (app, tmf, db) ->
 
-app.post '/auth/user_info', (req, res, next) ->
-  res.render 'auth/user_info', req.user
+  # Login Page.
+  login = (req, res) ->
+    res.locals.title = 'Login'
+    if req.loggedIn
+      res.redirect '/'
+    else
+      res.render 'login'
 
-#Logout, handled by everyauth along with all login logic.
+  # Aditional Info View and Save
+  userInfo = {}
+
+  userInfo.show = (req, res, next) ->
+    res.render 'auth/user_info', req.user
+
+  userInfo.update = (req, res, next) ->
+    res.render 'auth/user_info', req.user
+
+  #Logout, handled by everyauth along with all login logic.
+  
+  return {login, userInfo}

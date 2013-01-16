@@ -1,16 +1,23 @@
-app.get '/', (req, res) ->
 
-  tmf.getUser req.user._id, (err, dashboardUser) ->
-    next(err) if err
+###*
+ * Dashboard Controller
+###
 
-    dashboardUser.getProjects (err) ->
+module.exports = (app, tmf, db) ->
+
+  return (req, res) ->
+
+    tmf.getUser req.user._id, (err, dashboardUser) ->
       next(err) if err
 
-      dashboardUser.getWatching (err) ->
+      dashboardUser.getProjects (err) ->
+        next(err) if err
 
-        res.locals.title = 'Timeline'
-        res.render 'timeline',
-          usersFeedTimeline: []
-          usersProjects: dashboardUser.projects
-          usersWatching: dashboardUser.watching
+        dashboardUser.getWatching (err) ->
+
+          res.locals.title = 'Timeline'
+          res.render 'timeline',
+            usersFeedTimeline: []
+            usersProjects: dashboardUser.projects
+            usersWatching: dashboardUser.watching
 

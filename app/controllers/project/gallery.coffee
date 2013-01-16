@@ -74,5 +74,3 @@ app.post '/project/:projectSlug/gallery', (req, res, next) ->
       return next(err)  if err
       res.redirect '/project/' + req.project.name + '/gallery/' + galleryImage._id
 
-
-

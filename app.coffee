@@ -135,7 +135,7 @@ app.get '/worker', (req, res, next) ->
   cluster = require('cluster')
   res.send 200, cluster.worker.process.pid + ' ' + cluster.worker.id
 
-require './app/controllers'
+require './app/router'
 
 
 
