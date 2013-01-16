@@ -114,13 +114,6 @@ app.get '/', (req, res, next) ->
   res.render 'index'
 
 
-# Setup Helpers required in controllers
-global.helpers = {}
-helpers._ = _
-helpers.md5 = (string) ->
-  crypto.createHash('md5').update(string).digest 'hex'
-
-
 # Register hbs/handlebars helpers & partials
 _.each fs.readdirSync('./app/view_helpers'), (view_helper) ->
   require './app/view_helpers/' + view_helper
