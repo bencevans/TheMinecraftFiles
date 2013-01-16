@@ -1,9 +1,8 @@
 
-# Required Packages
+debug = require('debug')('ui')
 express = require 'express'
 stylus = require 'stylus'
 fs = require 'fs'
-redisStore = if process.env.REDISTOGO_URL then require('connect-heroku-redis')(express) else require('connect-redis')(express)
 crypto = require 'crypto'
 http = require 'http'
 flashify = require 'flashify'
@@ -16,15 +15,18 @@ global.hbs = require 'hbs'
 global.config = require './config'
 
 # Bootstrap (DB Etc.)
-require './bootstrap'
+debug('Starting Bootstrap')
+[tmf, db, redisClient] = require('./bootstrap')(config)
 
 # Create Web Server
 server = http.createServer(app)
 
-# TMF Library
-tmf = require './lib/tmf'
-tmf.db = db
-tmf.setupCache global.redisClient
+# Redis(Session)Store
+
+if process.env.REDISTOGO_URL
+  redisStore = require('connect-heroku-redis')(express)
+else
+  redisStore = require('connect-redis')(express)
 
 # Authentication Requirements
 global.everyauth = require 'everyauth'
@@ -138,11 +140,13 @@ require './app/controllers'
 
 
 if module.parent
+  debug('Exporting app')
   module.exports = app
 else
+  debug('Hooking up port')
   server.listen app.get('port')
-  console.log 'TheMinecraftFiles is listening on port ' + app.get 'port'
+  debug 'TheMinecraftFiles is listening on port ' + app.get 'port'
 
-if 'development' is app.get('env')
+if app.get('env') is 'development'
   growl = require 'growl'
   growl 'TheMinecraftFiles is listening on port ' + app.get 'port'

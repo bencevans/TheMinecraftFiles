@@ -45,7 +45,8 @@
     "redis": "~0.8.1",
     "throwandtell": "~0.1.0",
     "express-throwandtell": "~0.2.0",
-    "mongomate": "~0.1.1"
+    "mongomate": "~0.1.1",
+    "debug": "~0.7.0"
   },
   "devDependencies": {
     "mocha": "*",

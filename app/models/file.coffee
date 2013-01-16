@@ -1,9 +1,10 @@
-module.exports = new Schema(
-  type:
-    type: String
-    default: Date.now
+module.exports = (Schema, ObjectId) ->
+  return new Schema(
+    type:
+      type: String
+      default: Date.now
 
-  path:
-    type: String
-    required: true
-)
+    path:
+      type: String
+      required: true
+  )
