@@ -4,11 +4,39 @@ path = require 'path'
 _ = require 'underscore'
 routes = {}
 
+###*
+ * Error Routes
+###
+
+app.get '/500', (req, res, next) ->
+  next 'Test Error'
+
+app.get '/404', (req, res, next) ->
+  next 404
+
+###*
+ * Home Route
+###
+
+app.get '/', (req, res, next) ->
+  if req.loggedIn
+    next()
+    return true
+  res.render 'index'
+
+###*
+ * Feed Current Users Info to View Engine
+###
+
 app.all '*', (req, res, next) ->
   if req.user
     res.locals.everyauth = user: req.user
     res.locals.everyauth.user.loggedIn = true
   next()
+
+###*
+ * External Routes
+###
 
 routes.auth = require('./controllers/auth')(app, tmf, db)
 
@@ -36,7 +64,11 @@ app.get '/project/:projectSlug/gallery', routes.project.gallery
 _.each fs.readdirSync(path.resolve(__dirname, './controllers/project')), (file) ->
   require path.resolve(__dirname, './controllers/project/', file)
 
-# Check Authentication
+
+###*
+ * Authenticated Routes
+###
+
 app.all '*', (req, res, next) ->
   if req.loggedIn
     next()

@@ -1,4 +1,8 @@
 
+###*
+ * Dependencies
+###
+
 debug = require('debug')('ui')
 express = require 'express'
 stylus = require 'stylus'
@@ -9,26 +13,36 @@ flashify = require 'flashify'
 _ = require 'underscore'
 ThrowAndTell = require 'throwandtell'
 
-# Globals
+###*
+ * Globals (Ideally be removed and pass objects as params)
+###
+
 global.app = express()
 global.hbs = require 'hbs'
 global.config = require './config'
 
-# Bootstrap (DB Etc.)
+###*
+ * Bootstrap
+ * Sets up TMF lib, DBs etc
+###
+
 debug('Starting Bootstrap')
 [tmf, db, redisClient] = require('./bootstrap')(config)
 
-# Create Web Server
-server = http.createServer(app)
-
-# Redis(Session)Store
+###*
+ * RedisStore
+ * Stores cross-server sessions
+###
 
 if process.env.REDISTOGO_URL
   redisStore = require('connect-heroku-redis')(express)
 else
   redisStore = require('connect-redis')(express)
 
-# Authentication Requirements
+###*
+ * User Authentication
+###
+
 global.everyauth = require 'everyauth'
 _.each fs.readdirSync('./app/auth'), (authModule) ->
   require './app/auth/' + authModule
@@ -38,9 +52,18 @@ everyauth.everymodule.findUserById (userId, callback) ->
   db.user.findById userId, (err, data) ->
     callback err, data
 
+###*
+ * Configure View Engine
+###
+
+_.each fs.readdirSync('./app/view_helpers'), (view_helper) ->
+  require './app/view_helpers/' + view_helper
 
 
-# App Config
+###*
+ * Configure App
+###
+
 app.configure 'development', ->
   app.use express.logger('dev')
   everyauth.debug = true
@@ -92,6 +115,10 @@ app.configure 'production', ->
     maxAge: oneYear
   )
 
+###*
+ * Force HTTP Location & PJAX
+###
+
 app.all '*', (req, res, next) ->
 
   # Force Domain if Config Options are set.
@@ -107,35 +134,19 @@ app.all '*', (req, res, next) ->
   res.locals.layout = 'layout-pjax.html'  if req.headers['x-pjax']
   next()
 
-app.get '/', (req, res, next) ->
-  if req.loggedIn
-    next()
-    return true
-  res.render 'index'
 
-
-# Register hbs/handlebars helpers & partials
-_.each fs.readdirSync('./app/view_helpers'), (view_helper) ->
-  require './app/view_helpers/' + view_helper
-
-app.get '/500', (req, res, next) ->
-  next 'Test Error'
-
-app.get '/404', (req, res, next) ->
-  next 404
-
-app.get '/worker', (req, res, next) ->
-  cluster = require('cluster')
-  res.send 200, cluster.worker.process.pid + ' ' + cluster.worker.id
+###*
+ * Load Router
+###
 
 require './app/router'
-
 
 
 if module.parent
   debug('Exporting app')
   module.exports = app
 else
+  server = http.createServer(app)
   debug('Hooking up port')
   server.listen app.get('port')
   debug 'TheMinecraftFiles is listening on port ' + app.get 'port'
