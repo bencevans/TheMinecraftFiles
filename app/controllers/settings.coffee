@@ -1,5 +1,11 @@
 
 ###*
+ * Dependencies
+###
+
+_ = require 'underscore'
+
+###*
  * Settings Controller
 ###
 
@@ -8,7 +14,7 @@ module.exports = (app, tmf, db) ->
   index = (req, res) ->
     res.redirect '/settings/profile'
 
-  subPage = (req, res) ->
+  subPage = (req, res, next) ->
     subPages =
       profile:
         name: 'Profile'
@@ -31,20 +37,20 @@ module.exports = (app, tmf, db) ->
           return next(err)  if err
           res.render 'settings',
             title: subPages[req.params.subPage].name
-            subPages: helpers._.toArray(subPages)
+            subPages: _.toArray(subPages)
             subPage:
               view: view
               name: subPages[req.params.subPage].name
               slug: subPages[req.params.subPage].slug
 
 
-  profile = (req, res) ->
+  profile = (req, res, next) ->
     db.user.update req.user, req.body, (err, user) ->
       return next(err)  if err
       res.redirect '/settings/profile'
 
 
-  account = (req, res) ->
+  account = (req, res, next) ->
     db.user.update req.user, req.body, (err, user) ->
       return next(err)  if err
       res.redirect '/settings/account'
