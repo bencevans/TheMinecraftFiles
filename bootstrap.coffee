@@ -63,5 +63,8 @@ module.exports = (config) ->
   # Setup TMF (TheMinecraftFiles) Library
   global.tmf = require(__dirname + '/lib/tmf')
   tmf.db = global.db
+  tmf.setupCache redisClient, (err) ->
+    if err then throw err
+    debug 'Setup TMF Lib Cache'
 
   return [tmf, db, redisClient]

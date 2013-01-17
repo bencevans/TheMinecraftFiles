@@ -7,14 +7,26 @@
 # Project.getIssues() to return the issues for that project.
 #
 
-# Requires
+###*
+ * Dependencies
+###
+
 crypto = require 'crypto'
 _ = require 'underscore'
 async = require 'async'
 request = require 'request'
 cachey = null
 
-# Helpers
+
+###*
+ * Helpers
+###
+
+###*
+ * Generate a MD5 HASH of a string
+ * @param  {String} string
+ * @return {String}        MD5 Hash String
+###
 md5 = (string) ->
   crypto.createHash('md5').update(string).digest 'hex'
 
