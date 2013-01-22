@@ -1,6 +1,4 @@
 #!/usr/bin/env node
 
 require('coffee-script');
-app = require('../app');
-
-app.listen(process.env.PORT || 3000);
+require('../server');

@@ -21,5 +21,4 @@ if cluster.isMaster
     cluster.fork()
 else
   debug "(fork #{cluster.worker.id}): Started"
-  ui = require "../app"
-  ui.listen process.env.PORT or 3000
+  require "../server"
