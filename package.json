@@ -4,8 +4,8 @@
   "description": "Minecraft Addon Development Site",
   "main": "app.coffee",
   "scripts": {
-    "test": "node_modules/mocha/bin/mocha --compilers coffee:coffee-script",
-    "start": "coffee server"
+    "test": "./scripts/test",
+    "start": "./scripts/start"
   },
   "repository": {
     "type": "git",
