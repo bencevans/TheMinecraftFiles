@@ -1,0 +1,41 @@
+#!./node_modules/coffee-script/bin/coffee
+
+async = require 'async'
+
+console.log ''
+console.log '-> Bootstraping DB Connections & TMF Lib'
+
+[tmf, db] = require('../bootstrap')(require('../config'))
+
+console.log '-> Creating Plugin Categories'
+
+categories = ['Skins', 'Mods', 'Textures']
+
+async.map categories, (category, callback) ->
+
+  newCategory = new db.category({
+    name: category,
+    slug: category.toLowerCase()
+  })
+
+  newCategory.save (err, item) ->
+
+    if err
+      console.log ''
+      console.log '#  Error creating category \'' + category + '\':'
+      console.log ''
+      console.error err
+      console.log ''
+    else
+      console.log 'Created category \'' + category + '\''
+
+    callback err, item
+
+, (err) ->
+
+  if err
+    console.log 'Seen Errors, Exiting with 1'
+    process.exit 1 # UNIX Error Code
+  else
+    console.log 'Setup Complete'
+    process.exit 0 # UNIX Success Code
