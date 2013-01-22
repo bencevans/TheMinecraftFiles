@@ -1,13 +1,26 @@
+
+###*
+ * Dependencies
+###
+
 assert = require('assert')
 path = require('path')
 async = require('async')
 _ = require('underscore')
 
-global.config = mongo:
+###*
+ * Setup Client/Bootstrap
+###
+
+config = mongo:
   uri: 'mongodb://localhost/TheMinecraftFilesTEST'
 
-require path.resolve(__dirname, '../bootstrap')
+[tmf, db, redisClient] = require('../bootstrap')(config)
 
+
+###*
+ * Test Objects
+###
 
 testUser = new db.user(
   username: 'johnsmith'
@@ -23,9 +36,11 @@ testProject = new db.project(
   slug: 'Ttronic'
 )
 
+###*
+ * Start Tests
+###
+
 describe 'tmfLib', ->
-  tmf = require(path.resolve(__dirname, '../lib/tmf'))
-  tmf.db = global.db
 
   before (done) ->
 
@@ -38,14 +53,11 @@ describe 'tmfLib', ->
           done err
 
 
-
   after (done) ->
     testUser.remove()
     testCategory.remove()
     testProject.remove()
     done()
-
-
 
 
   describe '#getUser()', ->
@@ -70,7 +82,6 @@ describe 'tmfLib', ->
         assert.equal err, null
         assert.notEqual typeof user.projects, 'string'
         done()
-
 
 
   describe '#getCategory()', ->
