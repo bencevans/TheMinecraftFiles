@@ -9,7 +9,7 @@
 express = require 'express'
 
 # Include the Web Interface App.
-webInterface = require './app.coffee'
+webInterface = require './app'
 
 # Include the API Interface App
 apiInterface = require './api/app.js'

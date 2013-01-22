@@ -19,7 +19,7 @@ ThrowAndTell = require 'throwandtell'
 
 global.app = express()
 global.hbs = require 'hbs'
-global.config = require './config'
+global.config = require '../config'
 
 ###*
  * Bootstrap
@@ -27,7 +27,7 @@ global.config = require './config'
 ###
 
 debug('Starting Bootstrap')
-[tmf, db, redisClient] = require('./bootstrap')(config)
+[tmf, db, redisClient] = require('../bootstrap')(config)
 
 ###*
  * RedisStore
@@ -45,7 +45,7 @@ else
 
 global.everyauth = require 'everyauth'
 _.each fs.readdirSync('./app/auth'), (authModule) ->
-  require './app/auth/' + authModule
+  require './auth/' + authModule
 
 everyauth.everymodule.logoutRedirectPath '/'
 everyauth.everymodule.findUserById (userId, callback) ->
@@ -57,7 +57,7 @@ everyauth.everymodule.findUserById (userId, callback) ->
 ###
 
 _.each fs.readdirSync('./app/view_helpers'), (view_helper) ->
-  require './app/view_helpers/' + view_helper
+  require './view_helpers/' + view_helper
 
 
 ###*
@@ -70,7 +70,7 @@ app.configure 'development', ->
 
 app.configure ->
   app.set 'port', process.env.PORT or 3000
-  app.set 'views', __dirname + '/app/views'
+  app.set 'views', __dirname + '/views'
   app.set 'view engine', 'html'
   app.engine 'html', hbs.__express
   app.use express.cookieParser()
@@ -139,7 +139,7 @@ app.all '*', (req, res, next) ->
  * Load Router
 ###
 
-require './app/router'
+require './router'
 
 
 if module.parent
