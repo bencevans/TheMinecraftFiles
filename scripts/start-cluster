@@ -1,0 +1,25 @@
+#!./node_modules/coffee-script/bin/coffee
+
+###*
+ * Dependencies
+###
+
+cluster = require("cluster")
+os = require("os")
+debug = require("debug")("cluster")
+
+
+###*
+ * Start 1 Worker per CPU
+###
+
+cpus = os.cpus().length
+
+if cluster.isMaster
+  debug "(master): Starting #{cpus} instance(s)"
+  for i in [0...cpus]
+    cluster.fork()
+else
+  debug "(fork #{cluster.worker.id}): Started"
+  ui = require "../app"
+  ui.listen process.env.PORT or 3000

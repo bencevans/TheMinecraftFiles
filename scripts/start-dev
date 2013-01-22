@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+./node_modules/supervisor/lib/cli-wrapper.js -x "./node_modules/coffee-script/bin/coffee" app.coffee
