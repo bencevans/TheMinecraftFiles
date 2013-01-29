@@ -16,10 +16,24 @@
 <div class=comments>
 </div>
 
+
+
 <script type="text/javascript">
 $.getJSON('/comments?identifier[type]=galleryImage&identifier[id]={{galleryImage._id}}', function (body, err) {
 	for (var i = body.length - 1; i >= 0; i--) {
-		$('.comments').append('<div class=message>' + body[i].text + '</div>')
+		var html = ['<div class="comment">',
+		'<!--',
+		'	<div class="actionbox"><a href="?commentdelete=' + body[i]._id + '" class="button danger delete">Delete</a></div>',
+		'-->',
+		'	<div class="user">',
+		'		<a href="' + body[i].creator.href + '"><img src="http://www.gravatar.com/avatar/' + body[i].creator.gravatarhash + '?s=60"></a>',
+		'	</div>',
+		'	<div class="message">',
+				body[i].text,
+		'	</div>',
+		'	<div class="clear"></div>',
+		'</div>'].join('');
+		$('.comments').append(html);
 	};
 	
 })
