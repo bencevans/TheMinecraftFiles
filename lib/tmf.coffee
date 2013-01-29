@@ -16,6 +16,7 @@ _ = require 'underscore'
 async = require 'async'
 request = require 'request'
 cachey = null
+ObjectId = require('mongoose').Schema.ObjectId
 
 
 ###*
