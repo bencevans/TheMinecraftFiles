@@ -1,6 +1,9 @@
 module.exports = (Schema, ObjectId) ->
   return new Schema(
-    name: String
+    name:
+      type: String
+      required: true
+
     slug:
       type: String
       lowercase: true
