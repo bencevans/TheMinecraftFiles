@@ -4,6 +4,7 @@ module.exports = (Schema, ObjectId) ->
       type: String
 
     added:
+      type: Date
       default: Date.now
 
     path:
