@@ -73,13 +73,17 @@ app.configure ->
   app.use express.cookieParser()
   app.use express.session
     secret: 'dsfdsf'
-    store: new redisStore()
+#    store: new redisStore()
   app.use express.bodyParser()
   app.use everyauth.middleware(app)
   app.use express.methodOverride()
   app.use (err, req, res, next) ->
     res.removeHeader("X-Powered-By");
     next();
+  s = require('../db')
+  app.use(require('sequelize-restful')(s.sequelize, { endpoint: '/admin/api' }))
+  app.use(require('sequelize-admin')(s.sequelize))
+
 
 
 app.configure 'development', ->

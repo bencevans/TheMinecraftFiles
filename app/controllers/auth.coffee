@@ -3,10 +3,9 @@
  * Auth Controller
 ###
 
-module.exports = (app, tmf, db) ->
+db = require "../../db"
 
-  # Login Page.
-  login = (req, res) ->
+module.exports.login = (req, res) ->
     res.locals.title = 'Login'
     if req.loggedIn
       res.redirect '/'
@@ -16,12 +15,10 @@ module.exports = (app, tmf, db) ->
   # Aditional Info View and Save
   userInfo = {}
 
-  userInfo.show = (req, res, next) ->
+module.exports.settings = (req, res, next) ->
     res.render 'auth/user_info', req.user
 
-  userInfo.update = (req, res, next) ->
+module.exports.settingsAction = (req, res, next) ->
     res.render 'auth/user_info', req.user
 
-  #Logout, handled by everyauth along with all login logic.
-  
-  return {login, userInfo}
+# Logout handled by everyauth along with all login logic.

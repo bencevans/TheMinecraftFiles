@@ -3,21 +3,24 @@
  * Dashboard Controller
 ###
 
-module.exports = (app, tmf, db) ->
+db = require "../../db"
 
-  return (req, res) ->
-
-    tmf.getUser req.user._id, (err, dashboardUser) ->
-      next(err) if err
-
-      dashboardUser.getProjects (err) ->
-        next(err) if err
-
-        dashboardUser.getWatching (err) ->
-
-          res.locals.title = 'Timeline'
-          res.render 'timeline',
-            usersFeedTimeline: []
-            usersProjects: dashboardUser.projects
-            usersWatching: dashboardUser.watching
-
+module.exports.index = (req, res, next) ->
+  console.log req.user
+  db.User.find(
+    id: req
+  ).success((dashboardUser) ->
+    console.log "dash", dashboardUser
+    dashboardUser.getProjects().success((projects) ->
+      #dashboardUser.getWatching().success((projects) ->
+      res.locals.title = 'Timeline'
+      res.render 'timeline',
+        usersFeedTimeline: []
+        usersProjects: dashboardUser.projects
+        usersWatching: dashboardUser.watching
+      #).error (error) ->
+      #  next error
+    ).error (error) ->
+      next error
+  ).error (error) ->
+    next error

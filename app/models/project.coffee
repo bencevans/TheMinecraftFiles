@@ -1,34 +1,21 @@
-module.exports = (Schema, ObjectId) ->
-  return new Schema(
-    category:
-      type: Schema.ObjectId
-      ref: 'category'
 
-    created:
-      type: Date
-      default: Date.now
-
-    creator:
-      type: Schema.ObjectId
-      ref: 'user'
-
-    image:
-      type: Schema.ObjectId
-      ref: 'galleryImage'
-
-    githubRepoURI:
-      type: String
-      match: /^[a-zA-Z0-9|-]+\/[a-zA-Z0-9|-]+$/
+module.exports = (sequelize, Sequelize) ->
+  return sequelize.define "Project",
+    id:
+      type: Sequelize.INTEGER
+      primaryKey: true
+      autoIncrement: true
 
     name:
-      type: String
-      required: true
-      trim: true
-      index:
-        unique: true
-        sparse: true
+      type: Sequelize.STRING
+      allowNull: false
+      isLowercase: true
+      unique: true
+
+    githubRepoURI:
+      type: Sequelize.STRING
+      is: ["/^[a-zA-Z0-9|-]+\/[a-zA-Z0-9|-]+$/"]
 
     description:
-      type: String
-      match: /^.{0,64}$/
-  )
+      type: Sequelize.STRING
+      allowNull: true

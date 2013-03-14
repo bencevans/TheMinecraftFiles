@@ -13,7 +13,7 @@ routes = {}
 ###
 
 app.get '/500', (req, res, next) ->
-  next 'Test Error'
+  next new Error 'Test Error'
 
 app.get '/404', (req, res, next) ->
   next 404
@@ -23,6 +23,7 @@ app.get '/404', (req, res, next) ->
 ###
 
 app.get '/', (req, res, next) ->
+  console.log req.loggedIn
   if req.loggedIn
     next()
     return true
@@ -42,13 +43,13 @@ app.all '*', (req, res, next) ->
  * External Routes
 ###
 
-routes.auth = require('./controllers/auth')(app, tmf, db)
+routes.auth = require('./controllers/auth')
 
 app.get '/login', routes.auth.login
-app.get '/auth/user_info', routes.auth.userInfo.show
-app.post '/auth/user_info', routes.auth.userInfo.update
+app.get '/auth/user_info', routes.auth.settings
+app.post '/auth/user_info', routes.auth.settingsAction
 
-routes.discover = require('./controllers/discover')(app, tmf, db)
+routes.discover = require('./controllers/discover')
 
 app.get '/discover', routes.discover.index
 app.get '/discover/:categorySlug', routes.discover.category
@@ -81,9 +82,9 @@ app.all '*', (req, res, next) ->
       type: 404
 
 
-routes.dashboard = require('./controllers/dashboard')(app, tmf, db)
+routes.dashboard = require('./controllers/dashboard')
 
-app.get '/', routes.dashboard
+app.get '/', routes.dashboard.index
 
 routes.settings = require('./controllers/settings')(app, tmf, db)
 

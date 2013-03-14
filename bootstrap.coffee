@@ -23,13 +23,6 @@ mongoose = require 'mongoose'
 
 module.exports = (config) ->
 
-  # Open a connection with MongoDB (Database)
-  mongoConn = mongoose.connect config.mongo.uri or 'mongodb://localhost/TheMinecraftFiles', (err) ->
-    if err
-      console.error 'Error connecting to monogo:', err
-    else
-      debug 'Mongoose connected to MongoDB'
-
   # Setup Redis (Key-Value Store used for storing authenticated sessions)
   #
   # REDISTOGO_URL is the ENVIROMENT variable Heroku (Cloud Web Host) use
@@ -43,28 +36,7 @@ module.exports = (config) ->
     debug('Creating a local Redis Client')
     global.redisClient = require('redis').createClient()
 
+  global.tmf = null
+  global.db = null
 
-  # Make required functions/classes/objects available globally (So
-  # they can be accessed outside of the bootstrap script).
-  Schema = mongoose.Schema
-  ObjectId = Schema.ObjectId
-  global.db = {}
-
-  debug('Loading Mongoose Schemas')
-
-  # Read each Database Model and pull it into a Schema + Model for Mongoose
-  _.each fs.readdirSync('./app/models'), (fileName, index) ->
-
-    # Retreive Schema Name from the filename (user.js => user)
-    schemaName = fileName.match(/([a-zA-Z]+)\..+/)[1]
-    db[schemaName] = mongoose.model(schemaName, require('./app/models/' + fileName)(Schema, ObjectId))
-    debug('Loaded %s Schema', schemaName)
-
-  # Setup TMF (TheMinecraftFiles) Library
-  global.tmf = require(__dirname + '/lib/tmf')
-  tmf.db = global.db
-  tmf.setupCache redisClient, (err) ->
-    if err then throw err
-    debug 'Setup TMF Lib Cache'
-
-  return [tmf, db, redisClient]
+  return [null, null, redisClient]

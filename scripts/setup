@@ -5,37 +5,41 @@ async = require 'async'
 console.log ''
 console.log '-> Bootstraping DB Connections & TMF Lib'
 
-[tmf, db] = require('../bootstrap')(require('../config'))
+db = require '../db'
 
-console.log '-> Creating Plugin Categories'
+db.sequelize.sync().error((error) ->
 
-categories = ['Skins', 'Mods', 'Textures']
+  console.error error
 
-async.map categories, (category, callback) ->
+).success ->
 
-  newCategory = new db.category({
-    name: category,
-    slug: category.toLowerCase()
-  })
 
-  newCategory.save (err, item) ->
+  console.log '-> Creating Plugin Categories'
 
-    if err
+  categories = ['Skins', 'Mods', 'Textures']
+
+  async.map categories, (category, callback) ->
+
+    db.Category.build({
+      name: category,
+      slug: category.toLowerCase()
+    }).save().success((category) ->
+      console.log 'Created category: ', category
+      callback null, category
+    ).error((err) ->
       console.log ''
-      console.log '#  Error creating category \'' + category + '\':'
+      console.log '#  Error creating category ', category
       console.log ''
       console.error err
       console.log ''
+      callback err
+    )
+
+  , (err) ->
+
+    if err
+      console.log 'Seen Errors, Exiting with 1'
+      process.exit 1 # UNIX Error Code
     else
-      console.log 'Created category \'' + category + '\''
-
-    callback err, item
-
-, (err) ->
-
-  if err
-    console.log 'Seen Errors, Exiting with 1'
-    process.exit 1 # UNIX Error Code
-  else
-    console.log 'Setup Complete'
-    process.exit 0 # UNIX Success Code
+      console.log 'Setup Complete'
+      process.exit 0 # UNIX Success Code

@@ -10,6 +10,8 @@ async = require 'async'
  * Project Controller
 ###
 
+db = require '../../db'
+
 module.exports = (app, tmf, db) ->
 
   all =  (req, res, next) ->
