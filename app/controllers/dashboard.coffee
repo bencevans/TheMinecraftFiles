@@ -6,20 +6,19 @@
 db = require "../../db"
 
 module.exports.index = (req, res, next) ->
-  console.log req.user
   db.User.find(
-    id: req
+    where:
+      id: req.user.id
   ).success((dashboardUser) ->
-    console.log "dash", dashboardUser
-    dashboardUser.getProjects().success((projects) ->
-      #dashboardUser.getWatching().success((projects) ->
-      res.locals.title = 'Timeline'
-      res.render 'timeline',
-        usersFeedTimeline: []
-        usersProjects: dashboardUser.projects
-        usersWatching: dashboardUser.watching
-      #).error (error) ->
-      #  next error
+    dashboardUser.getProjects().success((usersProjects) ->
+      dashboardUser.getWatching().success((watchingProjects) ->
+        res.locals.title = 'Timeline'
+        res.render 'timeline',
+          usersFeedTimeline: []
+          usersProjects: usersProjects
+          usersWatching: watchingProjects
+      ).error (error) ->
+        next error
     ).error (error) ->
       next error
   ).error (error) ->

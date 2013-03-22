@@ -40,14 +40,36 @@ else
  * User Authentication
 ###
 
-global.everyauth = require 'everyauth'
-_.each fs.readdirSync('./app/auth'), (authModule) ->
-  require './auth/' + authModule
+passport = require('passport')
+LocalStrategy = require('passport-local').Strategy
+db = require('../db')
 
-everyauth.everymodule.logoutRedirectPath '/'
-everyauth.everymodule.findUserById (userId, callback) ->
-  db.user.findById userId, (err, data) ->
-    callback err, data
+passport.serializeUser((user, callback) ->
+  callback null, user.id
+)
+
+passport.deserializeUser((userId, callback) ->
+  db.User.find({where:{id:userId}}).success((user) ->
+    callback null, user
+  ).error((error) ->
+    callback error
+  )
+)
+
+passport.use new LocalStrategy((username, password, done) ->
+
+  db.User.find
+    where:
+      username: username
+  .success (user) ->
+    return done(null, false, 'No User Exists')  unless user
+    return done(null, false, 'Login failed')  if user.password isnt password
+    done null, user
+  .error (error) ->
+    done error
+
+)
+
 
 ###*
  * Configure View Engine
@@ -63,26 +85,26 @@ _.each fs.readdirSync('./app/view_helpers'), (view_helper) ->
 
 app.configure 'development', ->
   app.use express.logger('dev')
-  everyauth.debug = true
 
 app.configure ->
   app.set 'port', process.env.PORT or 3000
   app.set 'views', __dirname + '/views'
   app.set 'view engine', 'html'
   app.engine 'html', hbs.__express
+
   app.use express.cookieParser()
+  app.use express.bodyParser()
+  app.use express.methodOverride()
   app.use express.session
     secret: 'dsfdsf'
-#    store: new redisStore()
-  app.use express.bodyParser()
-  app.use everyauth.middleware(app)
-  app.use express.methodOverride()
+    store: new redisStore()
+
+  app.use passport.initialize()
+  app.use passport.session()
+
   app.use (err, req, res, next) ->
     res.removeHeader("X-Powered-By");
     next();
-  s = require('../db')
-  app.use(require('sequelize-restful')(s.sequelize, { endpoint: '/admin/api' }))
-  app.use(require('sequelize-admin')(s.sequelize))
 
 
 
@@ -139,6 +161,13 @@ app.all '*', (req, res, next) ->
 ###*
  * Load Router
 ###
+
+app.post "/login", passport.authenticate("local",
+  failureRedirect: "/login"
+  failureFlash: true
+), (req, res) ->
+  res.redirect "/"
+
 
 require './router'
 

@@ -1,7 +1,13 @@
+
+###*
+ * Dependencies
+###
+
 _ = require("underscore")
+async = require 'async'
 db = require("../../../db")
 
-app.get '/new', (req, res, next) ->
+module.exports.new = (req, res, next) ->
   db.Category.findAll().success((categories) ->
     res.locals.title = 'New Project'
     res.render 'project/new',
@@ -10,36 +16,45 @@ app.get '/new', (req, res, next) ->
     next(err)
   )
 
-app.post '/new', (req, res, next) ->
+module.exports.newAction = (req, res, next) ->
   if typeof req.body.name isnt 'undefined' and typeof req.body.category isnt 'undefined'
     res.locals.title = 'New Project'
     if req.body.name.match(/^[a-zA-Z|-|_]+$/m)
-      db.Project.build(
-        name: req.body.name
-        category: req.body.category
-        creator: req.user.id
-      ).save().success((project) ->
-        res.redirect '/project/' + project.name
-        ### TODO
-        tmf.createAction
-          type: 'create'
-          actor: req.user._id
-          project: newproject._id
-        , (err, action) ->
-          next err if err
-        ###
+
+      # find category
+      db.Category.find({where:{id:req.body.category}}).success((category) ->
+        unless category then return next new Error('No category found by that id')
+
+        # all params seem ok, create the project
+        db.Project.build(
+          name: req.body.name
+          category: req.body.category
+        ).save().success((project) ->
+
+          project.setCategory(category).success((project)->
+
+            project.setCreator(req.user).success((creator)->
+              # TODO: Create User's 'Project Created' Event/Timeline Action
+              res.redirect '/project/' + project.name
+            ).error((error) ->
+              next error
+            )
+
+          ).error((error) ->
+            next error
+          )
+
+        ).error((error) ->
+          next error
+        )
       ).error((error) ->
         next error
       )
 
-      newproject.save (err, category) ->
-        return next(err)  if err
-        res.redirect '/project/' + category.name
-
     else
       db.Category.findAll().success((categories) ->
         req.flash 'Invalid Name'
-        
+
         #Invalid Name Error
         res.render 'project/new', _.extend(
           categories: categories

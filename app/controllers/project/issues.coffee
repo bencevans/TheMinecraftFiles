@@ -1,6 +1,6 @@
 _ = require 'underscore'
 
-app.get '/project/:projectSlug/issues', (req, res, next) ->
+module.exports.index = (req, res, next) ->
   req.project.getIssues (err) ->
 
     _.each req.project.issues, (issue) ->
@@ -14,7 +14,7 @@ app.get '/project/:projectSlug/issues', (req, res, next) ->
         subPage:
           content: html
 
-app.get '/project/:projectSlug/issues/:issueid', (req, res, next) ->
+module.exports.issue = (req, res, next) ->
   req.project.getIssue req.params.issueid, (err, issue) ->
 
     if issue == null

@@ -1,4 +1,7 @@
-app.get '/project/:projectSlug/downloads', (req, res, next) ->
+
+db = require '../../../db'
+
+module.exports.index = (req, res, next) ->
 
   req.project.getDownloads (err, project) ->
 

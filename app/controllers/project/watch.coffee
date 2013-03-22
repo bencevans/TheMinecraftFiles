@@ -1,4 +1,4 @@
-app.get '/project/:projectSlug/watch', (req, res, next) ->
+module.exports.watch = (req, res, next) ->
   if not req.user
     return res.redirect '/login?r=/project/' + req.project.name
   req.project.watch req.user._id, (err, watching) ->
@@ -13,7 +13,7 @@ app.get '/project/:projectSlug/watch', (req, res, next) ->
 
       res.redirect '/project/' + req.project.name
 
-app.get '/project/:projectSlug/unwatch', (req, res, next) ->
+module.exports.unwatch = (req, res, next) ->
   if not req.user
     return res.redirect '/login?r=/project/' + req.project.name
   req.project.unwatch req.user._id, (err, watching) ->

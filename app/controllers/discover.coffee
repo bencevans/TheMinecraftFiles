@@ -13,7 +13,6 @@ db = require '../../db'
 
 module.exports.index = (req, res, next) ->
   db.Category.findAll().success (categories) ->
-    console.log categories
     res.locals.title = 'Discover'
     res.render 'discover',
       categories: categories

@@ -7,12 +7,15 @@ console.log '-> Bootstraping DB Connections & TMF Lib'
 
 db = require '../db'
 
-db.sequelize.sync().error((error) ->
+
+syncOptions =
+  force: if process.env.FORCE then true else false 
+
+db.sequelize.sync(syncOptions).error((error) ->
 
   console.error error
 
 ).success ->
-
 
   console.log '-> Creating Plugin Categories'
 

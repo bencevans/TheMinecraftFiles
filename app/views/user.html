@@ -1,36 +1,36 @@
 <div class="row">
-	<div class="span2 avatar">
-		<img src="{{gravatar_url profile.gravatarhash "140"}}" alt="{{user_preferred_name profile}}'s Avatar" style="width:100%;"/>
-	</div>
-	<div class="span10">
-		<div class="pagename">
-			<h2>{{profile.realName}} <span class="lighter">({{profile.username}})</span></h2>
-		</div>
-		<ul class="userinfo">
-			{{#if profile.minecraftUsername}}<li>Minecraft Name: {{profile.minecraftUsername}}</li>{{/if}}
-			{{#if profile.twitterUsername}}<li>Twitter: <a class="twittertext" href="http://twitter.com/{{profile.twitterUsername}}">@{{profile.twitterUsername}}</a></li>{{/if}}
-			{{#if profile.website}}<li>Website: <a href="{{profile.website}}">{{profile.website}}</a></li>{{/if}}
-			{{#if profile.joined}}<li>Member Since: {{time_ago profile.joined}}</li>{{/if}}
-		</ul>
-	</div>
+  <div class="span2 avatar">
+    <img src="{{gravatar_url profile.email "140"}}" alt="{{user_preferred_name profile}}'s Avatar" style="width:100%;"/>
+  </div>
+  <div class="span10">
+    <div class="pagename">
+      <h2>{{profile.realName}} <span class="lighter">({{profile.username}})</span></h2>
+    </div>
+    <ul class="userinfo">
+      {{#if profile.minecraftUsername}}<li>Minecraft Name: {{profile.minecraftUsername}}</li>{{/if}}
+      {{#if profile.twitterUsername}}<li>Twitter: <a class="twittertext" href="http://twitter.com/{{profile.twitterUsername}}">@{{profile.twitterUsername}}</a></li>{{/if}}
+      {{#if profile.website}}<li>Website: <a href="{{profile.website}}">{{profile.website}}</a></li>{{/if}}
+      {{#if profile.joined}}<li>Member Since: {{time_ago profile.joined}}</li>{{/if}}
+    </ul>
+  </div>
 </div>
 <div class="row">
-	<div class="span10 push2 usersprojects">
-		<h3>Projects</h3>
+  <div class="span10 push2 usersprojects">
+    <h3>Projects</h3>
 
-		{{#if profile.projects}}
+    {{#if profile.projects}}
 
-		{{#profile.projects}}
+    {{#profile.projects}}
+    {{this}}
+    {{{project_widget this}}}
+    {{/profile.projects}}
 
-		{{{project_widget this}}}
-		{{/profile.projects}}
+    {{else}}
+    <p class="lighter">
+      {{user_preferred_name profile}} Currently Has No Projects</p>
+    {{/if}}
 
-		{{else}}
-		<p class="lighter">
-			{{user_preferred_name profile}} Currently Has No Projects</p>
-		{{/if}}
-
-	</div>
+  </div>
 </div>
 </div>
 </div>

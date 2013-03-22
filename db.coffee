@@ -17,17 +17,20 @@ sequelize = new Sequelize("database", "username", "password",
 User = require("./app/models/user")(sequelize, Sequelize)
 Project = require("./app/models/project")(sequelize, Sequelize)
 Category = require("./app/models/category")(sequelize, Sequelize)
+Watch = require("./app/models/watch")(sequelize, Sequelize)
 
 ###*
  * Relationships
 ###
 
 User.hasMany Project
-Project.belongsTo User
+Project.belongsTo User, {as: 'Creator'}
 
 Category.hasMany Project
 Project.belongsTo Category
 
+Project.hasMany Watch, {as: 'Watchers'}
+User.hasMany Watch, {as: 'Watching'}
 
 ###*
  * Exports

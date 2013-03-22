@@ -1,14 +1,15 @@
-module.exports = (Schema, ObjectId) ->
-  return new Schema(
+
+module.exports = (sequelize, Sequelize) ->
+  return sequelize.define "Watch",
+    id:
+      type: Sequelize.INTEGER
+      primaryKey: true
+      autoIncrement: true
+
     user:
-      type: Schema.ObjectId
+      type: Sequelize.INTEGER
       required: true
 
-    watching:
-      type: Schema.ObjectId
+    project:
+      type: Sequelize.INTEGER
       required: true
-
-    when:
-      type:Date
-      default:Date.now
-  )
