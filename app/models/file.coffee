@@ -1,13 +1,15 @@
-module.exports = (Schema, ObjectId) ->
-  return new Schema(
+
+module.exports = (sequelize, Sequelize) ->
+  return sequelize.define "File",
+    id:
+      type: Sequelize.INTEGER
+      primaryKey: true
+      autoIncrement: true
+
     type:
-      type: String
+      type: Sequelize.STRING
+      allowNull: true
 
-    added:
-      type: Date
-      default: Date.now
-
-    path:
-      type: String
+    description:
+      type: Sequelize.STRING
       required: true
-  )

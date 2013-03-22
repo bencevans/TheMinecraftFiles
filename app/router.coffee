@@ -76,13 +76,14 @@ app.get '/user/:username', routes.user.profile
 
 # Projects
 app.all '/project/:project/:subPage?*', routes.project.all
-app.get '/project/:project/gallery', routes.project.gallery
+
 
 routes.project = routes.project or {}
 _.each fs.readdirSync(path.resolve(__dirname, './controllers/project')), (file) ->
   routes.project[file.match(/^(.+)\.coffee$/)[1]] = require path.resolve(__dirname, './controllers/project/', file)
 
 app.get '/project/:projectSlug/downloads', routes.project.downloads.index
+app.get '/project/:project/gallery', routes.project.gallery.index
 app.get '/project/:projectSlug/gallery/:imageId.png', routes.project.gallery.imageFile
 app.get '/project/:projectSlug/gallery/:imageId', routes.project.gallery.image
 app.get '/project/:projectSlug/gallery/:imageId/default', ensureAuthenticated, routes.project.gallery.setDefault

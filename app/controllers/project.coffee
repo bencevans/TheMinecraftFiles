@@ -77,26 +77,3 @@ module.exports.all =  (req, res, next) ->
   ).error((error) ->
     next error
   )
-
-module.exports.gallery = (req, res, next) ->
-  db.galleryImage.find
-    project: req.project._id
-  , (err, galleryImages) ->
-    async.map galleryImages, ((galleryImage, callback) ->
-      db.file.findById galleryImage.file, (err, galeryImageFile) ->
-        galleryImage = galleryImage.toObject()
-        galleryImage.src = '/project/' + req.project.name + '/gallery/' + galleryImage._id + '.png'
-        galleryImage.href = '/project/' + req.project.name + '/gallery/' + galleryImage._id
-        callback err, galleryImage
-    ), (err, results) ->
-      return next(err)  if err
-      res.render 'project/gallery',
-        layout: false
-        galleryImages: results
-      , (err, html) ->
-        return next(err)  if err
-        res.render 'project',
-          subPage:
-            content: html
-
-

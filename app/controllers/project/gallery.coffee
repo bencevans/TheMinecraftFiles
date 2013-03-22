@@ -1,15 +1,52 @@
+
+###*
+ * Dependencies
+###
+
 fs = require 'fs'
+db = require '../../../db'
+async = require 'async'
+
+module.exports.index = (req, res, next) ->
+  req.project.getGalleryImages().success (galleryImages) ->
+    async.map galleryImages, ((galleryImage, callback) ->
+      galleryImage.getFile().success (file) ->
+        galleryImage = galleryImage.values
+        galleryImage.src = '/project/' + req.project.name + '/gallery/' + galleryImage._id + '.png'
+        galleryImage.href = '/project/' + req.project.name + '/gallery/' + galleryImage._id
+        callback null, galleryImage
+      .error (error) ->
+        callback error
+
+    ), (error, results) ->
+      if error then return next error
+
+      res.render 'project/gallery',
+        layout: false
+        galleryImages: results
+      , (err, html) ->
+        return next(err)  if err
+        res.render 'project',
+          subPage:
+            content: html
+
+  .error (error) ->
+    next error
+
 
 # Route to return Actual Image in PNG Format.
 module.exports.imageFile = (req, res, next) ->
-  db.galleryImage.findById req.params.imageId, (err, image) ->
-    return next(err)  if err
-    unless image
-      return res.render 'errors/404',
-        status: 404
-    db.file.findById image.file, (err, file) ->
-      res.status(200).sendfile file.path
-
+  db.GalleryImage.find
+    where:
+      id:req.params.imageId
+  .success (image) ->
+    unless image then return res.status(404).render 'errors/404'
+    image.getFile().success (file) ->
+      res.sendfile file.path
+    .error (error) ->
+      next error
+  .error (error) ->
+    next error
 
 # Route to return an individual image gallery page
 module.exports.image = (req, res, next) ->
@@ -60,9 +97,25 @@ module.exports.delete = (req, res, next) ->
           res.redirect '/project/' + req.params.projectSlug + '/gallery'
 
 
-# Displays an overview of all images in gallery
-module.exports.index = (req, res, next) ->
+# Add an image
+module.exports.new = (req, res, next) ->
   return next()  unless req.project.isOwner
+  db.File.build
+    path: req.files.galleryFileUpload.path
+  .save().success (file) ->
+    db.GalleryImage.build({}).save().success (galleryImage) ->
+      galleryImage.setFile(file).success (galleryImage) ->
+        galleryImage.setProject(req.project).success (galleryImage) ->
+          res.redirect '/project/' + req.project.name + '/gallery/' + galleryImage.id
+        .error (error) ->
+          next error
+      .error (error) ->
+        next error
+    .error (error) ->
+      next error
+  .error (error) ->
+    next error
+
   upload = new db.file(path: req.files.galleryFileUpload.path)
   upload.save (err, upload) ->
     return next(err)  if err
