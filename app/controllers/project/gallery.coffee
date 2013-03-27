@@ -12,15 +12,15 @@ module.exports.index = (req, res, next) ->
     async.map galleryImages, ((galleryImage, callback) ->
       galleryImage.getFile().success (file) ->
         galleryImage = galleryImage.values
-        galleryImage.src = '/project/' + req.project.name + '/gallery/' + galleryImage._id + '.png'
-        galleryImage.href = '/project/' + req.project.name + '/gallery/' + galleryImage._id
+        galleryImage.src = '/project/' + req.project.name + '/gallery/' + galleryImage.id + '.png'
+        galleryImage.href = '/project/' + req.project.name + '/gallery/' + galleryImage.id
         callback null, galleryImage
       .error (error) ->
         callback error
 
     ), (error, results) ->
       if error then return next error
-
+      console.log results
       res.render 'project/gallery',
         layout: false
         galleryImages: results
@@ -42,6 +42,7 @@ module.exports.imageFile = (req, res, next) ->
   .success (image) ->
     unless image then return res.status(404).render 'errors/404'
     image.getFile().success (file) ->
+      console.log file
       res.sendfile file.path
     .error (error) ->
       next error
@@ -50,14 +51,15 @@ module.exports.imageFile = (req, res, next) ->
 
 # Route to return an individual image gallery page
 module.exports.image = (req, res, next) ->
-  db.galleryImage.findById req.params.imageId, (err, galleryImage) ->
-    return next(err)  if err
-    unless galleryImage
-      return res.render 'errors/404',
-        status: 404
-    galleryImage = galleryImage.toObject()
-    galleryImage.src = '/project/' + req.project.name + '/gallery/' + galleryImage._id + '.png'
-    galleryImage.href = '/project/' + req.project.name + '/gallery/' + galleryImage._id
+  db.GalleryImage.find
+    where:
+      id: req.params.imageId
+  .success (galleryImage) ->
+    unless galleryImage then return next()
+
+    galleryImage = galleryImage.values
+    galleryImage.src = '/project/' + req.project.name + '/gallery/' + galleryImage.id + '.png'
+    galleryImage.href = '/project/' + req.project.name + '/gallery/' + galleryImage.id
     res.render 'project/gallery/image',
       layout: false
       galleryImage: galleryImage
@@ -66,6 +68,9 @@ module.exports.image = (req, res, next) ->
       res.render 'project',
         subPage:
           content: html
+
+  .error next
+
 
 # Route to set an image to the default project image (Project Owners Only)
 module.exports.setDefault = (req, res, next) ->
@@ -104,7 +109,7 @@ module.exports.new = (req, res, next) ->
     path: req.files.galleryFileUpload.path
   .save().success (file) ->
     db.GalleryImage.build({}).save().success (galleryImage) ->
-      galleryImage.setFile(file).success (galleryImage) ->
+      galleryImage.setFile(file).success () ->
         galleryImage.setProject(req.project).success (galleryImage) ->
           res.redirect '/project/' + req.project.name + '/gallery/' + galleryImage.id
         .error (error) ->
@@ -116,6 +121,7 @@ module.exports.new = (req, res, next) ->
   .error (error) ->
     next error
 
+  ###
   upload = new db.file(path: req.files.galleryFileUpload.path)
   upload.save (err, upload) ->
     return next(err)  if err
@@ -127,3 +133,4 @@ module.exports.new = (req, res, next) ->
       return next(err)  if err
       res.redirect '/project/' + req.project.name + '/gallery/' + galleryImage._id
 
+  ###
