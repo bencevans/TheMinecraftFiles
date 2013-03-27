@@ -20,6 +20,8 @@ Category = require("./app/models/category")(sequelize, Sequelize)
 Watch = require("./app/models/watch")(sequelize, Sequelize)
 File = require("./app/models/file")(sequelize, Sequelize)
 GalleryImage = require("./app/models/galleryImage")(sequelize, Sequelize)
+Download = require("./app/models/download")(sequelize, Sequelize)
+Issue = require("./app/models/issue")(sequelize, Sequelize)
 
 ###*
  * Relationships
@@ -39,6 +41,15 @@ GalleryImage.hasOne File
 Project.hasMany GalleryImage
 GalleryImage.belongsTo Project
 
+Project.hasMany Download
+Download.belongsTo Project
+
+Project.hasMany Issue
+Issue.belongsTo Project
+
+User.hasMany Issue
+Issue.belongsTo User
+
 ###*
  * Exports
 ###
@@ -50,3 +61,5 @@ module.exports.Project = Project
 module.exports.Category = Category
 module.exports.File = File
 module.exports.GalleryImage = GalleryImage
+module.exports.Download = Download
+module.exports.Issue = Issue

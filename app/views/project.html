@@ -1,31 +1,31 @@
 <div class="row projectheadingarea">
-	<div class="span9">
-		<h1 class="projectheading">{{project.name}}</h1><p class='lighter project-description'>{{project.description}}</p>
-	</div>
-	<div class="span3 watchersbox">
-		<span class="lighter">{{project.watcherCount}} Watchers</span>
-		{{#if watching}}
-		<a class="button inverse" style="color:#444;" href="/project/{{project.name}}/unwatch">Unwatch</a>
-		{{else}}
-		<a class="button" style="color:#393;" href="/project/{{project.name}}/watch">Watch</a>
-		{{/if}}
-	</div>
+  <div class="span9">
+    <h1 class="projectheading">{{project.name}}</h1><p class='lighter project-description'>{{project.description}}</p>
+  </div>
+  <div class="span3 watchersbox">
+    <span class="lighter">{{project.watcherCount}} Watchers</span>
+    {{#if watching}}
+    <a class="button inverse" style="color:#444;" href="/project/{{project.name}}/unwatch">Unwatch</a>
+    {{else}}
+    <a class="button" style="color:#393;" href="/project/{{project.name}}/watch">Watch</a>
+    {{/if}}
+  </div>
 </div>
 <div class="row">
-	<div class="span2 sidebar">
-		<label class="lighter">Creator:</label>
-		<div class="scontent">
+  <div class="span2 sidebar">
+    <label class="lighter">Creator:</label>
+    <div class="scontent">
 
-		<a href="/user/{{project.creator.username}}"><img src="{{gravatar_url project.creator.gravatarhash 100}}" alt="{{project.creator.username}}"></a>
+    <a href="/user/{{projectCreator.username}}"><img src="{{gravatar_url projectCreator.email 100}}" alt="{{project.creator.username}}"></a>
 
-		</div>
-	</div>
-	<div class="span10">
-		<ul class="tabnav">
-			{{#subPages}}
-			<li {{#current}}class=current{{/current}}><a href="{{url}}">{{name}}</a></li>
-			{{/subPages}}
-		</ul>
-		{{{subPage.content}}}
-	</div>
+    </div>
+  </div>
+  <div class="span10">
+    <ul class="tabnav">
+      {{#subPages}}
+      <li {{#current}}class=current{{/current}}><a href="{{url}}">{{name}}</a></li>
+      {{/subPages}}
+    </ul>
+    {{{subPage.content}}}
+  </div>
 </div>

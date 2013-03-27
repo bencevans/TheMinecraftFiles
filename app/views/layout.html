@@ -3,92 +3,90 @@
 <html prefix="og: http://ogp.me/ns#">
 
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>{{#if title}}{{title}} | {{/if}}TheMinecraftFiles</title>
-	<!-- Meta -->
-	<meta name="description" content="Minecraft Mod, Texturepack and Skins Discovery and Developer Aid" />
-	<meta name="keywords" content="Minecraft, Mod, Texture, Texturepack, Files, Skins, Developer, Discover, Downloads" />
-	<meta name="author" content="Ben Evans" />
-	<!-- Favicon -->
-	<link REL="SHORTCUT ICON" HREF="/favicon.ico">
-	<!-- Facebook -->
-	<meta property="fb:app_id" content="203689199665388" />
-	<!-- Open Graph -->
-	<meta property="og:url" content="http://theminecraftfiles.com/" />
-	<meta property="og:description" content="Minecraft Mod, Texturepack and Skins Discovery and Developer Aid" />
-	<meta property="og:site_name" content="TheMinecraftFiles"/>
-	<meta property="og:image" content="http://theminecraftfiles.com/images/icon-large.png"/>
-	<!-- CSS -->
-	<link href='//fonts.googleapis.com/css?family=Asap' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" type="text/css" href="/assets/css/style.css">
-	<!-- JS -->
-	<script src="/assets/js/jquery.js"></script>  
-	<script src="/assets/js/jquery.pjax.js"></script>  
-	<script type="text/javascript">
-	$(function(){
-        // pjax
-        
-        $('a:not(.nopjax)').pjax('#main');
-
-    })
-	</script>
-	<script>window.jQuery || document.write("<script src='/assets/js/jquery.1.7.1.min.js'>\x3C/script>")</script>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>{{#if title}}{{title}} | {{/if}}TheMinecraftFiles</title>
+  <!-- Meta -->
+  <meta name="description" content="Minecraft Mod, Texturepack and Skins Discovery and Developer Aid" />
+  <meta name="keywords" content="Minecraft, Mod, Texture, Texturepack, Files, Skins, Developer, Discover, Downloads" />
+  <meta name="author" content="Ben Evans" />
+  <!-- Favicon -->
+  <link REL="SHORTCUT ICON" HREF="/favicon.ico">
+  <!-- Facebook -->
+  <meta property="fb:app_id" content="203689199665388" />
+  <!-- Open Graph -->
+  <meta property="og:url" content="http://theminecraftfiles.com/" />
+  <meta property="og:description" content="Minecraft Mod, Texturepack and Skins Discovery and Developer Aid" />
+  <meta property="og:site_name" content="TheMinecraftFiles"/>
+  <meta property="og:image" content="http://theminecraftfiles.com/images/icon-large.png"/>
+  <!-- CSS -->
+  <link href='//fonts.googleapis.com/css?family=Asap' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
+  <!-- JS -->
+  <script src="/assets/js/jquery.js"></script>  
+  <script src="/assets/js/jquery.pjax.js"></script>  
+  <script type="text/javascript">
+  $(function(){
+    // pjax
+    $('a:not(.nopjax)').pjax('#main');
+  });
+  </script>
+  <script>window.jQuery || document.write("<script src='/assets/js/jquery.1.7.1.min.js'>\x3C/script>")</script>
 
 </head>
 <body>
-	<header>
-		<div class="container">
-			<ul class="nav">
-				<li class="brand">
-					<a href="/">TheMinecraftFiles</a>
-				</li>
-				<li>
-					<a href="/discover/">Discover</a>
-				</li>
-			</ul>
-			<ul class="nav right">
-				{{#if everyauth.user.loggedIn}}
-				<li>
-					<a href="/user/{{everyauth.user.username}}">Profile</a>
-				</li>
-				<li>
-					<a href="/settings/">Settings</a>
-				</li>
-				<!-- if(auth.hasRole('admin')) -->
-				<!--<li>
-					<a href="/admin/">Admin</a>
-				</li>-->
-				<!-- } -->
-				<li>
-					<a class=nopjax href="/logout/">Logout</a>
-				</li>
-				{{else}}
-				<li>
-					<a class=nopjax href="/login">Login</a>
-				</li>
-				<li>
-					<a class=nopjax href="/register">Register</a>
-				</li>
-				{{/if}}
-			</ul>
-		</div>
-	</header>
-	<div class="container content" id="main">
-		{{#flash.message}}
-			<div class="row">
-			<div class="span12">
-				<div class="alert"><a href="#" onClick="$(this).parent().hide();" class="close">x</a> {{this}}</div>
-			</div>
-		</div>
-		{{/flash.message}}
-		{{#errors}}
-			<div class="row">
-			<div class="span12">
-				<div class="error alert"><a href="#" onClick="$(this).parent().hide();" class="close">x</a> {{this}}</div>
-			</div>
-		</div>
-		{{/errors}}
-		{{{body}}}
-	</header>
+  <header>
+    <div class="container">
+      <ul class="nav">
+        <li class="brand">
+          <a href="/">TheMinecraftFiles</a>
+        </li>
+        <li>
+          <a href="/discover/">Discover</a>
+        </li>
+      </ul>
+      <ul class="nav right">
+        {{#if everyauth.user.loggedIn}}
+        <li>
+          <a href="/user/{{everyauth.user.username}}">Profile</a>
+        </li>
+        <li>
+          <a href="/settings/">Settings</a>
+        </li>
+        <!-- if(auth.hasRole('admin')) -->
+        <!--<li>
+          <a href="/admin/">Admin</a>
+        </li>-->
+        <!-- } -->
+        <li>
+          <a class=nopjax href="/logout/">Logout</a>
+        </li>
+        {{else}}
+        <li>
+          <a class=nopjax href="/login">Login</a>
+        </li>
+        <li>
+          <a class=nopjax href="/register">Register</a>
+        </li>
+        {{/if}}
+      </ul>
+    </div>
+  </header>
+  <div class="container content" id="main">
+    {{#flash.message}}
+      <div class="row">
+      <div class="span12">
+        <div class="alert"><a href="#" onClick="$(this).parent().hide();" class="close">x</a> {{this}}</div>
+      </div>
+    </div>
+    {{/flash.message}}
+    {{#flash.error}}
+      <div class="row">
+      <div class="span12">
+        <div class="error alert"><a href="#" onClick="$(this).parent().hide();" class="close">x</a> {{this}}</div>
+      </div>
+    </div>
+    {{/flash.error}}
+    {{{body}}}
+  </header>
 </body>
 </html>

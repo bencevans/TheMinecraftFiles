@@ -50,11 +50,11 @@ module.exports.all =  (req, res, next) ->
             subPage.current = true
             true
         )
-        console.log 'req.user:', req.user
-        console.log 'creator:', creator
-        console.log 'project:', project
+        res.locals.projectCreator = creator
         if req.user and creator.id is req.user.id
           project.isOwner = true
+          res.locals.isProjectOwner = true
+
           res.locals.subPages.push
             name: 'Settings'
             slug: 'settings'

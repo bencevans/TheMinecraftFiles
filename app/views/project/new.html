@@ -1,60 +1,60 @@
 <div class="row">
-	<div class="span12">
-		<h1>New Project</h1>
-	</div>
+  <div class="span12">
+    <h1>New Project</h1>
+  </div>
 </div>
 
 <form method="POST" action="/new">
-	<div class="row">
-		<div class="span1">
-			<label dor="fame">Name<span class="required">*</span>:</label>
-		</div>
-		<div class="span3">
-			<input type="text" name="name" id="Name" value="{{name}}"/>
-		</div>
-	</div>
+  <div class="row">
+    <div class="span1">
+      <label dor="fame">Name<span class="required">*</span>:</label>
+    </div>
+    <div class="span3">
+      <input type="text" name="name" id="Name" value="{{name}}"/>
+    </div>
+  </div>
 
-	<div class="row">
-		<div class="span1">
-			<label for="sategory">Category<span class="required">*</span>:</label>
-		</div>
-		<div class="span3">
-			<select name="category" id="Category">
-				{{#categories}}
-				<option value="{{this._id}}">{{this.name}}</option>
-				{{/categories}}
-			</select>
-		</div>
-	</div>
-	<div class="row">
-		<div class="span1">
-			<label for="cescription">Description:</label>
-		</div>
-	</div>
-	<div class="row">
-		<div class="span6">
-			<textarea name="description" rows=4 style="width:100%;" id="Description">{{description}}</textarea>
-		</div>
-	</div>
-	<div class="row">
-		<div class="span2">
-			<input type="submit" value="Create Project"/>
-		</div>
-	</div>
+  <div class="row">
+    <div class="span1">
+      <label for="sategory">Category<span class="required">*</span>:</label>
+    </div>
+    <div class="span3">
+      <select name="category" id="Category">
+        {{#categories}}
+        <option value="{{this.id}}">{{this.name}}</option>
+        {{/categories}}
+      </select>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span1">
+      <label for="cescription">Description:</label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span6">
+      <textarea name="description" rows=4 style="width:100%;" id="Description">{{description}}</textarea>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span2">
+      <input type="submit" value="Create Project"/>
+    </div>
+  </div>
 </form>
 
 <script type="text/javascript">
 $('#Name').focusout( function () {
 
-	if (!$('#Slug').val()) {
+  if (!$('#Slug').val()) {
 
-		Name = $('#Name').val();
+    Name = $('#Name').val();
 
-		Slug = Name.toLowerCase().replace(/[^a-z0-9-]/g, '-');
+    Slug = Name.toLowerCase().replace(/[^a-z0-9-]/g, '-');
 
-		$('#Slug').val(Slug);
+    $('#Slug').val(Slug);
 
-	};
+  };
 
 });
 </script>

@@ -58,6 +58,7 @@ routes.new = require('./controllers/project/new')
 
 # Auth
 app.get '/login', routes.auth.login
+app.get '/logout',  routes.auth.logout
 
 app.get '/register', routes.auth.register
 app.post '/register', routes.auth.registerAction
@@ -86,6 +87,7 @@ app.get '/project/:projectSlug/downloads', routes.project.downloads.index
 app.get '/project/:project/gallery', routes.project.gallery.index
 app.get '/project/:projectSlug/gallery/:imageId.png', routes.project.gallery.imageFile
 app.get '/project/:projectSlug/gallery/:imageId', routes.project.gallery.image
+app.post '/project/:projectSlug/gallery', routes.project.gallery.new
 app.get '/project/:projectSlug/gallery/:imageId/default', ensureAuthenticated, routes.project.gallery.setDefault
 app.get '/project/:projectSlug/gallery/:imageId/delete', ensureAuthenticated, routes.project.gallery.delete
 app.get '/project/:projectSlug/gallery', routes.project.gallery.index
@@ -104,8 +106,6 @@ app.get '/project/:projectSlug/unwatch', routes.project.watch.unwatch
 ensureAuthenticated = (req, res, next) ->
   return next()  if req.isAuthenticated()
   res.redirect "/login"
-
-app.all '*', ensureAuthenticated
 
 app.get '/', ensureAuthenticated, routes.dashboard.index
 
