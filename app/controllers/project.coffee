@@ -12,8 +12,6 @@ async = require 'async'
 
 db = require '../../db'
 
-module.exports = (app) ->
-
 module.exports.all =  (req, res, next) ->
 
   db.Project.find({where: {name:req.params.project}}).success((project) ->
