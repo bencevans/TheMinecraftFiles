@@ -25,7 +25,7 @@ module.exports.all =  (req, res, next) ->
     ###
     project.getCreator().success((creator) ->
       project.getWatchers().success((watches) ->
-        watchCount = watches.length
+        res.locals.watcherCount = watches.length
         res.locals.title = project.name
         req.project = res.locals.project = project
         res.locals.subPages = [

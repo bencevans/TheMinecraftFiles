@@ -42,7 +42,6 @@ module.exports.imageFile = (req, res, next) ->
   .success (image) ->
     unless image then return res.status(404).render 'errors/404'
     image.getFile().success (file) ->
-      console.log file
       res.sendfile file.path
     .error (error) ->
       next error
@@ -86,13 +85,11 @@ module.exports.setDefault = (req, res, next) ->
 
 # Route to delete an Image (Project Owners Only)
 module.exports.delete = (req, res, next) ->
+  res.send req.project.isOwner
   return next()  unless req.project.isOwner
   db.galleryImage.findById(req.params.imageId).populate('file').exec (err, galleryImage) ->
     return next(err)  if err
-    unless galleryImage
-      return res.render('errors/404',
-        status: 404
-      )
+    unless galleryImage then return next()
     galleryImage.remove (err) ->
       return next(err)  if err
       fs.unlink galleryImage.file.path, (err) ->

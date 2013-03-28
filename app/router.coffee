@@ -58,7 +58,7 @@ routes.new = require('./controllers/project/new')
 
 # Auth
 app.get '/login', routes.auth.login
-app.get '/logout',  routes.auth.logout
+app.get '/logout', routes.auth.logout
 
 app.get '/register', routes.auth.register
 app.post '/register', routes.auth.registerAction

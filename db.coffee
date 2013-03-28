@@ -41,6 +41,8 @@ GalleryImage.hasOne File
 Project.hasMany GalleryImage
 GalleryImage.belongsTo Project
 
+Project.hasOne GalleryImage, {as: 'Image', foreignKey: 'ImageID'}
+
 Project.hasMany Download
 Download.belongsTo Project
 
