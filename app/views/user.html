@@ -1,6 +1,6 @@
 <div class="row">
   <div class="span2 avatar">
-    <img src="{{gravatar_url profile.email "140"}}" alt="{{user_preferred_name profile}}'s Avatar" style="width:100%;"/>
+    <img src="{{gravatar_url profile.email "140"}}" height="140" alt="{{user_preferred_name profile}}'s Avatar" style="width:100%;"/>
   </div>
   <div class="span10">
     <div class="pagename">
@@ -17,20 +17,14 @@
 <div class="row">
   <div class="span10 push2 usersprojects">
     <h3>Projects</h3>
-
     {{#if profile.projects}}
-
     {{#profile.projects}}
-    {{this}}
     {{{project_widget this}}}
     {{/profile.projects}}
-
     {{else}}
     <p class="lighter">
       {{user_preferred_name profile}} Currently Has No Projects</p>
-    {{/if}}
-
+      {{/if}}
+    </div>
   </div>
-</div>
-</div>
 </div>

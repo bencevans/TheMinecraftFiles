@@ -17,7 +17,6 @@ util = require 'util'
 ###
 
 widgetBuilder = (project, callback) ->
-  
   if util.isArray(project)
     async.map project, widgetBuilder, callback
   else
@@ -29,14 +28,6 @@ widgetBuilder = (project, callback) ->
 
 
 module.exports.index = (req, res, next) ->
-  ###
-  db.Category.find({id:1}).success (category) ->
-    category.getProjects().success (projects) ->
-      widgetBuilder projects, (error, projectsWithExtra) ->
-        res.send [error, projectsWithExtra]
-    .error next
-  .error next
-  ###
   db.Category.findAll().success (categories) ->
     async.map categories, (category, callback) ->
       category.getProjects().success (projects) ->
@@ -48,30 +39,10 @@ module.exports.index = (req, res, next) ->
       res.render 'discover', {categories}
   .error next
 
-  ###
-  db.Category.findAll().success (categories) ->
-    async.map categories, (category, callback) ->
-      console.log 'getting projects for ', category
-      category.getProjects
-        orderBy: 'createdAt ASC'
-        limit: 3
-      .success (projects) ->
-        widgetBuilder projects, callback
-      .error next
-    , (error, categories) ->
-      console.log 'getting here'
-      res.send [error, categories]
-  
-  #  res.locals.title = 'Discover'
-
-  #  res.render 'discover',
-  #    categories: categories
-  .error (error) ->
-    next error
-  ###
 module.exports.category = (req, res, next) ->
   db.Category.find(
-    slug: req.params.categorySlug
+    where:
+      slug: req.params.categorySlug
   ).success((category) ->
     unless category then return res.send 404
     category.getProjects(
@@ -80,7 +51,8 @@ module.exports.category = (req, res, next) ->
     ).success((projects) ->
       widgetBuilder projects, (error, projects) ->
         if error then return next error
-        res.send projects
+        console.log _.extend(category.values, {recent:projects})
+        res.render 'discover_category', {category:_.extend(category.values, {recent:projects})}
     ).error((error) ->
       next error
     )
@@ -88,22 +60,28 @@ module.exports.category = (req, res, next) ->
     next error
 
 module.exports.category.popular = (req, res, next) ->
+  # TODO
   res.send 'Not Here Yet', 404
 
 module.exports.category.recent = (req, res, next) ->
-  tmf.getCategory req.params.categorySlug, (err, category) ->
-    return next(err)  if err
-    unless category
-      res.send 404
-    else
-      category.getRecent {limit:9, page:req.query.page or 1}, (err) ->
-        next err if err
-        async.map category.recent, (project, callback) ->
-          project.getCreator callback
-        , (err, results) ->
-          res.render 'discover/recent',
-            category: category
-            title: category.name
+  db.Category.find(
+    where:
+      slug: req.params.categorySlug
+  ).success((category) ->
+    unless category then return res.send 404
+    category.getProjects(
+      limit: 3
+      orderBy: 'createdAt'
+    ).success((projects) ->
+      widgetBuilder projects, (error, projects) ->
+        if error then return next error
+        console.log _.extend(category.values, {recent:projects})
+        res.render 'discover/recent', {category:_.extend(category.values, {recent:projects})}
+    ).error((error) ->
+      next error
+    )
+  ).error (error) ->
+    next error
 
 module.exports.category.trending = (req, res, next) ->
   res.send 'Not Here Yet', 404

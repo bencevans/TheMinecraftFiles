@@ -14,7 +14,6 @@ _ = require 'underscore'
 module.exports.profile = (req, res, next) ->
 
   db.User.find({where: {username:req.params.username}}).success((user) ->
-    console.log 'user (' + req.params.username + '): ', user
     unless user then return res.status(404).render('errors/404')
     res.locals.title = user.username
     user.getProjects().success((projects) ->
@@ -26,7 +25,6 @@ module.exports.profile = (req, res, next) ->
         )
       , (error, projectsWithCreators) ->
         if error then return next error
-        console.log projectsWithCreators
         res.render 'user',
           profile: _.extend(user.values, {projects: projectsWithCreators})
     ).error((error) ->
