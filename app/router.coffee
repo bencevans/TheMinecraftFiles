@@ -9,11 +9,19 @@ _ = require 'underscore'
 routes = {}
 
 ###*
+ * Helpers
+###
+
+ensureAuthenticated = (req, res, next) ->
+  return next()  if req.isAuthenticated()
+  res.redirect "/login"
+
+###*
  * Error Routes
 ###
 
 app.get '/500', (req, res, next) ->
-  next 'Test Error'
+  next new Error 'Test Error'
 
 app.get '/404', (req, res, next) ->
   next 404
@@ -23,7 +31,7 @@ app.get '/404', (req, res, next) ->
 ###
 
 app.get '/', (req, res, next) ->
-  if req.loggedIn
+  if req.isAuthenticated()
     next()
     return true
   res.render 'index'
@@ -39,64 +47,85 @@ app.all '*', (req, res, next) ->
   next()
 
 ###*
+ * Require Route Controllers
+###
+
+
+routes.auth = require('./controllers/auth')
+routes.discover = require('./controllers/discover')
+routes.user = require('./controllers/user')
+routes.project = require('./controllers/project')
+routes.dashboard = require('./controllers/dashboard')
+routes.settings = require('./controllers/settings')
+routes.comment = require('./controllers/comment')
+routes.new = require('./controllers/project/new')
+
+###*
  * External Routes
 ###
 
-routes.auth = require('./controllers/auth')(app, tmf, db)
-
+# Auth
 app.get '/login', routes.auth.login
-app.get '/auth/user_info', routes.auth.userInfo.show
-app.post '/auth/user_info', routes.auth.userInfo.update
+app.get '/logout', routes.auth.logout
 
-routes.discover = require('./controllers/discover')(app, tmf, db)
+app.get '/register', routes.auth.register
+app.post '/register', routes.auth.registerAction
+app.get '/auth/user_info', ensureAuthenticated, routes.auth.settings
+app.post '/auth/user_info', ensureAuthenticated, routes.auth.settingsAction
 
+# Discover
 app.get '/discover', routes.discover.index
 app.get '/discover/:categorySlug', routes.discover.category
 app.get '/discover/:categorySlug/popular', routes.discover.category.popular
 app.get '/discover/:categorySlug/recent', routes.discover.category.recent
 app.get '/discover/:categorySlug/trending', routes.discover.category.trending
 
-routes.user = require('./controllers/user')(app, tmf, db)
-
+# User Profiles
 app.get '/user/:username', routes.user.profile
 
-routes.project = require('./controllers/project')(app, tmf, db)
+# Projects
+app.all '/project/:project/:subPage?*', routes.project.all
 
-app.all '/project/:projectSlug/:subPage?*', routes.project.all
-app.get '/project/:projectSlug/gallery', routes.project.gallery
 
+routes.project = routes.project or {}
 _.each fs.readdirSync(path.resolve(__dirname, './controllers/project')), (file) ->
-  require path.resolve(__dirname, './controllers/project/', file)
+  routes.project[file.match(/^(.+)\.coffee$/)[1]] = require path.resolve(__dirname, './controllers/project/', file)
 
+app.get '/project/:projectSlug/downloads', routes.project.downloads.index
+app.get '/project/:project/gallery', routes.project.gallery.index
+app.get '/project/:projectSlug/gallery/:imageId.png', routes.project.gallery.imageFile
+app.get '/project/:projectSlug/gallery/:imageId', routes.project.gallery.image
+app.post '/project/:projectSlug/gallery', routes.project.gallery.new
+app.get '/project/:projectSlug/gallery/:imageId/default', ensureAuthenticated, routes.project.gallery.setDefault
+app.get '/project/:projectSlug/gallery/:imageId/delete', ensureAuthenticated, routes.project.gallery.delete
+app.get '/project/:projectSlug/gallery', routes.project.gallery.index
+app.get '/project/:projectSlug/issues', routes.project.issues.index
+app.get '/project/:projectSlug/issues/:issueid', routes.project.issues.issue
+app.get '/project/:projectSlug/settings', routes.project.settings.index
+app.post '/project/:projectSlug/settings', routes.project.settings.indexAction
+app.get '/project/:projectSlug/timeline', routes.project.timeline.index
+app.get '/project/:projectSlug/watch', routes.project.watch.watch
+app.get '/project/:projectSlug/unwatch', routes.project.watch.unwatch
 
-###*
+###
  * Authenticated Routes
 ###
 
-app.all '*', (req, res, next) ->
-  if req.loggedIn
-    next()
-  else
-    res.render 'errors/404',
-      type: 404
+app.get '/', ensureAuthenticated, routes.dashboard.index
+
+app.get '/settings', ensureAuthenticated, routes.settings.index
+app.get '/settings/:subPage', ensureAuthenticated, routes.settings.subPage
+app.post '/settings/profile', ensureAuthenticated, routes.settings.profile
+app.post '/settings/account', ensureAuthenticated, routes.settings.account
 
 
-routes.dashboard = require('./controllers/dashboard')(app, tmf, db)
 
-app.get '/', routes.dashboard
+app.get '/comments', ensureAuthenticated, routes.comment.find
+app.post '/comment', ensureAuthenticated, routes.comment.create
 
-routes.settings = require('./controllers/settings')(app, tmf, db)
 
-app.get '/settings', routes.settings.index
-app.get '/settings/:subPage', routes.settings.subPage
-app.post '/settings/profile', routes.settings.profile
-app.post '/settings/account', routes.settings.account
-
-routes.comment = require('./controllers/comment')(app, tmf, db)
-
-app.get '/comments', routes.comment.find
-app.post '/comment', routes.comment.create
-
+app.get '/new', ensureAuthenticated, routes.new.new
+app.post '/new', ensureAuthenticated, routes.new.newAction
 
 # 404
 app.all '*', (req, res) ->

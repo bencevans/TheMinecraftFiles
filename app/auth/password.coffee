@@ -1,3 +1,6 @@
+
+db = require "../../db"
+
 everyauth.password.loginWith('login').getLoginPath('/login').postLoginPath('/auth/login').loginView('login.html').loginLocals((req, res, done) ->
   setTimeout (->
     done null,
@@ -13,13 +16,14 @@ everyauth.password.loginWith('login').getLoginPath('/login').postLoginPath('/aut
 
 
 
-  db.user.findOne
+  db.User.find
     username: login
-  , (err, user) ->
+  .success (user) ->
     return promise.fulfill(['No User Exists'])  unless user
     return promise.fulfill(['Login failed'])  if user.password isnt password
-
     promise.fulfill user
+  .error (error) ->
+    promise.fulfill [error]
 
   promise
 ).getRegisterPath('/register').postRegisterPath('/register').registerView('register.html').registerLocals((req, res, done) ->
@@ -40,17 +44,23 @@ everyauth.password.loginWith('login').getLoginPath('/login').postLoginPath('/aut
 ).validateRegistration((newUserAttrs, errors) ->
   promise = @Promise()
 
-  tmf.getUser newUserAttrs.login, (err, user) ->
-    if err then promise.fulfill [err]
+  promise.fulfill ['Passwords don\'t match'] unless newUserAttrs.passwordCheck is newUserAttrs.password
 
-    # Check password and the passwordCheck match
-    promise.fulfill ['Passwords don\'t match'] unless newUserAttrs.passwordCheck is newUserAttrs.password
+  db.User.find(
+    where:
+      username: newUserAttrs.login
+  ).success((user) ->
 
     # OK if no other user is returned
     promise.fulfill true unless user
 
     # Then user exists so anouther should not be allowed
     promise.fulfill false
+
+  ).error((error) ->
+    promise.fulfill [error]
+  )
+
 
   promise
 ).registerUser((newUserAttrs) ->
@@ -59,13 +69,14 @@ everyauth.password.loginWith('login').getLoginPath('/login').postLoginPath('/aut
 
   promise = @Promise()
 
-  tmf.createUser
+  db.User.build(
     username: newUserAttrs.login
     email: newUserAttrs.email
     password: newUserAttrs.password
-  , (err, user) ->
-    promise.fulfill [err] if err
-    promise.fulfill user if err
+  ).save().success (user) ->
+    promise.fulfill user
+  .error (error) ->
+    promise.fulfill [error]
 
   promise
 

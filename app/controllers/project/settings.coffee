@@ -1,4 +1,4 @@
-app.get '/project/:projectSlug/settings', (req, res, next) ->
+module.exports.index = (req, res, next) ->
   return next()  unless req.project.isOwner
   res.render 'project/settings',
     layout: false
@@ -10,16 +10,14 @@ app.get '/project/:projectSlug/settings', (req, res, next) ->
 
 
 
-app.post '/project/:projectSlug/settings', (req, res, next) ->
+module.exports.indexAction = (req, res, next) ->
   return next()  unless req.project.isOwner
-  db.project.findById req.project._id, (err, project) ->
-    return next(err)  if err
-    project.name = req.body.name
-    project.description = req.body.description
-    project.githubRepoURI = req.body.githubrepouri
-    project.save (err, project) ->
-      return next(err)  if err
-      res.redirect '/project/' + project.name + '/settings'
 
-
+  req.project.updateAttributes
+    name: req.body.name
+    description: req.body.description
+    githubRepoURI: req.body.githubrepouri
+  .success (project) ->
+    res.redirect '/project/' + project.name + '/settings'
+  .error next
 

@@ -1,14 +1,14 @@
 {{#if project.isOwner}}
 <div class="goright" style="margin-top:10px;">
-	<a class="button" href="/project/{{project.name}}/gallery/{{galleryImage._id}}/default">Set Default</a>
-	<a class="button danger delete" href="/project/{{project.name}}/gallery/{{galleryImage._id}}/delete">Delete</a>
+  <a class="button" href="/project/{{project.name}}/gallery/{{galleryImage.id}}/default">Set Default</a>
+  <a class="button danger delete" href="/project/{{project.name}}/gallery/{{galleryImage.id}}/delete">Delete</a>
 </div>
 {{/if}}
 {{#galleryImage}}
 <div class="clear gallerysingleimage">
-	{{#if name}}<h2>{{name}}</h2>{{/if}}
-	<img src="{{this.src}}"/>
-	{{#if this.description}}<p>{{description}}</p>{{/if}}
+  {{#if name}}<h2>{{name}}</h2>{{/if}}
+  <img src="{{this.src}}"/>
+  {{#if this.description}}<p>{{description}}</p>{{/if}}
 </div>
 {{/galleryImage}}
 
@@ -19,29 +19,29 @@
 
 
 <script type="text/javascript">
-$.getJSON('/comments?identifier[type]=galleryImage&identifier[id]={{galleryImage._id}}', function (body, err) {
-	for (var i = body.length - 1; i >= 0; i--) {
-		var html = ['<div class="comment">',
-		'<!--',
-		'	<div class="actionbox"><a href="?commentdelete=' + body[i]._id + '" class="button danger delete">Delete</a></div>',
-		'-->',
-		'	<div class="user">',
-		'		<a href="' + body[i].creator.href + '"><img src="http://www.gravatar.com/avatar/' + body[i].creator.gravatarhash + '?s=60"></a>',
-		'	</div>',
-		'	<div class="message">',
-				body[i].text,
-		'	</div>',
-		'	<div class="clear"></div>',
-		'</div>'].join('');
-		$('.comments').append(html);
-	};
-	
+$.getJSON('/comments?identifier[type]=galleryImage&identifier[id]={{galleryImage.id}}', function (body, err) {
+  for (var i = body.length - 1; i >= 0; i--) {
+    var html = ['<div class="comment">',
+    '<!--',
+    ' <div class="actionbox"><a href="?commentdelete=' + body[i].id + '" class="button danger delete">Delete</a></div>',
+    '-->',
+    ' <div class="user">',
+    '   <a href="' + body[i].creator.href + '"><img src="http://www.gravatar.com/avatar/' + body[i].creator.gravatarhash + '?s=60"></a>',
+    ' </div>',
+    ' <div class="message">',
+        body[i].text,
+    ' </div>',
+    ' <div class="clear"></div>',
+    '</div>'].join('');
+    $('.comments').append(html);
+  };
+  
 })
 </script>
 
 <form method=POST action="/comment">
-	<input type=text name="text">
-	<input type=hidden name="identifier[type]" value="galleryImage">
-	<input type=hidden name="identifier[id]" value="{{galleryImage._id}}">
-	<input type=submit value="Comment">
+  <input type=text name="text">
+  <input type=hidden name="identifier[type]" value="galleryImage">
+  <input type=hidden name="identifier[id]" value="{{galleryImage.id}}">
+  <input type=submit value="Comment">
 </form>

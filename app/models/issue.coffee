@@ -1,22 +1,19 @@
 
 module.exports = (sequelize, Sequelize) ->
-  return sequelize.define "Project",
+  return sequelize.define "Issue",
     id:
       type: Sequelize.INTEGER
       primaryKey: true
       autoIncrement: true
 
-    name:
+    title:
       type: Sequelize.STRING
       allowNull: false
-      unique: true
-      is: ["/^[a-zA-Z0-9|_|-]+$/"]
-
-    githubRepoURI:
-      type: Sequelize.STRING
-      is: ["/^[a-zA-Z0-9|-]+\/[a-zA-Z0-9|-]+$/"]
-      allowNull: true
 
     description:
       type: Sequelize.STRING
       allowNull: true
+
+    state:
+      type: Sequelize.INTEGER
+      default: 1 # 1 = open, #0 = closed, integer rather than bool so other states can be added

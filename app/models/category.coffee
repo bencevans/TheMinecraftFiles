@@ -1,12 +1,19 @@
-module.exports = (Schema, ObjectId) ->
-  return new Schema(
+
+
+module.exports = (sequelize, Sequelize) ->
+  return sequelize.define "Category",
+    id:
+      type: Sequelize.INTEGER
+      primaryKey: true
+      autoIncrement: true
+
     name:
-      type: String
-      required: true
+      type: Sequelize.STRING
+      allowNull: false
+      unique: true
 
     slug:
-      type: String
-      lowercase: true
-      trim: true
+      type: Sequelize.STRING
+      allowNull: false
+      isLowercase: true
       unique: true
-  )

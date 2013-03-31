@@ -1,23 +1,23 @@
 {{#if galleryImages}}
 {{#galleryImages}}
 <div class="galleryimage">
-	<a href="{{href}}">
-		<img src="{{src}}"/>
-	</a>
+  <a href="{{href}}">
+    <img src="{{src}}"/>
+  </a>
 </div>
 {{/galleryImages}}
 {{else}}
 <div class="lighter noimages">
-	<p>No Images in Gallery</p>
+  <p>No Images in Gallery</p>
 </div>
 {{/if}}
 
 {{#if project.isOwner}}
 <div class="galleryuploadarea">
-	<form method="POST" action="/project/{{project.name}}/gallery" enctype="multipart/form-data">
-		<label for="galleryFileUpload">Upload Image (png/gif/jpg) (Max Size: 700Kb)</label>
-		<input type="file" name="galleryFileUpload" id="galleryFileUpload">
-		<input type="submit" value="Upload">
-	</form>
+  <form method="POST" action="/project/{{project.name}}/gallery" enctype="multipart/form-data">
+    <label for="galleryFileUpload">Upload Image (png/gif/jpg) (Max Size: 700Kb)</label>
+    <input type="file" name="galleryFileUpload" id="galleryFileUpload">
+    <input type="submit" value="Upload">
+  </form>
 </div>
 {{/if}}

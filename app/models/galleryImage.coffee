@@ -1,19 +1,16 @@
-module.exports = (Schema, ObjectId) ->
-  return new Schema(
+
+module.exports = (sequelize, Sequelize) ->
+  return sequelize.define "GalleryImage",
+    id:
+      type: Sequelize.INTEGER
+      primaryKey: true
+      autoIncrement: true
+
     name:
-      type: String
-      match: /^.{0,12}$/
-
-    file:
-      type: Schema.ObjectId
-      ref: 'file'
-
-    project:
-      type: Schema.ObjectId
-      required: true
-      ref: 'project'
+      type: Sequelize.STRING
+      allowNull: true
+      is: ["/^.{0,12}$/"]
 
     description:
-      type: String
-      match: /^.{0,24}$/
-  )
+      type: Sequelize.STRING
+      allowNull: true

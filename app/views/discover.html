@@ -1,18 +1,18 @@
 <div class="row pagename">
-	<div class="span12">
-		<h3>Discover</h3>
-	</div>
+  <div class="span12">
+    <h3>Discover</h3>
+  </div>
 </div>
 <div class="row">
-	{{#categories}}
+  {{#categories}}
 
-	<div class="span4">
-		<h3><a href="/discover/{{this.slug}}">{{this.name}}</a></h3>
-		<a href="/project/projectslug"><img src="http://placehold.it/298x160" alt="Project Name" /></a>
-		<a href="/project/projectslug"><img src="http://placehold.it/298x160" alt="Project Name" /></a>
-		<a href="/project/projectslug"><img src="http://placehold.it/298x160" alt="Project Name" /></a>
-	</div>
+  <div class="span4">
+    <h3><a href="/discover/{{this.slug}}">{{this.name}}</a></h3>
+    {{#projects}}
+      {{{project_widget this}}}
+    {{/projects}}
+  </div>
 
-	{{/categories}}
+  {{/categories}}
 
 </div>

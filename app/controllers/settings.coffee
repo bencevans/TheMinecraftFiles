@@ -9,12 +9,12 @@ _ = require 'underscore'
  * Settings Controller
 ###
 
-module.exports = (app, tmf, db) ->
+db = require '../../db'
 
-  index = (req, res) ->
+module.exports.index = (req, res) ->
     res.redirect '/settings/profile'
 
-  subPage = (req, res, next) ->
+module.exports.subPage = (req, res, next) ->
     subPages =
       profile:
         name: 'Profile'
@@ -29,10 +29,11 @@ module.exports = (app, tmf, db) ->
         type: 404
 
     else
-      db.user.findById req.user._id, (err, userSettings) ->
+
+      db.User.find({where:{id: req.user.id}}).success((user) ->
         res.render 'settings/' + req.params.subPage,
           layout: false
-          userSettings: userSettings
+          userSettings: user
         , (err, view) ->
           return next(err)  if err
           res.render 'settings',
@@ -42,17 +43,23 @@ module.exports = (app, tmf, db) ->
               view: view
               name: subPages[req.params.subPage].name
               slug: subPages[req.params.subPage].slug
+      ).error((error) ->
+        next error
+      )
 
 
-  profile = (req, res, next) ->
-    db.user.update req.user, req.body, (err, user) ->
-      return next(err)  if err
+module.exports.profile = (req, res, next) ->
+    req.user.updateAttributes(req.body).success( ->
       res.redirect '/settings/profile'
+    ).error((error) ->
+      next error
+    )
 
 
-  account = (req, res, next) ->
-    db.user.update req.user, req.body, (err, user) ->
-      return next(err)  if err
+module.exports.account = (req, res, next) ->
+  req.user.updateAttributes(req.body).success( ->
       res.redirect '/settings/account'
+    ).error((error) ->
+      next error
+    )
 
-  return {index, subPage, profile, account}

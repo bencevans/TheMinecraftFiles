@@ -1,54 +1,81 @@
-_ = require("underscore")
 
-app.get '/new', (req, res, next) ->
-  db.category.find {}, (err, categories) ->
-    return next(err)  if err
+###*
+ * Dependencies
+###
+
+_ = require("underscore")
+async = require 'async'
+db = require("../../../db")
+
+module.exports.new = (req, res, next) ->
+  db.Category.findAll().success((categories) ->
     res.locals.title = 'New Project'
     res.render 'project/new',
       categories: categories
+  ).error((error) ->
+    next(err)
+  )
 
-
-
-app.post '/new', (req, res, next) ->
+module.exports.newAction = (req, res, next) ->
   if typeof req.body.name isnt 'undefined' and typeof req.body.category isnt 'undefined'
     res.locals.title = 'New Project'
     if req.body.name.match(/^[a-zA-Z|-|_]+$/m)
-      newproject = new db.project(
-        name: req.body.name
-        category: req.body.category
-        creator: req.user._id
-      )
-      newproject.save (err, category) ->
-        return next(err)  if err
-        res.redirect '/project/' + category.name
 
-        tmf.createAction
-          type: 'create'
-          actor: req.user._id
-          project: newproject._id
-        , (err, action) ->
-          next err if err
+      # find category
+      db.Category.find({where:{id:req.body.category}}).success((category) ->
+        unless category then return next new Error('No category found by that id')
+
+        # all params seem ok, create the project
+        db.Project.build(
+          name: req.body.name
+          category: req.body.category
+        ).save().success((project) ->
+
+          project.setCategory(category).success((project)->
+
+            project.setCreator(req.user).success((creator)->
+              # TODO: Create User's 'Project Created' Event/Timeline Action
+              res.redirect '/project/' + project.name
+            ).error((error) ->
+              next error
+            )
+
+          ).error((error) ->
+            next error
+          )
+
+        ).error((error) ->
+          next error
+        )
+      ).error((error) ->
+        next error
+      )
 
     else
-      db.category.find {}, (err, categories) ->
-        return next(err)  if err
+      db.Category.findAll().success((categories) ->
         req.flash 'Invalid Name'
-        
+
         #Invalid Name Error
         res.render 'project/new', _.extend(
           categories: categories
         , req.body)
+      ).error((error) ->
+        next error
+      )
 
   else
-    
+
     # Not enouph data filled out.
-    req.flash 'Please fill all required fields.'
-    db.category.find {}, (err, categories) ->
-      return next(err)  if err
-      
+
+    db.Category.findAll().success((categories) ->
+      req.flash 'Please fill all required fields.'
+
       #Invalid Name Error
       res.render 'project/new', _.extend(
         categories: categories
       , req.body)
+    ).error((error) ->
+      next error
+    )
 
 

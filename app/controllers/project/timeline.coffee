@@ -1,6 +1,17 @@
 async = require 'async'
 
-app.get '/project/:projectSlug/timeline', (req, res, next) ->
+module.exports.index = (req, res, next) ->
+
+  res.render 'project/timeline',
+        layout: false
+      , (err, html) ->
+        return next(err)  if err
+        res.render 'project',
+          subPage:
+            content: html
+
+  ###
+  TODO: dynamic
   req.project.getTimeline (err, project) ->
     async.map project.timeline, (action, callback) ->
       action.getActor (err, project) ->
@@ -17,5 +28,5 @@ app.get '/project/:projectSlug/timeline', (req, res, next) ->
           subPage:
             content: html
 
-
+  ###
 

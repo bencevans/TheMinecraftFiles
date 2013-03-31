@@ -1,41 +1,50 @@
-module.exports = (Schema, ObjectId) ->
-  return new Schema(
-    username:
-      type: String
-      required: true
-      lowercase: true
-      trim: true
-      index:
-        unique: true
-        sparse: true
 
-    password: String
+module.exports = (sequelize, Sequelize) ->
+  return sequelize.define "User",
+    id:
+      type: Sequelize.INTEGER
+      primaryKey: true
+      autoIncrement: true
+
+    username:
+      type: Sequelize.STRING
+      allowNull: false
+      is: ["[a-z|0-9|_|-]"]
+      unique: true
+
+    password:
+      type: Sequelize.STRING
+      allowNull: false
 
     email:
-      type: String
-      match: /^.+@.+\..+$/
+      type: Sequelize.STRING
+      allowNull: false
+      isEmail: true
 
-    joined:
-      type: Date
-      default: Date.now
-
-    realName: String
+    realName:
+      type: Sequelize.STRING
+      allowNull: true
 
     minecraftUsername:
-      type: String
-      match: /^[A-Za-z0-9_]+$/
+      type: Sequelize.STRING
+      is: ["^[A-Za-z0-9_]+$"]
+      allowNull: true
 
     website:
-      type: String
-      match: /^https?\:\/\/.+\..+$/
+      type: Sequelize.STRING
+      isURL: true
+      allowNull: true
 
     twitterUsername:
-      type: String
-      match: /^[A-Za-z0-9_]+$/
+      type: Sequelize.STRING
+      is: ["/^[A-Za-z0-9_]+$/"]
+      allowNull: true
 
     gitHubUsername:
-      type: String
-      match: /^[A-Za-z0-9_]+$/
+      type: Sequelize.STRING
+      is: ["/^[A-Za-z0-9_]+$/"]
+      allowNull: true
 
-    gitHubID: Number
-  )
+    gitHubID:
+      type: Sequelize.INTEGER
+      allowNull: true

@@ -1,26 +1,29 @@
-everyauth.github.appId(config.auth.github.id).appSecret(config.auth.github.secret).moduleTimeout(8000).findOrCreateUser((session, accessToken, accessTokenExtra, githubUserMetadata) ->
+
+db = require "../../db"
+
+everyauth.github.appId(config.auth.github.id).appSecret(config.auth.github.secret).moduleTimeout(80000).findOrCreateUser((session, accessToken, accessTokenExtra, githubUserMetadata) ->
   promise = @Promise()
-  db.user.count {
-    gitHubID: githubUserMetadata.id
-    }, (err, count) ->
-    if err
-      console.error 'Problem Counting Current User'
-      promise.fulfill([err])  if err
-    if count is 0
-      newUser = new db.user(
-        username: githubUserMetadata.login
-        gitHubID: githubUserMetadata.id
-      )
-      newUser.save (err, newUser) ->
-        return promise.fulfill([err])  if err
-        promise.fulfill newUser
-    else
-      db.user.findOne
-        gitHubID: githubUserMetadata.id
-      , (err, user) ->
-        return promise.fulfill([err])  if err
-        promise.fulfill user
+  console.log "start search"
+  db.User.find(
+    where:
+      gitHubID: githubUserMetadata.id
+  ).success((user) ->
+    console.log "found user:", user
+    if user then return promise.fulfill user
+    console.log "creating user!"
+    db.User.build(
+      username: githubUserMetadata.login
+      gitHubID: githubUserMetadata.id
+    ).save().success((user) ->
+      console.log "1"
+      return promise.fulfill user
+    ).error (error) ->
+      console.log "2"
+      console.log error
+      return promise.fulfill [error]
+  ).error (error) ->
+    console.log "3"
+    return promise.fulfill [error]
 
-
-  promise
+  return promise
 ).redirectPath '/'

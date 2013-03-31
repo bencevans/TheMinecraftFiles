@@ -1,19 +1,22 @@
 
+
 module.exports = (sequelize, Sequelize) ->
-  return sequelize.define "File",
+  return sequelize.define "Download",
     id:
       type: Sequelize.INTEGER
       primaryKey: true
       autoIncrement: true
 
-    type:
+    name:
       type: Sequelize.STRING
-      allowNull: true
+      allowNull: false
+      unique: true
 
     description:
       type: Sequelize.STRING
-      required: true
+      allowNull: true
+      unique: true
 
-    path:
-      type: Sequelize.STRING
-      required: true
+    count:
+      type: Sequelize.INTEGER
+      default: 0
