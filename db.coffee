@@ -17,7 +17,6 @@ sequelize = new Sequelize("database", "username", "password",
 User = require("./app/models/user")(sequelize, Sequelize)
 Project = require("./app/models/project")(sequelize, Sequelize)
 Category = require("./app/models/category")(sequelize, Sequelize)
-Watch = require("./app/models/watch")(sequelize, Sequelize)
 File = require("./app/models/file")(sequelize, Sequelize)
 GalleryImage = require("./app/models/galleryImage")(sequelize, Sequelize)
 Download = require("./app/models/download")(sequelize, Sequelize)
@@ -33,8 +32,8 @@ Project.belongsTo User, {as: 'Creator'}
 Category.hasMany Project
 Project.belongsTo Category
 
-Project.hasMany Watch, {as: 'Watchers'}
-User.hasMany Watch, {as: 'Watching'}
+Project.hasMany User, {as: 'Watchers'}
+User.hasMany Project, {as: 'Watching'}
 
 GalleryImage.hasOne File
 

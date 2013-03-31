@@ -3,7 +3,8 @@ module.exports.watch = (req, res, next) ->
   if not req.isAuthenticated()
     return res.redirect '/login?r=/project/' + req.project.name
 
-  req.project.addWatcher(req.user).success () ->
+  req.project.addWatcher(req.user).success (watch) ->
+    return res.send watch
 
     ###
     TODO: Create Watch Action

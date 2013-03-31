@@ -9,6 +9,14 @@ _ = require 'underscore'
 routes = {}
 
 ###*
+ * Helpers
+###
+
+ensureAuthenticated = (req, res, next) ->
+  return next()  if req.isAuthenticated()
+  res.redirect "/login"
+
+###*
  * Error Routes
 ###
 
@@ -102,10 +110,6 @@ app.get '/project/:projectSlug/unwatch', routes.project.watch.unwatch
 ###
  * Authenticated Routes
 ###
-
-ensureAuthenticated = (req, res, next) ->
-  return next()  if req.isAuthenticated()
-  res.redirect "/login"
 
 app.get '/', ensureAuthenticated, routes.dashboard.index
 

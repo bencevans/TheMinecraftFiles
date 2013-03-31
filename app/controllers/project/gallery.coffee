@@ -20,7 +20,6 @@ module.exports.index = (req, res, next) ->
 
     ), (error, results) ->
       if error then return next error
-      console.log results
       res.render 'project/gallery',
         layout: false
         galleryImages: results
@@ -67,36 +66,41 @@ module.exports.image = (req, res, next) ->
       res.render 'project',
         subPage:
           content: html
-
   .error next
 
 
 # Route to set an image to the default project image (Project Owners Only)
 module.exports.setDefault = (req, res, next) ->
-  return next()  unless req.project.isOwner
-  db.project.findById req.project._id, (err, project) ->
-    next err if err
-    db.galleryImage.findById req.params.imageId, (err, galleryImage) ->
-      return next(err) if err
-      return res.render 'errors/404', {status: 404} unless galleryImage
-      project.update {image:req.params.imageId}, (err, updatedDoc) ->
-        next err if err
-        res.redirect '/project/' + req.params.projectSlug + "/gallery/" + req.params.imageId
+  unless req.project.isOwner then return next()
+  db.GalleryImage.find
+    where:
+      id: req.params.imageId
+  .success (image) ->
+    unless image then return next()
+    req.project.setImage(image).success ->
+      req.flash "Successfully updated the default #{req.project.name} image"
+      res.redirect '/project/' + req.params.projectSlug + "/gallery/" + req.params.imageId
+    .error next
+  .error next
 
 # Route to delete an Image (Project Owners Only)
 module.exports.delete = (req, res, next) ->
-  res.send req.project.isOwner
   return next()  unless req.project.isOwner
-  db.galleryImage.findById(req.params.imageId).populate('file').exec (err, galleryImage) ->
-    return next(err)  if err
+  db.GalleryImage.find
+    where:
+      id: req.params.imageId
+  .success (galleryImage) ->
     unless galleryImage then return next()
-    galleryImage.remove (err) ->
-      return next(err)  if err
-      fs.unlink galleryImage.file.path, (err) ->
-        return next(err)  if err
-        galleryImage.file.remove (err) ->
-          return next(err)  if err
-          res.redirect '/project/' + req.params.projectSlug + '/gallery'
+    galleryImage.getFile().success (file) ->
+      file.destroy().success ->
+        galleryImage.destroy().success ->
+          fs.unlink file.path, (error) ->
+            if error then return next error
+            res.redirect '/project/' + req.params.projectSlug + "/gallery"
+        .error next
+      .error next
+    .error next
+  .error next
 
 
 # Add an image
