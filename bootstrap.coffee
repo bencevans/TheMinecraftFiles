@@ -13,7 +13,6 @@
 debug = require('debug')('bootstrap')
 _ = require 'underscore'
 fs = require 'fs'
-mongoose = require 'mongoose'
 
 ###*
  * Setup TMF Lib & Connect to DBs
