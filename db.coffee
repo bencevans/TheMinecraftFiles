@@ -5,10 +5,7 @@
 
 Sequelize = require("sequelize")
 
-sequelize = new Sequelize("database", "username", "password",
-  dialect: "sqlite"
-  storage: "./db.sqlite"
-)
+sequelize = new Sequelize("tmf", "root", "sqlpass")
 
 ###*
  * Models
