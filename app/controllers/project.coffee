@@ -49,7 +49,7 @@ module.exports.all =  (req, res, next) ->
             true
         )
         res.locals.projectCreator = creator
-        if req.user and creator.id is req.user.id
+        if req.user and creator and (creator.id is req.user.id)
           project.isOwner = true
           res.locals.isProjectOwner = true
 
