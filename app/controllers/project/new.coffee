@@ -34,6 +34,8 @@ module.exports.newAction = (req, res, next) ->
           project.setCategory(category).success((project)->
 
             project.setCreator(req.user).success((creator)->
+              console.log('new creator, ', creator)
+
               # TODO: Create User's 'Project Created' Event/Timeline Action
               res.redirect '/project/' + project.name
             ).error((error) ->

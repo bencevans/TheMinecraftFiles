@@ -5,10 +5,14 @@
 
 Sequelize = require("sequelize")
 
-sequelize = new Sequelize("database", "username", "password",
-  dialect: "sqlite"
-  storage: "./db.sqlite"
-)
+if process.env.SQLITE
+  options =
+    dialect: "sqlite"
+    storage: "./db.sqlite"
+else
+  options = {}
+
+sequelize = new Sequelize "tmf", "root", "sqlpass", options
 
 ###*
  * Models
@@ -32,8 +36,8 @@ Project.belongsTo User, {as: 'Creator'}
 Category.hasMany Project
 Project.belongsTo Category
 
-Project.hasMany User, {as: 'Watchers'}
-User.hasMany Project, {as: 'Watching'}
+Project.hasMany User, {as: 'Watchers', joinTableName:'Watches'}
+User.hasMany Project, {as: 'Watching', joinTableName:'Watches'}
 
 GalleryImage.hasOne File
 

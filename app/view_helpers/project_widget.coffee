@@ -5,5 +5,5 @@ hbs.registerHelper 'project_widget', (project) ->
   else
     projectImage = "/assets/img/DefaultProjectWidget.png"
 
-  ['<div class="projectwidget" onclick="location.href=\'/project/'+ project.name + '\';" style="background-image:url(' + projectImage + ');"><div class="info">\t<h3>' + project.name + '</h3><p>Created By: <a href="/user/' + project.creator.username + '">' + project.creator.username + '</a>.</p>', '</div>', '</div>'].join ""
+  ['<div class="projectwidget" onclick="location.href=\'/project/'+ project.name + '\';" style="background-image:url(' + projectImage + ');"><div class="info">\t<h3>' + project.name + '</h3>' + (if (project.creator) then '<p>Created By: <a href="/user/' + project.creator.username + '">' + project.creator.username + '</a>.</p>' else ''), '</div>', '</div>'].join ""
 
