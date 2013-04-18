@@ -43,6 +43,11 @@
         <li>
           <a href="/discover/">Discover</a>
         </li>
+        <li>
+          <form method="GET" action="/search">
+            <input type="search" placeholder="Search" name="q" class="searchbar">
+          </form>
+        </li>
       </ul>
       <ul class="nav right">
         {{#if everyauth.user.loggedIn}}

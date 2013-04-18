@@ -1,0 +1,16 @@
+<div class="row pagename">
+  <div class="span12">
+    <h3>Search Results</h3>
+  </div>
+</div>
+<div class="row">
+  <div class="span12">
+  {{#if projects}}
+    {{#each projects}}
+    {{{project_widget this}}}
+    {{/each}}
+  {{else}}
+    No Results Found
+  {{/if}}
+  </div>
+</div>

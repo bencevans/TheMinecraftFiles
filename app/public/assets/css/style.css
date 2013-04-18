@@ -495,3 +495,13 @@ thead, thead tr, thead  td {
 .project-description {
 	display:inline;
 }
+
+.searchbar {
+	background-color: #222;
+	color:#ccc;
+	min-width: 0;
+}
+
+.searchbar:focus {
+	min-width: 300px;
+}

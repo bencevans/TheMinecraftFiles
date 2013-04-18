@@ -59,6 +59,7 @@ routes.dashboard = require('./controllers/dashboard')
 routes.settings = require('./controllers/settings')
 routes.comment = require('./controllers/comment')
 routes.new = require('./controllers/project/new')
+routes.search = require('./controllers/search')
 
 ###*
  * External Routes
@@ -79,6 +80,9 @@ app.get '/discover/:categorySlug', routes.discover.category
 app.get '/discover/:categorySlug/popular', routes.discover.category.popular
 app.get '/discover/:categorySlug/recent', routes.discover.category.recent
 app.get '/discover/:categorySlug/trending', routes.discover.category.trending
+
+# Search
+app.get '/search', routes.search.results
 
 # User Profiles
 app.get '/user/:username', routes.user.profile
