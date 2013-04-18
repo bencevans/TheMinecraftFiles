@@ -32,6 +32,8 @@ module.exports.results = (req, res, next) ->
   .success (projects) ->
     widgetBuilder projects, (error, projectsWithExtras) ->
       if error then return next(error)
-      res.render "search", projects:projectsWithExtras
+      res.render "search",
+        projects: projectsWithExtras
+        searchQuery: req.query.q
   .error (error) ->
     next error

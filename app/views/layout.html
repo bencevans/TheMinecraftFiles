@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-
 <html prefix="og: http://ogp.me/ns#">
-
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>{{#if title}}{{title}} | {{/if}}TheMinecraftFiles</title>
@@ -45,7 +43,7 @@
         </li>
         <li>
           <form method="GET" action="/search">
-            <input type="search" placeholder="Search" name="q" class="searchbar">
+            <input type="search" placeholder="Search" name="q" class="searchbar" value="{{searchQuery}}">
           </form>
         </li>
       </ul>
@@ -57,11 +55,6 @@
         <li>
           <a href="/settings/">Settings</a>
         </li>
-        <!-- if(auth.hasRole('admin')) -->
-        <!--<li>
-          <a href="/admin/">Admin</a>
-        </li>-->
-        <!-- } -->
         <li>
           <a class=nopjax href="/logout/">Logout</a>
         </li>
