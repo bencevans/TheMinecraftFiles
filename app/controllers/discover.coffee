@@ -34,9 +34,9 @@ widgetBuilder = (project, callback) ->
 
 
 module.exports.index = (req, res, next) ->
-  db.Category.findAll().success (categories) ->
+  db.Category.findAll({limit:3}).success (categories) ->
     async.map categories, (category, callback) ->
-      category.getProjects().success (projects) ->
+      category.getProjects({limit:3}).success (projects) ->
         widgetBuilder projects, (error, projects) ->
           if error then return callback(error)
           callback null, _.extend(category.values, {projects:projects})
