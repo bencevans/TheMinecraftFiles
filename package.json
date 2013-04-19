@@ -41,7 +41,8 @@
     "sequelize": "~1.6.0-beta4",
     "passport": "~0.1.16",
     "passport-local": "~0.1.6",
-    "mysql": "~2.0.0-alpha7"
+    "mysql": "~2.0.0-alpha7",
+    "bcrypt": "~0.7.5"
   },
   "devDependencies": {
     "mocha": "*",

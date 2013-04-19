@@ -9,6 +9,7 @@ fs = require 'fs'
 http = require 'http'
 flashify = require 'flashify'
 _ = require 'underscore'
+bcrypt = require 'bcrypt'
 
 ###*
  * Globals (Ideally be removed and pass objects as params)
@@ -63,8 +64,9 @@ passport.use new LocalStrategy((username, password, done) ->
       username: username
   .success (user) ->
     return done(null, false, 'No User Exists')  unless user
-    return done(null, false, 'Login failed')  if user.password isnt password
-    done null, user
+    bcrypt.compare password, user.password, (err, match) ->
+      if err or !match then return done(null, false, 'Login failed')
+      done null, user
   .error (error) ->
     done error
 

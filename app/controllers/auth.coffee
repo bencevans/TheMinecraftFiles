@@ -4,7 +4,7 @@
 ###
 
 db = require "../../db"
-
+bcrypt = require "bcrypt"
 module.exports.login = (req, res) ->
   res.locals.title = 'Login'
   if req.loggedIn
@@ -20,14 +20,20 @@ module.exports.register = (req, res) ->
 
 module.exports.registerAction = (req, res, next) ->
 
-  db.User.build(req.body).save().success((user) ->
-    # TODO: flash message saying signed up successfully, or just login
-    req.flash "Successfully created your user, please login."
-    res.redirect "/"
-  ).error((error) ->
-    # TODO: better error, what constraint,  or is it a db problem
-    next error
-  )
+  bcrypt.hash req.body.password, 10, (err, hash) ->
+    if err then return next(err)
+
+    userData = req.body
+    userData.password = hash
+
+    db.User.build(userData).save().success((user) ->
+      # TODO: flash message saying signed up successfully, or just login
+      req.flash "Successfully created your user, please login."
+      res.redirect "/"
+    ).error((error) ->
+      # TODO: better error, what constraint,  or is it a db problem
+      next error
+    )
 
 module.exports.settings = (req, res, next) ->
   res.render 'auth/user_info', req.user
