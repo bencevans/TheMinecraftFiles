@@ -53,10 +53,11 @@ module.exports.all =  (req, res, next) ->
           project.isOwner = true
           res.locals.isProjectOwner = true
 
-          res.locals.subPages.push
+          settingTabId = res.locals.subPages.push
             name: 'Settings'
             slug: 'settings'
             url: '/project/' + project.name + '/settings'
+            current: if req.params.subPage is 'settings' then true else false
         if req.user
           res.locals.watching = false
           # TODO: watching
