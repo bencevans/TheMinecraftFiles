@@ -1,24 +1,15 @@
-module.exports = (Schema, ObjectId) ->
-  return new Schema(
+
+module.exports = (sequelize, Sequelize) ->
+  return sequelize.define "Action",
+    id:
+      type: Sequelize.INTEGER
+      primaryKey: true
+      autoIncrement: true
 
     type:
-      type: String
-      required: true
+      type: Sequelize.STRING
+      allowNull: false
 
-    actor:
-      type: ObjectId
-      ref: 'user'
-      required: true
-
-    project:
-      type: ObjectId
-      ref: 'project'
-      required: true
-
-    when:
-      type: Date
-      default: Date.now
-
-    data: Object
-
-  )
+    data:
+      type: Sequelize.STRING
+      allowNull: true

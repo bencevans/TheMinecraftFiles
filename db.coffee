@@ -25,6 +25,7 @@ File = require("./app/models/file")(sequelize, Sequelize)
 GalleryImage = require("./app/models/galleryImage")(sequelize, Sequelize)
 Download = require("./app/models/download")(sequelize, Sequelize)
 Issue = require("./app/models/issue")(sequelize, Sequelize)
+Action = require("./app/models/action")(sequelize, Sequelize)
 
 ###*
  * Relationships
@@ -55,6 +56,12 @@ Issue.belongsTo Project
 User.hasMany Issue
 Issue.belongsTo User
 
+User.hasMany Action
+Action.belongsTo User, { as: 'Actor' }
+
+Project.hasMany Action
+Action.belongsTo Project
+
 ###*
  * Exports
 ###
@@ -68,3 +75,4 @@ module.exports.File = File
 module.exports.GalleryImage = GalleryImage
 module.exports.Download = Download
 module.exports.Issue = Issue
+module.exports.Action = Action

@@ -4,12 +4,12 @@
 		{{#if usersFeedTimeline}}
 		{{#usersFeedTimeline}}
 		<div class="timeline-action">
-			<a href="<?= SiteURL("user/" . $TimelineAction['UserInfo']['Username']); ?>"><?= Gravatar($TimelineAction['UserID'], 60, 'HTML'); ?></a>
+			<a href="/user/{{actor.username}}"><img src="{{gravatar_url actor.email 40}}"/></a>
 			<div class="action">
-				<a href="<?= SiteURL("user/" .  $TimelineAction['UserInfo']['Username']) ?>"><?= $Auth->PreferedName($TimelineAction['UserID']); ?></a>
-				<?= $TimelineAction['Action']; ?>
-				<a href="<?= SiteURL("project/" . $TimelineAction['ProjectInfo']['Slug']); ?>">{{this.ProjectInfo.Name}}</a>
-				<?= RealTimeTime(strtotime($TimelineAction['When'])); ?>
+				<a href="/user/{{actor.username}}">{{user_preferred_name actor}}</a>
+				{{type}}
+				<a href="project/{{project.name}}">{{project.name}}</a>
+				{{time_ago createdAt}}
 			</div>
 			<div class="description">
 

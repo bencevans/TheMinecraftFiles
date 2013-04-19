@@ -36,8 +36,18 @@ module.exports.newAction = (req, res, next) ->
             project.setCreator(req.user).success((creator)->
               console.log('new creator, ', creator)
 
-              # TODO: Create User's 'Project Created' Event/Timeline Action
-              res.redirect '/project/' + project.name
+              # create CreateProject action
+              db.Action.build({type:'CreateProject'}).save().success((action) ->
+                action.setActor(req.user).success((action) ->
+                  action.setProject(project).success((action) ->
+                    res.redirect '/project/' + project.name
+                  ).error((err) ->
+                    next err
+                  )
+                ).error (err) ->
+                  next err
+              ).error (err) ->
+                next err
             ).error((error) ->
               next error
             )
