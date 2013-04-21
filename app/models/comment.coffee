@@ -1,25 +1,21 @@
-module.exports = (Schema, ObjectId) ->
-  return new Schema(
-    creator:
-      type: Schema.ObjectId
-      required: true
-      ref: 'user'
+module.exports = (sequelize, Sequelize) ->
+  return sequelize.define "Comment",
+    id:
+      type: Sequelize.INTEGER
+      primaryKey: true
+      autoIncrement: true
 
     text:
-      type: String
-      required: true
+      type: Sequelize.STRING
+      allowNull: false
 
-    created:
-      type: Date
-      required: true
-      default: Date.now
+    identifierType:
+      type: Sequelize.STRING
+      allowNull: false
+      isLowercase: true
 
-    identifier:
-      id:
-        type: Schema.ObjectId
-        required: true
-      type:
-        type: String
-        required: true
+    identifierId:
+      type: Sequelize.STRING
+      allowNull: false
+      isLowercase: true
 
-  )
