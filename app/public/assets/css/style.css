@@ -496,7 +496,7 @@ thead, thead tr, thead  td {
 	display:inline;
 }
 
-.searchbar {
+input.searchbar {
 	background-color: #222;
 	color:#ccc;
 	min-width: 0;
