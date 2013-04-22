@@ -21,6 +21,10 @@ module.exports.new = (req, res, next) ->
 
 # Add a download
 module.exports.newAction = (req, res, next) ->
+
+  for i in req.body
+    if req.body[i] == "" then req.body[i] = null
+
   return next() unless req.project.isOwner
   db.File.build
     path: req.files.file.path

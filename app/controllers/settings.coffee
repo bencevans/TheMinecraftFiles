@@ -4,12 +4,11 @@
 ###
 
 _ = require 'underscore'
+db = require '../../db'
 
 ###*
  * Settings Controller
 ###
-
-db = require '../../db'
 
 module.exports.index = (req, res) ->
     res.redirect '/settings/profile'

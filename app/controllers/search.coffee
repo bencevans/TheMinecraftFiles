@@ -1,9 +1,16 @@
 
+###*
+ * Dependencies
+###
+
 util = require "util"
 async = require "async"
 _ = require "underscore"
-
 db = require "../../db"
+
+###*
+ * Search Controller
+###
 
 widgetBuilder = (project, callback) ->
   if util.isArray(project)

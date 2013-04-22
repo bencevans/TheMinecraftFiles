@@ -1,6 +1,6 @@
 
 ###*
- * Dashboard Controller
+ * Dependencies
 ###
 
 db = require "../../db"
@@ -8,6 +8,15 @@ async = require "async"
 util = require "util"
 _ = require "underscore"
 
+###*
+ * Dashboard Controller
+###
+
+###*
+ * Gather aditional information for rendering actions
+ * @param  {Array of|Action Object}   action
+ * @param  {Function} callback      callback signature (err, actions)
+###
 actionBuilder = (action, callback) ->
   if util.isArray(action)
     async.map action, actionBuilder, callback
