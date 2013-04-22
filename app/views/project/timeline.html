@@ -7,15 +7,6 @@
 
 {{#actions}}
 
-<div class="timeline-action">
-	<a href="/user/{{actor.username}}"><img src="{{gravatar_url actor.email 40}}"/></a>
-	<div class="action">
-		<a href="/user/{{actor.username}}">{{user_preferred_name actor}}</a>
-		{{type}}
-		<a href="/project/{{project.name}}">{{project.name}}</a>
-		{{time_ago createdAt}}
-	</div>
-	<div class="description">	</div>
-</div>
+{{{timeline_action this}}}
 
 {{/actions}}

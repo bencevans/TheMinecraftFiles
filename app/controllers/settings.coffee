@@ -57,6 +57,7 @@ module.exports.profile = (req, res, next) ->
 
 
 module.exports.account = (req, res, next) ->
+
   req.user.updateAttributes(req.body).success( ->
       res.redirect '/settings/account'
     ).error((error) ->
