@@ -121,17 +121,3 @@ module.exports.new = (req, res, next) ->
       next error
   .error (error) ->
     next error
-
-  ###
-  upload = new db.file(path: req.files.galleryFileUpload.path)
-  upload.save (err, upload) ->
-    return next(err)  if err
-    galleryImage = new db.galleryImage(
-      file: upload._id
-      project: req.project._id
-    )
-    galleryImage.save (err, galleryImage) ->
-      return next(err)  if err
-      res.redirect '/project/' + req.project.name + '/gallery/' + galleryImage._id
-
-  ###

@@ -110,6 +110,8 @@ app.post '/project/:projectSlug/settings', routes.project.settings.indexAction
 app.get '/project/:projectSlug/timeline', routes.project.timeline.index
 app.get '/project/:projectSlug/watch', routes.project.watch.watch
 app.get '/project/:projectSlug/unwatch', routes.project.watch.unwatch
+app.get '/project/:projectSlug/downloads/new', routes.project.downloads.new
+app.post '/project/:projectSlug/downloads/new', routes.project.downloads.newAction
 
 ###
  * Authenticated Routes
