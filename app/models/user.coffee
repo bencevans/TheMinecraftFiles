@@ -14,11 +14,11 @@ module.exports = (sequelize, Sequelize) ->
 
     password:
       type: Sequelize.STRING
-      allowNull: false
+      allowNull: true # this is so users can just use GitHub auth
 
     email:
       type: Sequelize.STRING
-      allowNull: false
+      allowNull: true
       isEmail: true
 
     realName:

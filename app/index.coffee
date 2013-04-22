@@ -42,7 +42,6 @@ else
 ###
 
 passport = require('passport')
-LocalStrategy = require('passport-local').Strategy
 db = require('../db')
 
 passport.serializeUser((user, callback) ->
@@ -57,20 +56,9 @@ passport.deserializeUser((userId, callback) ->
   )
 )
 
-passport.use new LocalStrategy((username, password, done) ->
+passport.use require("./auth/local")
+passport.use require("./auth/github")
 
-  db.User.find
-    where:
-      username: username
-  .success (user) ->
-    return done(null, false, 'No User Exists')  unless user
-    bcrypt.compare password, user.password, (err, match) ->
-      if err or !match then return done(null, false, 'Login failed')
-      done null, user
-  .error (error) ->
-    done error
-
-)
 
 
 ###*
@@ -93,7 +81,7 @@ app.configure ->
   app.set 'views', __dirname + '/views'
   app.set 'view engine', 'html'
   app.engine 'html', hbs.__express
-
+  app.use express['static'](__dirname + '/public')
   app.use express.cookieParser()
   app.use express.bodyParser()
   app.use express.methodOverride()
@@ -103,17 +91,9 @@ app.configure ->
 
   app.use passport.initialize()
   app.use passport.session()
-
-  app.use (err, req, res, next) ->
-    res.removeHeader("X-Powered-By");
-    next();
-
-app.configure ->
-  app.use express['static'](__dirname + '/public')
   app.use flashify
   app.use app.router
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-  app.use require('express-throwandtell')(config.throwandtell.accessKey) if config.throwandtell.accessKey
   app.use (err, req, res, next) ->
     console.error err
     res.render 'errors/404'  if err is 404
@@ -166,7 +146,16 @@ app.post "/login", passport.authenticate("local",
   res.redirect "/"
 
 
+app.get "/auth/github", passport.authenticate("github")
+app.get "/auth/github/callback", passport.authenticate("github",
+  failureRedirect: "/login"
+), (req, res) ->
+
+  # Successful authentication, redirect home.
+  res.redirect "/"
+
 require './router'
+
 
 
 if module.parent
