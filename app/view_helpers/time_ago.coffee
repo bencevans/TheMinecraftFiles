@@ -14,7 +14,7 @@ hbs.registerHelper "time_ago", (date, size) ->
   interval = Math.floor(seconds / 60)
   return interval + " minutes ago"  if interval > 1
   if Math.floor(seconds) is 0
-    "Just now"
+    "just now"
   else
     Math.floor(seconds) + " seconds ago"
 
