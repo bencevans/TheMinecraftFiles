@@ -40,6 +40,10 @@ module.exports = (sequelize, Sequelize) ->
       is: ["/^[A-Za-z0-9_]+$/"]
       allowNull: true
 
+    twitterID:
+      type: Sequelize.INTEGER
+      allowNull: true
+
     gitHubUsername:
       type: Sequelize.STRING
       is: ["/^[A-Za-z0-9_]+$/"]

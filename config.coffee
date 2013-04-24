@@ -12,6 +12,12 @@ module.exports =
     github:
       id: process.env.AUTH_GITHUB_ID or "e2786c5a58ea63eaa507"
       secret: process.env.AUTH_GITHUB_SECRET or "00da63143f07a812b475b224623fec52865165ae"
+      callbackURL: "http://localhost:3000/auth/github/callback"
+
+    twitter:
+      key: process.env.AUTH_TWITTER_KEY or "Yv2N4xIhID3LNhWObuccHA"
+      secret: process.env.AUTH_TWITTER_SECRET or "sUtmlLjvJtCGMi026TkYG6wG45h7Uc50gAQnEnKa0I"
+      callbackURL: "http://localhost:3000/auth/twitter/callback"
 
 
   # MongoDB Configuration

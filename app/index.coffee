@@ -58,6 +58,7 @@ passport.deserializeUser((userId, callback) ->
 
 passport.use require("./auth/local")
 passport.use require("./auth/github")
+passport.use require("./auth/twitter")
 
 
 
@@ -148,6 +149,14 @@ app.post "/login", passport.authenticate("local",
 
 app.get "/auth/github", passport.authenticate("github")
 app.get "/auth/github/callback", passport.authenticate("github",
+  failureRedirect: "/login"
+), (req, res) ->
+
+  # Successful authentication, redirect home.
+  res.redirect "/"
+
+app.get "/auth/twitter", passport.authenticate("twitter")
+app.get "/auth/twitter/callback", passport.authenticate("twitter",
   failureRedirect: "/login"
 ), (req, res) ->
 

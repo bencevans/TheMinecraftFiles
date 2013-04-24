@@ -43,7 +43,8 @@
     "passport-local": "~0.1.6",
     "mysql": "~2.0.0-alpha7",
     "bcrypt": "~0.7.5",
-    "passport-github": "~0.1.4"
+    "passport-github": "~0.1.4",
+    "passport-twitter": "~0.1.4"
   },
   "devDependencies": {
     "growl": "~1.6.0",
