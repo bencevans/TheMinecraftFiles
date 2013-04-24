@@ -14,9 +14,8 @@ actionBuilder = (action, callback) ->
 
 module.exports.index = (req, res, next) ->
 
-  req.project.getActions().success((actions) ->
+  req.project.getActions({order:'createdAt DESC', limit:30}).success((actions) ->
     actionBuilder actions, (error, actions) ->
-      console.log actions
       res.render 'project/timeline',
           actions: actions
           layout: false

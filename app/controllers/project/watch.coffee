@@ -1,22 +1,24 @@
+
+db = require "../../../db"
+
 module.exports.watch = (req, res, next) ->
 
   if not req.isAuthenticated()
     return res.redirect '/login?r=/project/' + req.project.name
 
   req.project.addWatcher(req.user).success (watch) ->
-    return res.send watch
 
-    ###
-    TODO: Create Watch Action
-    tmf.createAction
-      type:'watch'
-      actor:req.user._id
-      project:req.project._id
-    , (err, action) ->
-      next err if err
-    ###
-
-    res.redirect '/project/' + req.project.name
+    db.Action.build({type:'WatchProject'}).save().success((action) ->
+      action.setActor(req.user).success((action) ->
+        action.setProject(req.project).success((action) ->
+          res.redirect '/project/' + req.project.name
+        ).error((err) ->
+          next err
+        )
+      ).error (err) ->
+        next err
+    ).error (err) ->
+      next err
 
   .error next
 

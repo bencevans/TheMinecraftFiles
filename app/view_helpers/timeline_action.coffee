@@ -8,6 +8,8 @@ hbs.registerHelper 'timeline_action', (action) ->
     verb = "created"
   else if action.type is "GalleryUpload"
     verb = "uploaded an <a href=\"/project/#{project}/gallery/#{action.data}\">image</a> to"
+  else if action.type is "WatchProject"
+    verb = "started watching"
   else
     verb = action.type
 
