@@ -12,7 +12,7 @@ express = require 'express'
 webInterface = require './app'
 
 # Include the API Interface App
-apiInterface = require './api/app.js'
+apiInterface = require './api/app'
 
 # Create an instance of Express Web Framework
 app = express()
