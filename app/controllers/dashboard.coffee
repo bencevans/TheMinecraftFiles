@@ -43,7 +43,9 @@ module.exports.index = (req, res, next) ->
           done()
         ).error(done)
       , (done) ->
-        dashUser.getActions({order:'createdAt DESC', limit:30}).success((actions) ->
+        db.sequelize.query('SELECT Actions.id, Actions.type,  Actions.data,  Actions.createdAt, Actions.updatedAt, Actions.UserId,  Actions.ProjectId FROM Actions INNER JOIN Watches ON Actions.ProjectId=Watches.ProjectId WHERE Watches.UserId=' + dashUser.id).success((actions) ->
+          actions = _.map actions, (action) ->
+            return db.Action.build(action)
           actionBuilder(actions, (error, actionsWithExtras) ->
             res.locals.usersFeedTimeline = actionsWithExtras
             done()
