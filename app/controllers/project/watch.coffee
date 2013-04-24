@@ -26,6 +26,6 @@ module.exports.watch = (req, res, next) ->
 module.exports.unwatch = (req, res, next) ->
   if not req.user
     return res.redirect '/login?r=/project/' + req.project.name
-  req.project.unwatch req.user._id, (err, watching) ->
-    next err if err
+  req.project.removeWatcher(req.user).success(->
     res.redirect '/project/' + req.project.name
+  ).error next
