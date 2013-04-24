@@ -25,6 +25,17 @@ module.exports.view = (req, res, next) ->
     res.render("project/downloads/download", download)
   ).error(next)
 
+module.exports.download = (req, res, next) ->
+  db.Download.find
+    where:
+      id: req.params.download
+  .success (download) ->
+    download.getFile().success (file) ->
+      unless file then return next()
+      res.sendfile file.path
+    .error next
+  .error next
+
 module.exports.new = (req, res, next) ->
   return next() unless req.project.isOwner
   res.render('project/downloads/new')

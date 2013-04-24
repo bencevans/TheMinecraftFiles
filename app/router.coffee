@@ -113,6 +113,7 @@ app.get '/project/:projectSlug/unwatch', routes.project.watch.unwatch
 app.get '/project/:projectSlug/downloads/new', routes.project.downloads.new
 app.post '/project/:projectSlug/downloads/new', routes.project.downloads.newAction
 app.get '/project/:projectSlug/downloads/:download', routes.project.downloads.view
+app.get '/project/:projectSlug/downloads/:download/download', routes.project.downloads.download
 
 ###
  * Authenticated Routes
