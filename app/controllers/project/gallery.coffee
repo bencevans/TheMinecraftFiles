@@ -112,7 +112,22 @@ module.exports.new = (req, res, next) ->
     db.GalleryImage.build({}).save().success (galleryImage) ->
       galleryImage.setFile(file).success () ->
         galleryImage.setProject(req.project).success (galleryImage) ->
-          res.redirect '/project/' + req.project.name + '/gallery/' + galleryImage.id
+
+          # Create Action
+          db.Action.build({type:'GalleryUpload', data: galleryImage.id }).save().success((action) ->
+            action.setActor(req.user).success((action) ->
+              action.setProject(req.project).success((action) ->
+
+                # Redirect User to Gallery Image Page
+                res.redirect '/project/' + req.project.name + '/gallery/' + galleryImage.id
+              ).error((err) ->
+                next err
+              )
+            ).error (err) ->
+              next err
+          ).error (err) ->
+            next err
+
         .error (error) ->
           next error
       .error (error) ->

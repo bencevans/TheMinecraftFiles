@@ -23,7 +23,8 @@ actionBuilder = (action, callback) ->
   else
     action.getActor({attributes: ['username', 'id', 'realName', 'email']}).success (actor) ->
       action.getProject().success (project) ->
-        callback null, _.extend action.values, _.extend {project:project}, {actor:actor.values}
+        project = project or {name:'deleted'}
+        callback null, _.extend action.values, _.extend {project:project.values}, {actor:actor.values}
       .error callback
     .error callback
 
@@ -44,8 +45,8 @@ module.exports.index = (req, res, next) ->
       , (done) ->
         dashUser.getActions({order:'createdAt DESC', limit:30}).success((actions) ->
           actionBuilder(actions, (error, actionsWithExtras) ->
+            console.log actionsWithExtras
             res.locals.usersFeedTimeline = actionsWithExtras
-            console.log res.locals.usersFeedTimeline
             done()
           )
         ).error(done)
