@@ -39,13 +39,12 @@ module.exports.index = (req, res, next) ->
         ).error(done)
       , (done) ->
         dashUser.getWatching().success((watchingProjects) ->
-          res.locals.watchingProjects = watchingProjects
+          res.locals.usersWatching = watchingProjects
           done()
         ).error(done)
       , (done) ->
         dashUser.getActions({order:'createdAt DESC', limit:30}).success((actions) ->
           actionBuilder(actions, (error, actionsWithExtras) ->
-            console.log actionsWithExtras
             res.locals.usersFeedTimeline = actionsWithExtras
             done()
           )

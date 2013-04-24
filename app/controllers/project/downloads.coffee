@@ -1,10 +1,11 @@
 
 db = require '../../../db'
+_ = require "underscore"
 
 module.exports.index = (req, res, next) ->
-
-  req.project.getDownloads().success (err, downloads) ->
-    console.log(downloads)
+  req.project.getDownloads({order:'createdAt DESC'}).success (downloads) ->
+    downloads = _.map downloads, (download) ->
+      return _.extend download.values, {project:req.project}
     res.render 'project/downloads',
       layout: false
       downloads: downloads
@@ -14,6 +15,15 @@ module.exports.index = (req, res, next) ->
         subPage:
           content: html
   .error(next)
+
+module.exports.view = (req, res, next) ->
+  db.Download.find(
+    where:
+      id: req.params.download
+  ).success((download) ->
+    unless download then return next()
+    res.render("project/downloads/download", download)
+  ).error(next)
 
 module.exports.new = (req, res, next) ->
   return next() unless req.project.isOwner

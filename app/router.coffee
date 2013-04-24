@@ -112,6 +112,7 @@ app.get '/project/:projectSlug/watch', routes.project.watch.watch
 app.get '/project/:projectSlug/unwatch', routes.project.watch.unwatch
 app.get '/project/:projectSlug/downloads/new', routes.project.downloads.new
 app.post '/project/:projectSlug/downloads/new', routes.project.downloads.newAction
+app.get '/project/:projectSlug/downloads/:download', routes.project.downloads.view
 
 ###
  * Authenticated Routes

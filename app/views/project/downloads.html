@@ -8,9 +8,9 @@
 
 <div class="downloadbox">
   <div class="downloadinfo">
-    <b><a href="/project/{{project.name}}/downloads/{{this.slug}}">{{this.name}}</a></b> <span class="lighter">uploaded {{time_ago this.uploaded}} by <a href="/user/{{uploader.username}}">{{uploader.preferedname}}</a></span>
+    <b><a href="/project/{{project.name}}/downloads/{{this.id}}">{{this.name}}</a></b> <span class="lighter">uploaded {{time_ago this.createdAt}} by <a href="/user/{{uploader.username}}">{{uploader.preferedname}}</a></span>
   </div>
-  <div class="links lighter"><a href="/project/{{project.name}}/downloads/{{this._id}}/download">Download</a> | <a href="/project/{{project.name}}/downloads/{{this.slug}}#description">Changelog</a> | <a href="/project/{{project.name}}/downloads/{{this.slug}}#comments">0 Comments</a></div>
+  <div class="links lighter"><a href="/project/{{project.name}}/downloads/{{this.id}}/download">Download</a> | <a href="/project/{{project.name}}/downloads/{{this.id}}#description">Changelog</a> | <a href="/project/{{project.name}}/downloads/{{this.id}}#comments">0 Comments</a></div>
   <div class="downloadcount">{{this.count}}<span style="font-size:12px;">Downloads</span></div>
   <div style="clear:both"></div>
 </div>

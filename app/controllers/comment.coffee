@@ -35,7 +35,7 @@ module.exports.create = (req, res, next) ->
   # Save to DB
   comment.save().success((comment) ->
     comment.setUser(req.user).success(->
-      res.send 'saved'
+      res.send '<meta http-equiv=\'Refresh\' content=\'0;url=javascript:history.go(-1)\'>'
     ).error(next)
   ).error(next)
 

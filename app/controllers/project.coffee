@@ -23,50 +23,49 @@ module.exports.all =  (req, res, next) ->
     ###
     project.getCreator().success((creator) ->
       project.getWatchers().success((watches) ->
-        res.locals.watcherCount = watches.length
-        res.locals.title = project.name
-        req.project = res.locals.project = project
-        res.locals.subPages = [
-          name: 'Timeline'
-          slug: 'timeline'
-          url: '/project/' + project.name + '/timeline'
-        ,
-          name: 'Gallery'
-          slug: 'gallery'
-          url: '/project/' + project.name + '/gallery'
-        ,
-          name: 'Downloads'
-          slug: 'downloads'
-          url: '/project/' + project.name + '/downloads'
-        ,
-          name: 'Issues'
-          slug: 'issues'
-          url: '/project/' + project.name + '/issues'
-        ]
-        res.locals.subPage = _.find(res.locals.subPages, (subPage) ->
-          if req.params.subPage is subPage.slug
-            subPage.current = true
-            true
-        )
-        res.locals.projectCreator = creator
-        if req.user and creator and (creator.id is req.user.id)
-          project.isOwner = true
-          res.locals.isProjectOwner = true
+        project.hasWatcher(req.user or {id:null}).success (isWatching) ->
 
-          settingTabId = res.locals.subPages.push
-            name: 'Settings'
-            slug: 'settings'
-            url: '/project/' + project.name + '/settings'
-            current: if req.params.subPage is 'settings' then true else false
-        if req.user
-          res.locals.watching = false
-          # TODO: watching
-          # req.project.isWatching req.user.id, (err, watching) ->
-          #   next err if err
-          #   res.locals.watching = watching
-        else
-          res.locals.watching = false
-        next()
+          res.locals.watching = isWatching
+          res.locals.watcherCount = watches.length
+          res.locals.title = project.name
+          req.project = res.locals.project = project
+          res.locals.subPages = [
+            name: 'Timeline'
+            slug: 'timeline'
+            url: '/project/' + project.name + '/timeline'
+          ,
+            name: 'Gallery'
+            slug: 'gallery'
+            url: '/project/' + project.name + '/gallery'
+          ,
+            name: 'Downloads'
+            slug: 'downloads'
+            url: '/project/' + project.name + '/downloads'
+          ,
+            name: 'Issues'
+            slug: 'issues'
+            url: '/project/' + project.name + '/issues'
+          ]
+          res.locals.subPage = _.find(res.locals.subPages, (subPage) ->
+            if req.params.subPage is subPage.slug
+              subPage.current = true
+              true
+          )
+          res.locals.projectCreator = creator
+          if req.user and creator and (creator.id is req.user.id)
+            project.isOwner = true
+            res.locals.isProjectOwner = true
+
+            settingTabId = res.locals.subPages.push
+              name: 'Settings'
+              slug: 'settings'
+              url: '/project/' + project.name + '/settings'
+              current: if req.params.subPage is 'settings' then true else false
+
+          next()
+        .error((error) ->
+          next error
+        )
       ).error((error) ->
         next error
       )

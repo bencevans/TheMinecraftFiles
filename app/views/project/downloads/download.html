@@ -1,0 +1,38 @@
+<h2>{{name}}</h2>
+
+<p>{{description}}</p>
+
+<a href="Download">Download</a>
+
+<div class=comments>
+</div>
+
+
+
+<script type="text/javascript">
+$.getJSON('/comments?identifier[type]=download&identifier[id]={{id}}', function (body, err) {
+  for (var i = body.length - 1; i >= 0; i--) {
+    var html = ['<div class="comment">',
+    '<!--',
+    ' <div class="actionbox"><a href="?commentdelete=' + body[i].id + '" class="button danger delete">Delete</a></div>',
+    '-->',
+    ' <div class="user">',
+    '   <a href="/user/' + body[i].creator.username + '"><img src="http://www.gravatar.com/avatar/' + body[i].creator.gravatarhash + '?s=60"></a>',
+    ' </div>',
+    ' <div class="message">',
+        body[i].text,
+    ' </div>',
+    ' <div class="clear"></div>',
+    '</div>'].join('');
+    $('.comments').append(html);
+  };
+  
+})
+</script>
+
+<form method=POST action="/comment">
+  <input type=text name="text">
+  <input type=hidden name="identifier[type]" value="download">
+  <input type=hidden name="identifier[id]" value="{{id}}">
+  <input type=submit value="Comment">
+</form>
